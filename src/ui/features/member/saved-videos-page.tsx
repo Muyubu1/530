@@ -13,12 +13,15 @@ export function SavedVideosPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const token = await auth.getAccessToken();
-      if (!token) return;
-      const list = await listSavedLessonsFn({ data: { token } });
-      if (!cancelled) {
-        setItems(list);
-        setLoaded(true);
+      try {
+        const token = await auth.getAccessToken();
+        if (!token) return;
+        const list = await listSavedLessonsFn({ data: { token } });
+        if (!cancelled) setItems(list);
+      } catch {
+        /* leave empty */
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {

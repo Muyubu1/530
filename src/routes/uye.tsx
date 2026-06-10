@@ -22,16 +22,23 @@ function UyeLayout() {
       return;
     }
     let cancelled = false;
-    auth.hasPurchase(user.email).then((ok) => {
-      if (cancelled) return;
-      if (ok) {
-        setGate("ok");
-      } else {
-        auth.signOut();
-        toast.error("Bu e-mail program katılımcılarımız arasında bulunamadı");
+    auth
+      .hasPurchase(user.email)
+      .then((ok) => {
+        if (cancelled) return;
+        if (ok) {
+          setGate("ok");
+        } else {
+          auth.signOut();
+          toast.error("Bu e-mail program katılımcılarımız arasında bulunamadı");
+          router.navigate({ to: "/login" });
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        toast.error("Doğrulama başarısız. Lütfen tekrar dene.");
         router.navigate({ to: "/login" });
-      }
-    });
+      });
     return () => {
       cancelled = true;
     };

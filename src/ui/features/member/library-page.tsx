@@ -15,16 +15,21 @@ export function LibraryPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const token = await auth.getAccessToken();
-      if (!token) return;
-      const [savedList, notes] = await Promise.all([
-        listSavedLessonsFn({ data: { token } }),
-        listAllNotesFn({ data: { token } }),
-      ]);
-      if (cancelled) return;
-      setSaved(savedList);
-      setNoteCount(notes.length);
-      setLoaded(true);
+      try {
+        const token = await auth.getAccessToken();
+        if (!token) return;
+        const [savedList, notes] = await Promise.all([
+          listSavedLessonsFn({ data: { token } }),
+          listAllNotesFn({ data: { token } }),
+        ]);
+        if (cancelled) return;
+        setSaved(savedList);
+        setNoteCount(notes.length);
+      } catch {
+        /* leave empty */
+      } finally {
+        if (!cancelled) setLoaded(true);
+      }
     })();
     return () => {
       cancelled = true;

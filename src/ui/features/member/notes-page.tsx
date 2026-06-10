@@ -16,12 +16,15 @@ export function NotesPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const token = await auth.getAccessToken();
-      if (!token) return;
-      const ns = await listAllNotesFn({ data: { token } });
-      if (!cancelled) {
-        setNotes(ns);
-        setLoaded(true);
+      try {
+        const token = await auth.getAccessToken();
+        if (!token) return;
+        const ns = await listAllNotesFn({ data: { token } });
+        if (!cancelled) setNotes(ns);
+      } catch {
+        /* leave empty */
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {

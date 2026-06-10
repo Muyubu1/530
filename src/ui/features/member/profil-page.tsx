@@ -21,13 +21,17 @@ export function ProfilPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const token = await auth.getAccessToken();
-      if (!token) return;
-      const [notes, saved] = await Promise.all([
-        listAllNotesFn({ data: { token } }),
-        listSavedLessonsFn({ data: { token } }),
-      ]);
-      if (!cancelled) setCounts({ notes: notes.length, saved: saved.length });
+      try {
+        const token = await auth.getAccessToken();
+        if (!token) return;
+        const [notes, saved] = await Promise.all([
+          listAllNotesFn({ data: { token } }),
+          listSavedLessonsFn({ data: { token } }),
+        ]);
+        if (!cancelled) setCounts({ notes: notes.length, saved: saved.length });
+      } catch {
+        if (!cancelled) setCounts({ notes: 0, saved: 0 });
+      }
     })();
     return () => {
       cancelled = true;
