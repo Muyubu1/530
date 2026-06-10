@@ -24,12 +24,14 @@
 **Sonuç:** DRY; tek yerden tema kontrolü.
 
 ## D6 — Önce lokal Postgres, sonra Supabase (ports & adapters)
+
 **Bağlam:** Kullanıcı Supabase'den önce lokal PostgreSQL bağlamak istedi.
 **Karar:** domain repository **arayüzü** (port) sabit; infrastructure'da Postgres **adapter**'ı. Supabase'e geçince yalnızca adapter değişir, domain/application'a dokunulmaz (DIP).
 **Yapı:** domain (port) → application (use-case) → infrastructure (.server.ts adapter) → `server/` composition root (createServerFn) → ui/route. ui/routes infrastructure'ı ASLA doğrudan import etmez; sadece server fn çağırır. `eslint-plugin-boundaries` = **error**.
 **DB:** lokal `refactor530` (postgres driver), `scripts/migrate.mjs` SQL migration runner, `.env` DATABASE_URL (dotenv). Postgres erişimi sadece `*.server.ts` içinde.
 
 ## D7 — Auth Supabase'e ertelendi
+
 **Bağlam:** Lokal custom auth (password hash/session) Supabase auth gelince atılır.
 **Karar:** Auth'u Supabase fazına ertele. Üye ekranlarını şimdilik geçici dev-session (mock kullanıcı) ile kur; içerik veri katmanı (courses/lessons/events repo'ları) Supabase'e aynen taşınır.
 

@@ -679,12 +679,12 @@
   }
 }
 
-@keyframes barcode-scan {
+@keyframes barcode-shine {
   0% {
-    transform: translateX(0);
+    transform: translateX(-130%);
   }
   100% {
-    transform: translateX(calc(100% + 80px));
+    transform: translateX(520%);
   }
 }
 
