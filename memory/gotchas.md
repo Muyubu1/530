@@ -13,6 +13,7 @@
 **Not:** İleride runtime crash olursa `nvm use 22`. Şimdilik dokunma.
 
 ## G5 — Supabase browser client SSR'da patlıyor (lazy şart)
+
 **Semptom:** `/login` vb. 500; `RealtimeClient._initializeOptions → getWebSocketConstructor` (websocket-factory) hatası. createClient modül yüklenince (AuthProvider SSR'da import edince) Node'da WebSocket olmadığı için realtime init fail.
 **Fix:** Browser client'ı **lazy** yap — `getSupabaseBrowser()` ilk kullanımda (tarayıcıda) oluşturur; modül import'unda createClient çağrılmaz. Gateway metotları `getSupabaseBrowser()` çağırır. Server waitlist client (`client.server.ts`) eager ama yalnız server'da kullanılır; sorun çıkmadı.
 

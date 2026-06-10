@@ -35,6 +35,10 @@ export interface AuthGateway {
   resetPasswordForEmail(email: string): Promise<AuthResult>;
   updatePassword(password: string): Promise<AuthResult>;
   signInWithGoogle(): Promise<AuthResult>;
+  /** Update the user's profile metadata (display name, last name). */
+  updateProfile(displayName: string, lastName: string): Promise<AuthResult>;
   /** True if the e-mail is among program purchasers (gates /uye). */
   hasPurchase(email: string): Promise<boolean>;
+  /** Current session access token (JWT) for authenticated server calls. */
+  getAccessToken(): Promise<string | null>;
 }

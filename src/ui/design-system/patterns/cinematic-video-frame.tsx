@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,15 +18,38 @@ export function CinematicVideoFrame({
   poster,
   caption,
   className,
+  onTimeUpdate,
+  startAt,
+  topRightSlot,
 }: {
   src: string;
   poster?: string;
   caption?: string;
   className?: string;
+  /** Fires as playback progresses — used to persist watch progress. */
+  onTimeUpdate?: (seconds: number) => void;
+  /** Seek here once metadata loads (resume position). */
+  startAt?: number;
+  /** Overlay rendered at the top-right of the frame (e.g. a save button). */
+  topRightSlot?: ReactNode;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [pauseHint, setPauseHint] = useState(0);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !startAt || startAt <= 0) return;
+    const seek = () => {
+      try {
+        v.currentTime = startAt;
+      } catch {
+        /* ignore */
+      }
+    };
+    v.addEventListener("loadedmetadata", seek, { once: true });
+    return () => v.removeEventListener("loadedmetadata", seek);
+  }, [startAt, src]);
 
   return (
     <figure className={cn("relative mx-auto w-full max-w-3xl", className)}>
@@ -40,6 +63,8 @@ export function CinematicVideoFrame({
             className={cn("pointer-events-none absolute z-20 h-3 w-3 border-white/35", pos)}
           />
         ))}
+
+        {topRightSlot && <div className="absolute right-3 top-3 z-30">{topRightSlot}</div>}
 
         <div
           className="relative aspect-video w-full bg-black"
@@ -60,6 +85,7 @@ export function CinematicVideoFrame({
             }}
             onPause={() => setPlaying(false)}
             onEnded={() => setPlaying(false)}
+            onTimeUpdate={(e) => onTimeUpdate?.(e.currentTarget.currentTime)}
             className="absolute inset-0 h-full w-full object-cover"
           />
           {pauseHint > 0 && playing && (

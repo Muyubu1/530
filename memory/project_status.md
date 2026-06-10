@@ -5,11 +5,11 @@
 5.30 Lab'in arayüzünü (cinematic mono tasarım) yeni temiz bir projeye taşımak — DRY, SOLID,
 modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini eklemek.
 
-## Şu an: Faz 4 bitti — sıradaki karar bekliyor
+## Şu an: Faz 5 bitti — sıradaki karar bekliyor
 
-Supabase auth + satın-alma şartlı /uye gate + waitlist Supabase swap tamam. Sıradaki:
-**Patika** (yeni özellik) / **Topluluk** (chat) / **Stripe ödeme** / **içerik Supabase'e** /
-**üye kullanıcı-özel** (notes/completed/saved/materials).
+Üye alanı tamamlandı (kullanıcı-özel veri + profil + ders detayı etkileşimleri). Sıradaki:
+**Patika** (asıl hedef) / **Topluluk** (chat) / **Stripe ödeme** / **içerik Supabase'e** /
+**ertelenenler** (materyaller, avatar, abonelik, admin: fiyat-kontrol/bekleme-listesi).
 
 ## Tamamlanan
 
@@ -17,6 +17,9 @@ Supabase auth + satın-alma şartlı /uye gate + waitlist Supabase swap tamam. S
   **Faz 3a:** Lokal Postgres veri katmanı (waitlist) · **Faz 3b:** Üye alanı (content + 4 ekran).
 - **Faz 4:** Supabase auth (login/signup/forgot/reset + Google OAuth), /uye satın-alma gate
   (email_has_purchase), waitlist Postgres→Supabase swap. Mock session kalktı.
+- **Faz 5:** Üye alanı tamamlandı — kullanıcı-özel veri (completed/notes/saved) lokal Postgres,
+  **token-doğrulamalı** server fn'ler (verifyUser). Ders detayı: tamamla/kaydet/notlar/watch-progress.
+  Profil hub + notlar/videolar/ayarlar + güncellemeler + kütüphane. "benim odam" nav aktif.
 
 ## Mimari (sabit)
 
@@ -25,7 +28,7 @@ Supabase auth + satın-alma şartlı /uye gate + waitlist Supabase swap tamam. S
 - Auth (client-side): port `domain/auth.ts`; adapter + browser client (lazy) + `AuthProvider`/`useAuth`
   → `src/ui/shared/auth/`. `/uye` gate satın-alma şartlı.
 - Komutlar: `npm run dev | build | lint | typecheck | test | format | db:migrate`.
-- Env: `.env` (git-ignored) — DATABASE_URL (lokal Postgres) + VITE_SUPABASE_URL/_PUBLISHABLE_KEY
+- Env: `.env` (git-ignored) — DATABASE_URL (lokal Postgres) + VITE_SUPABASE_URL/\_PUBLISHABLE_KEY
   (mevcut 5.30 projesi, anon=public). `.env.example` placeholder.
 
 ## Manuel test gereken (kullanıcı)

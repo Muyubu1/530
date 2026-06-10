@@ -36,11 +36,13 @@
 **Karar:** Auth'u Supabase fazına ertele. Üye ekranlarını şimdilik geçici dev-session (mock kullanıcı) ile kur; içerik veri katmanı (courses/lessons/events repo'ları) Supabase'e aynen taşınır.
 
 ## D8 — Client-side auth yerleşimi (ui-shared adapter)
+
 **Bağlam:** Auth tarayıcıda çalışır (supabase-js, localStorage session) ama `infrastructure` server-only ve ui/routes onu import edemez.
 **Karar:** Port `domain/auth.ts`'te; somut adapter + browser Supabase client + `AuthProvider`/`useAuth` → `src/ui/shared/auth/` (client concern). ui→ui legal olduğu için boundary deliği yok; DIP korunur (ekranlar porta context üzerinden bağımlı). Server-only DB infrastructure değişmez.
 **Not:** Browser client **lazy** (`getSupabaseBrowser()`) — modül yüklenince createClient çağırırsa SSR'da realtime/WebSocket patlıyor. Bkz. gotchas G5.
 
 ## D9 — Auth Supabase, içerik lokal Postgres (hibrit)
+
 **Karar:** Bu fazda sadece auth + waitlist Supabase'e geçti; courses/lessons/events lokal Postgres'te kaldı (server-side authenticated okuma service-role/JWT forwarding gerektirir — sonraki faz). Gate satın-alma şartlı (`email_has_purchase` RPC, mevcut projede var). Waitlist swap = composition root'ta tek satır (`server/waitlist.ts`), ports&adapters'ın kanıtı.
 
 ## D5 — Node 20 / engine uyarısı

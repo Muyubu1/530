@@ -17,6 +17,6 @@ export const Route = createFileRoute("/uye/dersler/$courseId")({
 
 function CourseDetailRoute() {
   const course = Route.useLoaderData();
-  const { lesson } = Route.useSearch();
-  return <CourseDetailPage course={course} activeLessonId={lesson} />;
+  const { lesson, t } = Route.useSearch();
+  return <CourseDetailPage course={course} activeLessonId={lesson} startAt={t} />;
 }

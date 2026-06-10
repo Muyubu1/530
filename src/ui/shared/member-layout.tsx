@@ -17,18 +17,21 @@ const AMBIENCE = [
   "radial-gradient(ellipse 70% 45% at 10% 75%, rgba(180, 190, 210, 0.10), transparent 65%)",
 ];
 
-type NavItem = { to: "/uye" | "/uye/dersler"; label: string; Icon: typeof Home; exact?: boolean };
+type NavItem = {
+  to: "/uye" | "/uye/dersler" | "/uye/profil";
+  label: string;
+  Icon: typeof Home;
+  exact?: boolean;
+};
 
 const NAV: NavItem[] = [
   { to: "/uye", label: "ana sayfa", Icon: Home, exact: true },
   { to: "/uye/dersler", label: "programlarım", Icon: Dumbbell },
+  { to: "/uye/profil", label: "benim odam", Icon: UserIcon },
 ];
 
-// Deferred until the auth phase.
-const SOON: { label: string; Icon: typeof Home }[] = [
-  { label: "topluluk", Icon: MessageCircle },
-  { label: "benim odam", Icon: UserIcon },
-];
+// Community/chat is deferred (separate block).
+const SOON: { label: string; Icon: typeof Home }[] = [{ label: "topluluk", Icon: MessageCircle }];
 
 /** Authenticated member shell: ambient background, top + mobile nav, account menu. */
 export function MemberLayout({ user }: { user: AuthUser }) {

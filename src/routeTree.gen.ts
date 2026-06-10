@@ -21,11 +21,17 @@ import { Route as UyeIndexRouteImport } from './routes/uye/index'
 import { Route as OzelProgramIndexRouteImport } from './routes/ozel-program/index'
 import { Route as MentorlukIndexRouteImport } from './routes/mentorluk/index'
 import { Route as KisiselProgramIndexRouteImport } from './routes/kisisel-program/index'
+import { Route as UyeKutuphaneRouteImport } from './routes/uye/kutuphane'
+import { Route as UyeGuncellemelerRouteImport } from './routes/uye/guncellemeler'
 import { Route as UyeEtkinliklerRouteImport } from './routes/uye/etkinlikler'
 import { Route as OzelProgramOdemeRouteImport } from './routes/ozel-program/odeme'
 import { Route as MentorlukSatinAlRouteImport } from './routes/mentorluk/satin-al'
 import { Route as KisiselProgramOdemeRouteImport } from './routes/kisisel-program/odeme'
+import { Route as UyeProfilIndexRouteImport } from './routes/uye/profil/index'
 import { Route as UyeDerslerIndexRouteImport } from './routes/uye/dersler/index'
+import { Route as UyeProfilVideolarRouteImport } from './routes/uye/profil/videolar'
+import { Route as UyeProfilNotlarRouteImport } from './routes/uye/profil/notlar'
+import { Route as UyeProfilAyarlarRouteImport } from './routes/uye/profil/ayarlar'
 import { Route as UyeDerslerCourseIdRouteImport } from './routes/uye/dersler/$courseId'
 
 const UyeRoute = UyeRouteImport.update({
@@ -88,6 +94,16 @@ const KisiselProgramIndexRoute = KisiselProgramIndexRouteImport.update({
   path: '/kisisel-program/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UyeKutuphaneRoute = UyeKutuphaneRouteImport.update({
+  id: '/kutuphane',
+  path: '/kutuphane',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyeGuncellemelerRoute = UyeGuncellemelerRouteImport.update({
+  id: '/guncellemeler',
+  path: '/guncellemeler',
+  getParentRoute: () => UyeRoute,
+} as any)
 const UyeEtkinliklerRoute = UyeEtkinliklerRouteImport.update({
   id: '/etkinlikler',
   path: '/etkinlikler',
@@ -108,9 +124,29 @@ const KisiselProgramOdemeRoute = KisiselProgramOdemeRouteImport.update({
   path: '/kisisel-program/odeme',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UyeProfilIndexRoute = UyeProfilIndexRouteImport.update({
+  id: '/profil/',
+  path: '/profil/',
+  getParentRoute: () => UyeRoute,
+} as any)
 const UyeDerslerIndexRoute = UyeDerslerIndexRouteImport.update({
   id: '/dersler/',
   path: '/dersler/',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyeProfilVideolarRoute = UyeProfilVideolarRouteImport.update({
+  id: '/profil/videolar',
+  path: '/profil/videolar',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyeProfilNotlarRoute = UyeProfilNotlarRouteImport.update({
+  id: '/profil/notlar',
+  path: '/profil/notlar',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyeProfilAyarlarRoute = UyeProfilAyarlarRouteImport.update({
+  id: '/profil/ayarlar',
+  path: '/profil/ayarlar',
   getParentRoute: () => UyeRoute,
 } as any)
 const UyeDerslerCourseIdRoute = UyeDerslerCourseIdRouteImport.update({
@@ -132,12 +168,18 @@ export interface FileRoutesByFullPath {
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
+  '/uye/guncellemeler': typeof UyeGuncellemelerRoute
+  '/uye/kutuphane': typeof UyeKutuphaneRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
   '/uye/': typeof UyeIndexRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
+  '/uye/profil/notlar': typeof UyeProfilNotlarRoute
+  '/uye/profil/videolar': typeof UyeProfilVideolarRoute
   '/uye/dersler/': typeof UyeDerslerIndexRoute
+  '/uye/profil/': typeof UyeProfilIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -151,12 +193,18 @@ export interface FileRoutesByTo {
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
+  '/uye/guncellemeler': typeof UyeGuncellemelerRoute
+  '/uye/kutuphane': typeof UyeKutuphaneRoute
   '/kisisel-program': typeof KisiselProgramIndexRoute
   '/mentorluk': typeof MentorlukIndexRoute
   '/ozel-program': typeof OzelProgramIndexRoute
   '/uye': typeof UyeIndexRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
+  '/uye/profil/notlar': typeof UyeProfilNotlarRoute
+  '/uye/profil/videolar': typeof UyeProfilVideolarRoute
   '/uye/dersler': typeof UyeDerslerIndexRoute
+  '/uye/profil': typeof UyeProfilIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -172,12 +220,18 @@ export interface FileRoutesById {
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
+  '/uye/guncellemeler': typeof UyeGuncellemelerRoute
+  '/uye/kutuphane': typeof UyeKutuphaneRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
   '/uye/': typeof UyeIndexRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
+  '/uye/profil/notlar': typeof UyeProfilNotlarRoute
+  '/uye/profil/videolar': typeof UyeProfilVideolarRoute
   '/uye/dersler/': typeof UyeDerslerIndexRoute
+  '/uye/profil/': typeof UyeProfilIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -194,12 +248,18 @@ export interface FileRouteTypes {
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
     | '/uye/etkinlikler'
+    | '/uye/guncellemeler'
+    | '/uye/kutuphane'
     | '/kisisel-program/'
     | '/mentorluk/'
     | '/ozel-program/'
     | '/uye/'
     | '/uye/dersler/$courseId'
+    | '/uye/profil/ayarlar'
+    | '/uye/profil/notlar'
+    | '/uye/profil/videolar'
     | '/uye/dersler/'
+    | '/uye/profil/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -213,12 +273,18 @@ export interface FileRouteTypes {
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
     | '/uye/etkinlikler'
+    | '/uye/guncellemeler'
+    | '/uye/kutuphane'
     | '/kisisel-program'
     | '/mentorluk'
     | '/ozel-program'
     | '/uye'
     | '/uye/dersler/$courseId'
+    | '/uye/profil/ayarlar'
+    | '/uye/profil/notlar'
+    | '/uye/profil/videolar'
     | '/uye/dersler'
+    | '/uye/profil'
   id:
     | '__root__'
     | '/'
@@ -233,12 +299,18 @@ export interface FileRouteTypes {
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
     | '/uye/etkinlikler'
+    | '/uye/guncellemeler'
+    | '/uye/kutuphane'
     | '/kisisel-program/'
     | '/mentorluk/'
     | '/ozel-program/'
     | '/uye/'
     | '/uye/dersler/$courseId'
+    | '/uye/profil/ayarlar'
+    | '/uye/profil/notlar'
+    | '/uye/profil/videolar'
     | '/uye/dersler/'
+    | '/uye/profil/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -344,6 +416,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KisiselProgramIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/uye/kutuphane': {
+      id: '/uye/kutuphane'
+      path: '/kutuphane'
+      fullPath: '/uye/kutuphane'
+      preLoaderRoute: typeof UyeKutuphaneRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/guncellemeler': {
+      id: '/uye/guncellemeler'
+      path: '/guncellemeler'
+      fullPath: '/uye/guncellemeler'
+      preLoaderRoute: typeof UyeGuncellemelerRouteImport
+      parentRoute: typeof UyeRoute
+    }
     '/uye/etkinlikler': {
       id: '/uye/etkinlikler'
       path: '/etkinlikler'
@@ -372,11 +458,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KisiselProgramOdemeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/uye/profil/': {
+      id: '/uye/profil/'
+      path: '/profil'
+      fullPath: '/uye/profil/'
+      preLoaderRoute: typeof UyeProfilIndexRouteImport
+      parentRoute: typeof UyeRoute
+    }
     '/uye/dersler/': {
       id: '/uye/dersler/'
       path: '/dersler'
       fullPath: '/uye/dersler/'
       preLoaderRoute: typeof UyeDerslerIndexRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/profil/videolar': {
+      id: '/uye/profil/videolar'
+      path: '/profil/videolar'
+      fullPath: '/uye/profil/videolar'
+      preLoaderRoute: typeof UyeProfilVideolarRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/profil/notlar': {
+      id: '/uye/profil/notlar'
+      path: '/profil/notlar'
+      fullPath: '/uye/profil/notlar'
+      preLoaderRoute: typeof UyeProfilNotlarRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/profil/ayarlar': {
+      id: '/uye/profil/ayarlar'
+      path: '/profil/ayarlar'
+      fullPath: '/uye/profil/ayarlar'
+      preLoaderRoute: typeof UyeProfilAyarlarRouteImport
       parentRoute: typeof UyeRoute
     }
     '/uye/dersler/$courseId': {
@@ -391,16 +505,28 @@ declare module '@tanstack/react-router' {
 
 interface UyeRouteChildren {
   UyeEtkinliklerRoute: typeof UyeEtkinliklerRoute
+  UyeGuncellemelerRoute: typeof UyeGuncellemelerRoute
+  UyeKutuphaneRoute: typeof UyeKutuphaneRoute
   UyeIndexRoute: typeof UyeIndexRoute
   UyeDerslerCourseIdRoute: typeof UyeDerslerCourseIdRoute
+  UyeProfilAyarlarRoute: typeof UyeProfilAyarlarRoute
+  UyeProfilNotlarRoute: typeof UyeProfilNotlarRoute
+  UyeProfilVideolarRoute: typeof UyeProfilVideolarRoute
   UyeDerslerIndexRoute: typeof UyeDerslerIndexRoute
+  UyeProfilIndexRoute: typeof UyeProfilIndexRoute
 }
 
 const UyeRouteChildren: UyeRouteChildren = {
   UyeEtkinliklerRoute: UyeEtkinliklerRoute,
+  UyeGuncellemelerRoute: UyeGuncellemelerRoute,
+  UyeKutuphaneRoute: UyeKutuphaneRoute,
   UyeIndexRoute: UyeIndexRoute,
   UyeDerslerCourseIdRoute: UyeDerslerCourseIdRoute,
+  UyeProfilAyarlarRoute: UyeProfilAyarlarRoute,
+  UyeProfilNotlarRoute: UyeProfilNotlarRoute,
+  UyeProfilVideolarRoute: UyeProfilVideolarRoute,
   UyeDerslerIndexRoute: UyeDerslerIndexRoute,
+  UyeProfilIndexRoute: UyeProfilIndexRoute,
 }
 
 const UyeRouteWithChildren = UyeRoute._addFileChildren(UyeRouteChildren)

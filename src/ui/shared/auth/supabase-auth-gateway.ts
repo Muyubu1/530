@@ -65,10 +65,22 @@ export const supabaseAuthGateway: AuthGateway = {
     return { error: error?.message };
   },
 
+  async updateProfile(displayName, lastName) {
+    const { error } = await getSupabaseBrowser().auth.updateUser({
+      data: { display_name: displayName, last_name: lastName },
+    });
+    return { error: error?.message };
+  },
+
   async hasPurchase(email): Promise<boolean> {
     const { data, error } = await getSupabaseBrowser().rpc("email_has_purchase", {
       check_email: email,
     });
     return !error && data === true;
+  },
+
+  async getAccessToken() {
+    const { data } = await getSupabaseBrowser().auth.getSession();
+    return data.session?.access_token ?? null;
   },
 };
