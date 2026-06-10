@@ -2,14 +2,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import type { NewWaitlistEntry, WaitlistResult } from "@/domain/waitlist";
 
-export interface WaitlistData {
-  name: string;
-  email: string;
-  phone?: string;
-}
-
-export type WaitlistResult = "ok" | "duplicate" | "error";
+// The form collects exactly a NewWaitlistEntry. Alias kept for call sites.
+export type WaitlistData = NewWaitlistEntry;
+export type { WaitlistResult };
 
 /**
  * Presentational waitlist form. The persistence action is injected via

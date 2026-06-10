@@ -26,6 +26,7 @@ export default tseslint.config(
         { type: "domain", pattern: "src/domain/**/*" },
         { type: "application", pattern: "src/application/**/*" },
         { type: "infrastructure", pattern: "src/infrastructure/**/*" },
+        { type: "server", pattern: "src/server/**/*" },
         { type: "ui", pattern: "src/ui/**/*" },
         { type: "routes", pattern: "src/routes/**/*" },
         { type: "lib", pattern: "src/lib/**/*" },
@@ -39,11 +40,11 @@ export default tseslint.config(
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
       // Architecture enforcement — dependencies point inward only.
-      // Kept at "warn" through Faz 0-1 (scaffold); promoted to "error" in the
-      // infrastructure phase (Faz 3) once cross-layer wiring exists. See
-      // memory/decisions.md.
+      // `server` is the composition root (the one place that may touch
+      // infrastructure). ui/routes call server functions but never reach into
+      // infrastructure directly. See memory/decisions.md.
       "boundaries/element-types": [
-        "warn",
+        "error",
         {
           default: "disallow",
           rules: [
@@ -53,8 +54,12 @@ export default tseslint.config(
               from: "infrastructure",
               allow: ["infrastructure", "application", "domain", "lib"],
             },
-            { from: "ui", allow: ["ui", "application", "domain", "lib"] },
-            { from: "routes", allow: ["routes", "ui", "application", "lib"] },
+            {
+              from: "server",
+              allow: ["server", "infrastructure", "application", "domain", "lib"],
+            },
+            { from: "ui", allow: ["ui", "server", "application", "domain", "lib"] },
+            { from: "routes", allow: ["routes", "ui", "server", "application", "domain", "lib"] },
             { from: "lib", allow: ["lib"] },
           ],
         },

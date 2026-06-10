@@ -5,38 +5,42 @@
 5.30 Lab'in arayüzünü (cinematic mono tasarım) yeni temiz bir projeye taşımak — DRY, SOLID,
 modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini eklemek.
 
-## Şu an: Faz 3'e hazır — Auth + altyapı
+## Şu an: Faz 3b'ye hazır — Üye (member) alanı
 
-Public yüzey (Faz 2) bitti. Sıradaki: Supabase native auth, repository/service katmanı
-(infrastructure), Stripe ödeme akışı, e-posta gateway (Resend). Stub'lar gerçeğiyle değişecek.
+Veri katmanı (lokal Postgres, ports & adapters) kuruldu ve waitlist ile kanıtlandı. Sıradaki seçilen
+ekran: **üye alanı** — content veri katmanı (courses/lessons/events) + dashboard + dersler. Auth
+Supabase'e ertelendi; şimdilik geçici dev-session (mock kullanıcı).
 
 ## Tamamlanan
 
-- **Faz 0 (İskele):** TanStack Start, Lovable çıkarıldı, katman klasörleri, eslint-boundaries,
-  tokens.css tek kaynak, app shell. Dev/SSR/typecheck/lint yeşil.
-- **Faz 1 (Tasarım sistemi):** primitives + patterns + backgrounds, barrel `@/ui/design-system`,
-  `/playground` katalog. Hepsi token-driven.
-- **Faz 2 (Public):** landing (ana) + 3 program sayfası (kisisel/ozel/mentorluk). SiteHeader/Footer
-  (ui/shared), ProgramScene (3x tekrar tek modüle), HeroParticles/ScrollGlow, Dialog, BarcodeCTA,
-  WaitlistForm (onSubmit enjekte). pricing → domain. 8 route SSR 200.
+- **Faz 0 (İskele):** TanStack Start, Lovable çıkarıldı, katmanlar, eslint-boundaries, tokens.css.
+- **Faz 1 (Tasarım sistemi):** primitives + patterns + backgrounds, `/playground`.
+- **Faz 2 (Public):** landing + 3 program sayfası; SiteHeader/Footer, ProgramScene; 8 route SSR 200.
+- **Faz 3a (Veri katmanı):** lokal Postgres, ports&adapters. waitlist uçtan uca gerçek persist
+  (domain→application→infrastructure→server→ui). boundaries=ERROR. Entegrasyon testi + build temiz.
 
-## Sıradaki — Faz 3 (Auth + altyapı)
+## Sıradaki — Faz 3b (Üye alanı, lokal Postgres)
 
-- Supabase istemcisi (env: VITE_SUPABASE_URL / _PUBLISHABLE_KEY) — infrastructure katmanı.
-- application use-case'leri: SubmitWaitlist, (sonra) PurchasePlan, auth akışları.
-- Stripe gateway + ödeme akışı (kisisel/ozel/mentorluk odeme stub'larının yerine).
-- WaitlistForm onSubmit'i gerçek Supabase insert'e bağla (route → application → infrastructure).
-- E-posta: Resend + React Email, EmailGateway arayüzü.
-- boundaries kuralını "warn" → "error" çek (artık cross-layer wiring var).
+- Şema/migration: courses, lessons, events (+ seed). 0002_content.sql.
+- domain: Course/Lesson/Event entity'leri + repository portları.
+- application: getMemberDashboard, listCourses, getCourse use-case'leri.
+- infrastructure: Postgres adapter'ları (.server.ts).
+- server/: createServerFn composition (loader'lardan çağrılır).
+- ui: MemberLayout (ui/shared), üye dashboard (MediaCard/EventCard), dersler list + detail.
+- Geçici dev-session: mock "current user" (auth Supabase fazında gelecek).
 
-## Stub'lar / açık uçlar (Faz 3'te kapanacak)
+## Komutlar
+
+- `npm run dev | build | lint | typecheck | test | format`
+- `npm run db:migrate` — lokal Postgres migration'ları uygula
+
+## Stub'lar / açık uçlar
 
 - `/login` placeholder; `/kisisel-program/odeme`, `/ozel-program/odeme`, `/mentorluk/satin-al`
-  CheckoutStub. ana route'taki `submitWaitlist` stub "ok" dönüyor (persist etmiyor).
-- VSL/mentorluk videoları gerçek asset değil (poster placeholder); Lovable .asset.json'lar taşınmadı.
+  CheckoutStub (Stripe Faz: ödeme). Videolar poster placeholder (asset taşınmadı).
+- Auth henüz yok (Supabase fazında). Member ekranları geçici dev-session ile.
 
 ## Son Oturum Notu (2026-06-10)
 
-- Faz 0+1+2 tek oturumda bitti, çalışır halde commit'lendi (6 commit). Public yüzey tarayıcıda
-  test edilebilir: /, /ana, /kisisel-program, /ozel-program, /mentorluk, /playground.
-- Sıradaki oturum Faz 3 (auth + Supabase/Stripe/email altyapısı) ile başlar.
+- Faz 0→3a tek oturumda bitti (8 commit). Lokal Postgres `refactor530` DB'sine waitlist gerçekten
+  yazıyor. /ana formundan test edilebilir. Sıradaki: üye alanı (Faz 3b).

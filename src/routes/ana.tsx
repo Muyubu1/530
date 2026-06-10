@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LandingPage } from "@/ui/features/marketing/landing-page";
-import type { WaitlistData } from "@/ui/shared/waitlist-form";
+import { submitWaitlistFn } from "@/server/waitlist";
 
 export const Route = createFileRoute("/ana")({
   head: () => ({
@@ -16,11 +16,6 @@ export const Route = createFileRoute("/ana")({
   component: AnaRoute,
 });
 
-// TODO(Faz 3): route through an application use-case → Supabase `waitlist` insert.
-async function submitWaitlist(_data: WaitlistData) {
-  return "ok" as const;
-}
-
 function AnaRoute() {
-  return <LandingPage onWaitlistSubmit={submitWaitlist} />;
+  return <LandingPage onWaitlistSubmit={(data) => submitWaitlistFn({ data })} />;
 }
