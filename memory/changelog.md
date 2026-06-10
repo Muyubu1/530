@@ -6,4 +6,5 @@
 - chore: kalite kapıları — eslint-plugin-boundaries (katman zorlaması, warn), prettier, vitest. Sebep: mimari kuralla korunmalı. eslint.config.js
 - feat: tasarım sistemi primitive katmanı — Button(cva), Eyebrow, Heading/GradientText, Section/Container, Card, FeatureList, GlowHalo, Divider, Wordmark, Reveal + Backgrounds taşındı. Sebep: inline/tekrarlı stilleri ortak modüle indir. src/ui/design-system/\*
 - feat: /playground bileşen kataloğu — tüm primitive'ler görsel doğrulama. SSR 200, typecheck+lint temiz.
-- feat: tasarım sistemi pattern katmanı — PageHero, PricingCard, MediaCard (dashboard 2x kopyanın yerine), EventCard, CinematicVideoFrame. Sebep: feature-seviyesi ortak modüller; ekranlar diziye dizecek. src/ui/design-system/patterns/*
+- feat: tasarım sistemi pattern katmanı — PageHero, PricingCard, MediaCard (dashboard 2x kopyanın yerine), EventCard, CinematicVideoFrame. Sebep: feature-seviyesi ortak modüller; ekranlar diziye dizecek. src/ui/design-system/patterns/\*
+- feat(faz2): landing (ana) yeni modüllerle kuruldu — SiteHeader/SiteFooter (ui/shared), ProgramScene, HeroParticles/ScrollGlow (hidrasyon-güvenli), Dialog primitive, BarcodeCTA, WaitlistForm (onSubmit enjekte=DIP). pricing domain'e taşındı. Hero/Interlude/Vsl section'ları features/marketing. Stripe/Supabase Faz 3 stub. SSR 200.
