@@ -21,6 +21,7 @@ import { Route as UyeIndexRouteImport } from './routes/uye/index'
 import { Route as OzelProgramIndexRouteImport } from './routes/ozel-program/index'
 import { Route as MentorlukIndexRouteImport } from './routes/mentorluk/index'
 import { Route as KisiselProgramIndexRouteImport } from './routes/kisisel-program/index'
+import { Route as UyeToplulukRouteImport } from './routes/uye/topluluk'
 import { Route as UyeKutuphaneRouteImport } from './routes/uye/kutuphane'
 import { Route as UyeGuncellemelerRouteImport } from './routes/uye/guncellemeler'
 import { Route as UyeEtkinliklerRouteImport } from './routes/uye/etkinlikler'
@@ -93,6 +94,11 @@ const KisiselProgramIndexRoute = KisiselProgramIndexRouteImport.update({
   id: '/kisisel-program/',
   path: '/kisisel-program/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const UyeToplulukRoute = UyeToplulukRouteImport.update({
+  id: '/topluluk',
+  path: '/topluluk',
+  getParentRoute: () => UyeRoute,
 } as any)
 const UyeKutuphaneRoute = UyeKutuphaneRouteImport.update({
   id: '/kutuphane',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
   '/uye/kutuphane': typeof UyeKutuphaneRoute
+  '/uye/topluluk': typeof UyeToplulukRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
   '/uye/kutuphane': typeof UyeKutuphaneRoute
+  '/uye/topluluk': typeof UyeToplulukRoute
   '/kisisel-program': typeof KisiselProgramIndexRoute
   '/mentorluk': typeof MentorlukIndexRoute
   '/ozel-program': typeof OzelProgramIndexRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
   '/uye/kutuphane': typeof UyeKutuphaneRoute
+  '/uye/topluluk': typeof UyeToplulukRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
     | '/uye/kutuphane'
+    | '/uye/topluluk'
     | '/kisisel-program/'
     | '/mentorluk/'
     | '/ozel-program/'
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
     | '/uye/kutuphane'
+    | '/uye/topluluk'
     | '/kisisel-program'
     | '/mentorluk'
     | '/ozel-program'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
     | '/uye/kutuphane'
+    | '/uye/topluluk'
     | '/kisisel-program/'
     | '/mentorluk/'
     | '/ozel-program/'
@@ -416,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KisiselProgramIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/uye/topluluk': {
+      id: '/uye/topluluk'
+      path: '/topluluk'
+      fullPath: '/uye/topluluk'
+      preLoaderRoute: typeof UyeToplulukRouteImport
+      parentRoute: typeof UyeRoute
+    }
     '/uye/kutuphane': {
       id: '/uye/kutuphane'
       path: '/kutuphane'
@@ -507,6 +526,7 @@ interface UyeRouteChildren {
   UyeEtkinliklerRoute: typeof UyeEtkinliklerRoute
   UyeGuncellemelerRoute: typeof UyeGuncellemelerRoute
   UyeKutuphaneRoute: typeof UyeKutuphaneRoute
+  UyeToplulukRoute: typeof UyeToplulukRoute
   UyeIndexRoute: typeof UyeIndexRoute
   UyeDerslerCourseIdRoute: typeof UyeDerslerCourseIdRoute
   UyeProfilAyarlarRoute: typeof UyeProfilAyarlarRoute
@@ -520,6 +540,7 @@ const UyeRouteChildren: UyeRouteChildren = {
   UyeEtkinliklerRoute: UyeEtkinliklerRoute,
   UyeGuncellemelerRoute: UyeGuncellemelerRoute,
   UyeKutuphaneRoute: UyeKutuphaneRoute,
+  UyeToplulukRoute: UyeToplulukRoute,
   UyeIndexRoute: UyeIndexRoute,
   UyeDerslerCourseIdRoute: UyeDerslerCourseIdRoute,
   UyeProfilAyarlarRoute: UyeProfilAyarlarRoute,

@@ -18,6 +18,7 @@
 **Fix:** Browser client'ı **lazy** yap — `getSupabaseBrowser()` ilk kullanımda (tarayıcıda) oluşturur; modül import'unda createClient çağrılmaz. Gateway metotları `getSupabaseBrowser()` çağırır. Server waitlist client (`client.server.ts`) eager ama yalnız server'da kullanılır; sorun çıkmadı.
 
 ## G6 — Server-side supabase-js Node 20'de WebSocket olmadan çöküyor
+
 **Semptom:** Üye fn'leri (verifyUser → supabaseServer) çağrılınca `Error: Node.js 20 detected without native WebSocket support`. UI'da notlar→error boundary, videolar→sonsuz gate loading. Faz 4'te fark edilmedi çünkü waitlist fn'i hiç çağrılmadı (createServerFn handler'ı sadece invoke edilince yüklenir).
 **Gerçek sebep:** supabase-js createClient realtime client kurar; Node<22'de global WebSocket yok → patlar. Browser client lazy olduğu için etkilenmez; SERVER client (`client.server.ts`) eager.
 **Fix:** `client.server.ts`'te `import ws from "ws"; globalThis.WebSocket ??= ws;` (realtime kullanmıyoruz, sadece constructor'ı tatmin eder). Regresyon testi: `client.server.test.ts` (getUser bad-token → throw değil, düzgün hata). Ayrıca member yükleme efektlerine + gate hasPurchase'a try/catch eklendi (asılı kalmasın).

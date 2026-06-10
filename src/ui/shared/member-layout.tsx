@@ -1,4 +1,4 @@
-import { Link, Outlet, useRouter } from "@tanstack/react-router";
+import { Link, Outlet, useRouter, useLocation } from "@tanstack/react-router";
 import { Home, MessageCircle, User as UserIcon, Dumbbell, LogOut } from "lucide-react";
 import {
   Wordmark,
@@ -18,7 +18,7 @@ const AMBIENCE = [
 ];
 
 type NavItem = {
-  to: "/uye" | "/uye/dersler" | "/uye/profil";
+  to: "/uye" | "/uye/dersler" | "/uye/topluluk" | "/uye/profil";
   label: string;
   Icon: typeof Home;
   exact?: boolean;
@@ -27,15 +27,16 @@ type NavItem = {
 const NAV: NavItem[] = [
   { to: "/uye", label: "ana sayfa", Icon: Home, exact: true },
   { to: "/uye/dersler", label: "programlarım", Icon: Dumbbell },
+  { to: "/uye/topluluk", label: "topluluk", Icon: MessageCircle },
   { to: "/uye/profil", label: "benim odam", Icon: UserIcon },
 ];
-
-// Community/chat is deferred (separate block).
-const SOON: { label: string; Icon: typeof Home }[] = [{ label: "topluluk", Icon: MessageCircle }];
 
 /** Authenticated member shell: ambient background, top + mobile nav, account menu. */
 export function MemberLayout({ user }: { user: AuthUser }) {
   const router = useRouter();
+  const location = useLocation();
+  // The chat is an immersive full-height surface: hide the shell chrome there.
+  const isChat = location.pathname.startsWith("/uye/topluluk");
   const initials =
     user.displayName
       .split(/\s+/)
@@ -66,7 +67,7 @@ export function MemberLayout({ user }: { user: AuthUser }) {
         }}
       />
 
-      <header className="relative z-10">
+      <header className={isChat ? "hidden" : "relative z-10"}>
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5 md:px-10">
           <Link to="/uye" aria-label="5.30 üye ana sayfa">
             <Wordmark tone="cream" />
@@ -82,16 +83,6 @@ export function MemberLayout({ user }: { user: AuthUser }) {
                 <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
                 {label}
               </Link>
-            ))}
-            {SOON.map(({ label, Icon }) => (
-              <span
-                key={label}
-                title="yakında"
-                className="flex cursor-default items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/30"
-              >
-                <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
-                {label}
-              </span>
             ))}
           </nav>
 
@@ -124,38 +115,37 @@ export function MemberLayout({ user }: { user: AuthUser }) {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto max-w-5xl px-6 pb-32 pt-12 md:px-10 md:py-20">
+      <main
+        className={
+          isChat
+            ? "relative z-10"
+            : "relative z-10 mx-auto max-w-5xl px-6 pb-32 pt-12 md:px-10 md:py-20"
+        }
+      >
         <Outlet />
       </main>
 
-      <nav
-        aria-label="alt navigasyon"
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-border/40 bg-background md:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      >
-        <div className="mx-auto flex max-w-md items-stretch justify-around px-2 py-2">
-          {NAV.map(({ to, label, Icon, exact }) => (
-            <Link
-              key={to}
-              to={to}
-              activeOptions={{ exact: !!exact }}
-              className="group flex flex-1 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-muted-foreground/60 transition-colors data-[status=active]:text-cream"
-            >
-              <Icon className="h-5 w-5" strokeWidth={1.5} />
-              <span className="font-mono text-[8.5px] uppercase tracking-[0.2em]">{label}</span>
-            </Link>
-          ))}
-          {SOON.map(({ label, Icon }) => (
-            <span
-              key={label}
-              className="flex flex-1 flex-col items-center justify-center gap-1 px-2 py-1.5 text-muted-foreground/25"
-            >
-              <Icon className="h-5 w-5" strokeWidth={1.5} />
-              <span className="font-mono text-[8.5px] uppercase tracking-[0.2em]">{label}</span>
-            </span>
-          ))}
-        </div>
-      </nav>
+      {!isChat && (
+        <nav
+          aria-label="alt navigasyon"
+          className="fixed inset-x-0 bottom-0 z-30 border-t border-border/40 bg-background md:hidden"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        >
+          <div className="mx-auto flex max-w-md items-stretch justify-around px-2 py-2">
+            {NAV.map(({ to, label, Icon, exact }) => (
+              <Link
+                key={to}
+                to={to}
+                activeOptions={{ exact: !!exact }}
+                className="group flex flex-1 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-muted-foreground/60 transition-colors data-[status=active]:text-cream"
+              >
+                <Icon className="h-5 w-5" strokeWidth={1.5} />
+                <span className="font-mono text-[8.5px] uppercase tracking-[0.2em]">{label}</span>
+              </Link>
+            ))}
+          </div>
+        </nav>
+      )}
     </div>
   );
 }
