@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Eyebrow, Heading, GradientText, MediaCard, EventCard, GlowHalo } from "@/ui/design-system";
-import type { CurrentUser } from "@/domain/session";
+import type { AuthUser } from "@/domain/auth";
 import type { CourseWithLessons } from "@/domain/course";
 import type { EventItem } from "@/domain/event";
 import { getProgress, type WatchProgress } from "@/lib/watchProgress";
@@ -17,7 +17,7 @@ export function MemberDashboard({
   courses,
   events,
 }: {
-  user: CurrentUser;
+  user: AuthUser;
   courses: CourseWithLessons[];
   events: EventItem[];
 }) {

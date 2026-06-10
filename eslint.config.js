@@ -67,10 +67,9 @@ export default tseslint.config(
     },
   },
   {
-    // Design-system modules intentionally co-export style helpers (cva variants,
-    // shadcn convention) alongside components. Fast-refresh of a variants helper
-    // is irrelevant for a library directory.
-    files: ["src/ui/design-system/**/*.{ts,tsx}"],
+    // Library/context modules intentionally co-export helpers (cva variants,
+    // shadcn convention) and hooks (useAuth) alongside components.
+    files: ["src/ui/design-system/**/*.{ts,tsx}", "src/ui/shared/auth/**/*.{ts,tsx}"],
     rules: {
       "react-refresh/only-export-components": "off",
     },

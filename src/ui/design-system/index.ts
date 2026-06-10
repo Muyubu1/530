@@ -16,6 +16,9 @@ export { GlowHalo } from "./primitives/glow-halo";
 export { Divider } from "./primitives/divider";
 export { Wordmark } from "./primitives/wordmark";
 export { Reveal } from "./primitives/reveal";
+export { Input } from "./primitives/input";
+export { Label } from "./primitives/label";
+export { Checkbox } from "./primitives/checkbox";
 export {
   Dialog,
   DialogTrigger,

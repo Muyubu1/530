@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { submitWaitlist } from "@/application/submit-waitlist";
-import { makeWaitlistRepository } from "@/infrastructure/waitlist/postgres-waitlist-repository.server";
+import { makeSupabaseWaitlistRepository } from "@/infrastructure/waitlist/supabase-waitlist-repository.server";
 import type { NewWaitlistEntry } from "@/domain/waitlist";
 
 /**
@@ -9,4 +9,4 @@ import type { NewWaitlistEntry } from "@/domain/waitlist";
  */
 export const submitWaitlistFn = createServerFn({ method: "POST" })
   .validator((data: NewWaitlistEntry) => data)
-  .handler(({ data }) => submitWaitlist(makeWaitlistRepository(), data));
+  .handler(({ data }) => submitWaitlist(makeSupabaseWaitlistRepository(), data));

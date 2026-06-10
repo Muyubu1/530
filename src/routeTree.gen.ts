@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UyeRouteImport } from './routes/uye'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AnaRouteImport } from './routes/ana'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UyeIndexRouteImport } from './routes/uye/index'
@@ -30,6 +33,16 @@ const UyeRoute = UyeRouteImport.update({
   path: '/uye',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
   path: '/playground',
@@ -38,6 +51,11 @@ const PlaygroundRoute = PlaygroundRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnaRoute = AnaRouteImport.update({
@@ -104,8 +122,11 @@ const UyeDerslerCourseIdRoute = UyeDerslerCourseIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/uye': typeof UyeRouteWithChildren
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
@@ -121,8 +142,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
@@ -138,8 +162,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/uye': typeof UyeRouteWithChildren
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
@@ -157,8 +184,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/ana'
+    | '/forgot-password'
     | '/login'
     | '/playground'
+    | '/reset-password'
+    | '/signup'
     | '/uye'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
@@ -174,8 +204,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/ana'
+    | '/forgot-password'
     | '/login'
     | '/playground'
+    | '/reset-password'
+    | '/signup'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
@@ -190,8 +223,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/ana'
+    | '/forgot-password'
     | '/login'
     | '/playground'
+    | '/reset-password'
+    | '/signup'
     | '/uye'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
@@ -208,8 +244,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnaRoute: typeof AnaRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   PlaygroundRoute: typeof PlaygroundRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SignupRoute: typeof SignupRoute
   UyeRoute: typeof UyeRouteWithChildren
   KisiselProgramOdemeRoute: typeof KisiselProgramOdemeRoute
   MentorlukSatinAlRoute: typeof MentorlukSatinAlRoute
@@ -228,6 +267,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UyeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/playground': {
       id: '/playground'
       path: '/playground'
@@ -240,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ana': {
@@ -348,8 +408,11 @@ const UyeRouteWithChildren = UyeRoute._addFileChildren(UyeRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnaRoute: AnaRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   PlaygroundRoute: PlaygroundRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SignupRoute: SignupRoute,
   UyeRoute: UyeRouteWithChildren,
   KisiselProgramOdemeRoute: KisiselProgramOdemeRoute,
   MentorlukSatinAlRoute: MentorlukSatinAlRoute,

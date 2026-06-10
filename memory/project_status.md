@@ -5,38 +5,44 @@
 5.30 Lab'in arayüzünü (cinematic mono tasarım) yeni temiz bir projeye taşımak — DRY, SOLID,
 modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini eklemek.
 
-## Şu an: Faz 3b bitti — sıradaki karar bekliyor
+## Şu an: Faz 4 bitti — sıradaki karar bekliyor
 
-Üye alanı (dashboard, dersler, ders detayı, etkinlikler) lokal Postgres'e bağlı çalışıyor.
-Sıradaki büyük adım kullanıcıya bağlı: **Auth (Supabase)** veya **Topluluk (chat)** veya **Patika**
-(yeni özellik) veya **Stripe ödeme**. Auth gelince mock dev-session ve /uye gate gerçeklenecek.
+Supabase auth + satın-alma şartlı /uye gate + waitlist Supabase swap tamam. Sıradaki:
+**Patika** (yeni özellik) / **Topluluk** (chat) / **Stripe ödeme** / **içerik Supabase'e** /
+**üye kullanıcı-özel** (notes/completed/saved/materials).
 
 ## Tamamlanan
 
-- **Faz 0:** İskele (TanStack Start, Lovable çıktı, boundaries, tokens).
-- **Faz 1:** Tasarım sistemi (primitives + patterns + backgrounds, /playground).
-- **Faz 2:** Public (landing + 3 program sayfası), 8 route SSR 200.
-- **Faz 3a:** Lokal Postgres veri katmanı (ports&adapters), waitlist gerçek persist. boundaries=ERROR.
-- **Faz 3b:** Üye alanı — courses/lessons/events veri katmanı + 4 ekran (MemberLayout, dashboard,
-  dersler list, ders detayı [salt-okunur], etkinlikler). Mock dev-session. 6 entegrasyon testi.
+- **Faz 0:** İskele · **Faz 1:** Tasarım sistemi · **Faz 2:** Public (landing + 3 program) ·
+  **Faz 3a:** Lokal Postgres veri katmanı (waitlist) · **Faz 3b:** Üye alanı (content + 4 ekran).
+- **Faz 4:** Supabase auth (login/signup/forgot/reset + Google OAuth), /uye satın-alma gate
+  (email_has_purchase), waitlist Postgres→Supabase swap. Mock session kalktı.
 
 ## Mimari (sabit)
 
-`domain` (port) → `application` (use-case) → `infrastructure` (`*.server.ts` Postgres adapter) →
-`server/` (createServerFn composition) → `routes` (loader→server fn) → `ui` (presentational, prop).
-ui/routes infrastructure'ı asla import etmez. `eslint-plugin-boundaries = error`.
-Komutlar: `npm run dev | build | lint | typecheck | test | format | db:migrate`.
+- Veri: `domain` (port) → `application` → `infrastructure` (`*.server.ts`) → `server/` (createServerFn)
+  → `routes` (loader) → `ui` (presentational). boundaries=ERROR.
+- Auth (client-side): port `domain/auth.ts`; adapter + browser client (lazy) + `AuthProvider`/`useAuth`
+  → `src/ui/shared/auth/`. `/uye` gate satın-alma şartlı.
+- Komutlar: `npm run dev | build | lint | typecheck | test | format | db:migrate`.
+- Env: `.env` (git-ignored) — DATABASE_URL (lokal Postgres) + VITE_SUPABASE_URL/_PUBLISHABLE_KEY
+  (mevcut 5.30 projesi, anon=public). `.env.example` placeholder.
+
+## Manuel test gereken (kullanıcı)
+
+- Login: mevcut Supabase projesinde **purchases'ta kayıtlı** bir e-posta + şifreyle giriş → /uye.
+  (Yoksa herkes bounce olur — gate satın-alma şartlı.)
+- Google OAuth: Supabase dashboard'da Google provider yapılandırılmalı.
+- Waitlist swap: /ana formundan kayıt → eski Supabase `waitlist` tablosuna düştüğünü doğrula.
 
 ## Açık uçlar / stub'lar
 
-- **Auth yok** (Supabase fazı): mock `getCurrentUser()` `src/server/session.ts`; /uye açık (gate yok).
-- Kullanıcıya özel: completed_lessons, lesson_notes, lesson_materials, saved_lessons → ders detayına
-  auth gelince eklenecek. Topluluk (chat), profil alt sayfaları → sonra.
-- Stripe ödeme → /odeme + satin-al CheckoutStub. Video/thumbnail asset'leri null (placeholder).
-- `/login` placeholder.
+- İçerik (courses/lessons/events) hâlâ lokal Postgres (Supabase'e geçiş = service-role/JWT, sonra).
+- Üye kullanıcı-özel: notes/completed/saved/materials → ders detayına eklenecek.
+- Stripe ödeme → CheckoutStub'lar. Topluluk (chat), profil alt sayfaları. Auth e-posta şablonları.
+- Postgres waitlist adapter+testi referans olarak duruyor (app artık Supabase kullanıyor).
 
 ## Son Oturum Notu (2026-06-10)
 
-- Faz 0→3b tek oturumda bitti (10 commit). Lokal Postgres `refactor530`: waitlist + content çalışıyor.
-- Tarayıcı testi: / (hub), /ana, program sayfaları, /uye + /uye/dersler + ders detay + /uye/etkinlikler.
-- Sıradaki adımı kullanıcı seçecek (auth / topluluk / patika / ödeme).
+- Faz 0→4 tek oturumda (11+ commit). Auth eklendi, waitlist Supabase'e swap'landı (ports&adapters
+  kanıtı). Tarayıcı testi: /login, /signup?email=, /forgot-password, /uye (gate), /ana waitlist.

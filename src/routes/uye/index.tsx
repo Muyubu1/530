@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { listCoursesFn } from "@/server/courses";
 import { listUpcomingEventsFn } from "@/server/events";
-import { getCurrentUser } from "@/server/session";
+import { useAuth } from "@/ui/shared/auth/auth-context";
 import { MemberDashboard } from "@/ui/features/member/member-dashboard";
 
 export const Route = createFileRoute("/uye/")({
@@ -14,5 +14,7 @@ export const Route = createFileRoute("/uye/")({
 
 function DashboardRoute() {
   const { courses, events } = Route.useLoaderData();
-  return <MemberDashboard user={getCurrentUser()} courses={courses} events={events} />;
+  const { user } = useAuth();
+  if (!user) return null; // gated by the /uye layout; render nothing while resolving
+  return <MemberDashboard user={user} courses={courses} events={events} />;
 }

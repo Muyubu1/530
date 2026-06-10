@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/ui/design-system";
-import type { CurrentUser } from "@/domain/session";
+import type { AuthUser } from "@/domain/auth";
 
 const AMBIENCE = [
   "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 225, 235, 0.18), transparent 65%)",
@@ -31,7 +31,7 @@ const SOON: { label: string; Icon: typeof Home }[] = [
 ];
 
 /** Authenticated member shell: ambient background, top + mobile nav, account menu. */
-export function MemberLayout({ user }: { user: CurrentUser }) {
+export function MemberLayout({ user }: { user: AuthUser }) {
   const router = useRouter();
   const initials =
     user.displayName
