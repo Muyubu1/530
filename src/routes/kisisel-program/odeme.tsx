@@ -1,5 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CheckoutStub } from "@/ui/features/programs/checkout-stub";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { PLANS, formatTRY, type PlanKey } from "@/domain/pricing";
+import { PaymentPage } from "@/ui/features/payment/payment-page";
+import { recordPurchaseFn } from "@/server/payments";
+
+const MAP: Record<string, { key: PlanKey; label: string }> = {
+  "1ay": { key: "kisisel_1ay", label: "1 Aylık Danışmanlık" },
+  "3ay": { key: "kisisel_3ay", label: "3 Aylık Danışmanlık" },
+};
 
 export const Route = createFileRoute("/kisisel-program/odeme")({
   validateSearch: (s: Record<string, unknown>): { plan: string } => ({
@@ -10,5 +17,19 @@ export const Route = createFileRoute("/kisisel-program/odeme")({
 
 function KisiselOdemeRoute() {
   const { plan } = Route.useSearch();
-  return <CheckoutStub program="Kişisel Danışmanlık" plan={plan} />;
+  const navigate = useNavigate();
+  const sel = MAP[plan] ?? MAP["1ay"];
+  return (
+    <PaymentPage
+      planKey={sel.key}
+      title="Halil Mamati · Kişisel Danışmanlık"
+      planLabel={sel.label}
+      price={formatTRY(PLANS[sel.key].amountTRY)}
+      returnPath="/payment-success"
+      onSuccess={async (email) => {
+        await recordPurchaseFn({ data: { email } });
+        navigate({ to: "/payment-success", search: { email } });
+      }}
+    />
+  );
 }

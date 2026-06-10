@@ -13,6 +13,7 @@ import { Route as UyeRouteImport } from './routes/uye'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PlaygroundRouteImport } from './routes/playground'
+import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AnaRouteImport } from './routes/ana'
@@ -26,6 +27,7 @@ import { Route as UyeKutuphaneRouteImport } from './routes/uye/kutuphane'
 import { Route as UyeGuncellemelerRouteImport } from './routes/uye/guncellemeler'
 import { Route as UyeEtkinliklerRouteImport } from './routes/uye/etkinlikler'
 import { Route as OzelProgramOdemeRouteImport } from './routes/ozel-program/odeme'
+import { Route as MentorlukTesekkurlerRouteImport } from './routes/mentorluk/tesekkurler'
 import { Route as MentorlukSatinAlRouteImport } from './routes/mentorluk/satin-al'
 import { Route as KisiselProgramOdemeRouteImport } from './routes/kisisel-program/odeme'
 import { Route as UyeProfilIndexRouteImport } from './routes/uye/profil/index'
@@ -53,6 +55,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
   path: '/playground',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment-success',
+  path: '/payment-success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -120,6 +127,11 @@ const OzelProgramOdemeRoute = OzelProgramOdemeRouteImport.update({
   path: '/ozel-program/odeme',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentorlukTesekkurlerRoute = MentorlukTesekkurlerRouteImport.update({
+  id: '/mentorluk/tesekkurler',
+  path: '/mentorluk/tesekkurler',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MentorlukSatinAlRoute = MentorlukSatinAlRouteImport.update({
   id: '/mentorluk/satin-al',
   path: '/mentorluk/satin-al',
@@ -166,12 +178,14 @@ export interface FileRoutesByFullPath {
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/playground': typeof PlaygroundRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/uye': typeof UyeRouteWithChildren
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
+  '/mentorluk/tesekkurler': typeof MentorlukTesekkurlerRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
@@ -193,11 +207,13 @@ export interface FileRoutesByTo {
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/playground': typeof PlaygroundRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
+  '/mentorluk/tesekkurler': typeof MentorlukTesekkurlerRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
@@ -220,12 +236,14 @@ export interface FileRoutesById {
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/playground': typeof PlaygroundRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/uye': typeof UyeRouteWithChildren
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
+  '/mentorluk/tesekkurler': typeof MentorlukTesekkurlerRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
@@ -249,12 +267,14 @@ export interface FileRouteTypes {
     | '/ana'
     | '/forgot-password'
     | '/login'
+    | '/payment-success'
     | '/playground'
     | '/reset-password'
     | '/signup'
     | '/uye'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
+    | '/mentorluk/tesekkurler'
     | '/ozel-program/odeme'
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
@@ -276,11 +296,13 @@ export interface FileRouteTypes {
     | '/ana'
     | '/forgot-password'
     | '/login'
+    | '/payment-success'
     | '/playground'
     | '/reset-password'
     | '/signup'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
+    | '/mentorluk/tesekkurler'
     | '/ozel-program/odeme'
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
@@ -302,12 +324,14 @@ export interface FileRouteTypes {
     | '/ana'
     | '/forgot-password'
     | '/login'
+    | '/payment-success'
     | '/playground'
     | '/reset-password'
     | '/signup'
     | '/uye'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
+    | '/mentorluk/tesekkurler'
     | '/ozel-program/odeme'
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
@@ -330,12 +354,14 @@ export interface RootRouteChildren {
   AnaRoute: typeof AnaRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  PaymentSuccessRoute: typeof PaymentSuccessRoute
   PlaygroundRoute: typeof PlaygroundRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   UyeRoute: typeof UyeRouteWithChildren
   KisiselProgramOdemeRoute: typeof KisiselProgramOdemeRoute
   MentorlukSatinAlRoute: typeof MentorlukSatinAlRoute
+  MentorlukTesekkurlerRoute: typeof MentorlukTesekkurlerRoute
   OzelProgramOdemeRoute: typeof OzelProgramOdemeRoute
   KisiselProgramIndexRoute: typeof KisiselProgramIndexRoute
   MentorlukIndexRoute: typeof MentorlukIndexRoute
@@ -370,6 +396,13 @@ declare module '@tanstack/react-router' {
       path: '/playground'
       fullPath: '/playground'
       preLoaderRoute: typeof PlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-success': {
+      id: '/payment-success'
+      path: '/payment-success'
+      fullPath: '/payment-success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -461,6 +494,13 @@ declare module '@tanstack/react-router' {
       path: '/ozel-program/odeme'
       fullPath: '/ozel-program/odeme'
       preLoaderRoute: typeof OzelProgramOdemeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorluk/tesekkurler': {
+      id: '/mentorluk/tesekkurler'
+      path: '/mentorluk/tesekkurler'
+      fullPath: '/mentorluk/tesekkurler'
+      preLoaderRoute: typeof MentorlukTesekkurlerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentorluk/satin-al': {
@@ -557,12 +597,14 @@ const rootRouteChildren: RootRouteChildren = {
   AnaRoute: AnaRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  PaymentSuccessRoute: PaymentSuccessRoute,
   PlaygroundRoute: PlaygroundRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   UyeRoute: UyeRouteWithChildren,
   KisiselProgramOdemeRoute: KisiselProgramOdemeRoute,
   MentorlukSatinAlRoute: MentorlukSatinAlRoute,
+  MentorlukTesekkurlerRoute: MentorlukTesekkurlerRoute,
   OzelProgramOdemeRoute: OzelProgramOdemeRoute,
   KisiselProgramIndexRoute: KisiselProgramIndexRoute,
   MentorlukIndexRoute: MentorlukIndexRoute,

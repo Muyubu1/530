@@ -23,7 +23,11 @@
 **Gerçek sebep:** supabase-js createClient realtime client kurar; Node<22'de global WebSocket yok → patlar. Browser client lazy olduğu için etkilenmez; SERVER client (`client.server.ts`) eager.
 **Fix:** `client.server.ts`'te `import ws from "ws"; globalThis.WebSocket ??= ws;` (realtime kullanmıyoruz, sadece constructor'ı tatmin eder). Regresyon testi: `client.server.test.ts` (getUser bad-token → throw değil, düzgün hata). Ayrıca member yükleme efektlerine + gate hasPurchase'a try/catch eklendi (asılı kalmasın).
 
+## G8 — Stripe: doğrudan secret key (Lovable proxy yok)
+**Not:** Eski uygulama Stripe'a Lovable gateway proxy üzerinden bağlanıyordu (connection key). refactor530 **doğrudan** `STRIPE_SECRET_KEY` (sk_test/sk_live) kullanır — eski "secret" çalışmaz. `.env`'e `VITE_STRIPE_PUBLISHABLE_KEY` (pk) + `STRIPE_SECRET_KEY` (sk) eklenmeli. Tutar Stripe ürün/fiyatından değil **domain/pricing**'den (PaymentIntent amount=amountTRY*100) → Stripe dashboard'da ürün kurmaya gerek yok. Test kartı: 4242 4242 4242 4242. Webhook ertelendi (purchases kaydı client-side, RLS anon insert).
+
 ## G7 — Chat medya için Supabase storage bucket gerekli
+
 **Not:** Topluluk görsel/ses yükleme `community-uploads` bucket'ına yazar (path `{uid}/...`, RLS path-scoped). Mevcut 5.30 projesinde var. Yoksa Supabase dashboard'dan oluşturulmalı (public read + RLS). Metin/reaksiyon/realtime bucket gerektirmez.
 
 ## G3 — vite.config plugin sırası

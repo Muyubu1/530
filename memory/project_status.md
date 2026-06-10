@@ -5,11 +5,11 @@
 5.30 Lab'in arayüzünü (cinematic mono tasarım) yeni temiz bir projeye taşımak — DRY, SOLID,
 modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini eklemek.
 
-## Şu an: Faz 6 (topluluk chat) bitti — sıradaki karar bekliyor
+## Şu an: Faz 7 (Stripe ödeme) bitti — sıradaki karar bekliyor
 
-Tasarım, public, auth, üye alanı VE topluluk chat (tam: realtime mesaj/reaksiyon/yanıt/medya/
-foto editör/ses) tamam. Sıradaki: **Patika** (asıl hedef) / **Stripe ödeme** / **içerik Supabase'e** /
-**ertelenenler** (materyaller, avatar, abonelik, admin) / **deploy**.
+Tasarım, public, auth, üye alanı, topluluk chat VE Stripe ödeme akışı (sayfa içi Payment Element,
+purchases→gate) tamam. Patika EN SON. Sıradaki: **ertelenenler** (materyaller/avatar/admin) /
+**içerik Supabase'e** / **e-posta+unsubscribe** / **deploy**. (Ödeme: kullanıcı sk/pk eklemeli.)
 
 ## Tamamlanan
 
