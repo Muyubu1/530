@@ -13,6 +13,12 @@ import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AnaRouteImport } from './routes/ana'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OzelProgramIndexRouteImport } from './routes/ozel-program/index'
+import { Route as MentorlukIndexRouteImport } from './routes/mentorluk/index'
+import { Route as KisiselProgramIndexRouteImport } from './routes/kisisel-program/index'
+import { Route as OzelProgramOdemeRouteImport } from './routes/ozel-program/odeme'
+import { Route as MentorlukSatinAlRouteImport } from './routes/mentorluk/satin-al'
+import { Route as KisiselProgramOdemeRouteImport } from './routes/kisisel-program/odeme'
 
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
@@ -34,18 +40,60 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OzelProgramIndexRoute = OzelProgramIndexRouteImport.update({
+  id: '/ozel-program/',
+  path: '/ozel-program/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorlukIndexRoute = MentorlukIndexRouteImport.update({
+  id: '/mentorluk/',
+  path: '/mentorluk/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KisiselProgramIndexRoute = KisiselProgramIndexRouteImport.update({
+  id: '/kisisel-program/',
+  path: '/kisisel-program/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OzelProgramOdemeRoute = OzelProgramOdemeRouteImport.update({
+  id: '/ozel-program/odeme',
+  path: '/ozel-program/odeme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorlukSatinAlRoute = MentorlukSatinAlRouteImport.update({
+  id: '/mentorluk/satin-al',
+  path: '/mentorluk/satin-al',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KisiselProgramOdemeRoute = KisiselProgramOdemeRouteImport.update({
+  id: '/kisisel-program/odeme',
+  path: '/kisisel-program/odeme',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
+  '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
+  '/ozel-program/odeme': typeof OzelProgramOdemeRoute
+  '/kisisel-program/': typeof KisiselProgramIndexRoute
+  '/mentorluk/': typeof MentorlukIndexRoute
+  '/ozel-program/': typeof OzelProgramIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
+  '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
+  '/ozel-program/odeme': typeof OzelProgramOdemeRoute
+  '/kisisel-program': typeof KisiselProgramIndexRoute
+  '/mentorluk': typeof MentorlukIndexRoute
+  '/ozel-program': typeof OzelProgramIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +101,50 @@ export interface FileRoutesById {
   '/ana': typeof AnaRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
+  '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
+  '/ozel-program/odeme': typeof OzelProgramOdemeRoute
+  '/kisisel-program/': typeof KisiselProgramIndexRoute
+  '/mentorluk/': typeof MentorlukIndexRoute
+  '/ozel-program/': typeof OzelProgramIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ana' | '/login' | '/playground'
+  fullPaths:
+    | '/'
+    | '/ana'
+    | '/login'
+    | '/playground'
+    | '/kisisel-program/odeme'
+    | '/mentorluk/satin-al'
+    | '/ozel-program/odeme'
+    | '/kisisel-program/'
+    | '/mentorluk/'
+    | '/ozel-program/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ana' | '/login' | '/playground'
-  id: '__root__' | '/' | '/ana' | '/login' | '/playground'
+  to:
+    | '/'
+    | '/ana'
+    | '/login'
+    | '/playground'
+    | '/kisisel-program/odeme'
+    | '/mentorluk/satin-al'
+    | '/ozel-program/odeme'
+    | '/kisisel-program'
+    | '/mentorluk'
+    | '/ozel-program'
+  id:
+    | '__root__'
+    | '/'
+    | '/ana'
+    | '/login'
+    | '/playground'
+    | '/kisisel-program/odeme'
+    | '/mentorluk/satin-al'
+    | '/ozel-program/odeme'
+    | '/kisisel-program/'
+    | '/mentorluk/'
+    | '/ozel-program/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +152,12 @@ export interface RootRouteChildren {
   AnaRoute: typeof AnaRoute
   LoginRoute: typeof LoginRoute
   PlaygroundRoute: typeof PlaygroundRoute
+  KisiselProgramOdemeRoute: typeof KisiselProgramOdemeRoute
+  MentorlukSatinAlRoute: typeof MentorlukSatinAlRoute
+  OzelProgramOdemeRoute: typeof OzelProgramOdemeRoute
+  KisiselProgramIndexRoute: typeof KisiselProgramIndexRoute
+  MentorlukIndexRoute: typeof MentorlukIndexRoute
+  OzelProgramIndexRoute: typeof OzelProgramIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +190,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ozel-program/': {
+      id: '/ozel-program/'
+      path: '/ozel-program'
+      fullPath: '/ozel-program/'
+      preLoaderRoute: typeof OzelProgramIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorluk/': {
+      id: '/mentorluk/'
+      path: '/mentorluk'
+      fullPath: '/mentorluk/'
+      preLoaderRoute: typeof MentorlukIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kisisel-program/': {
+      id: '/kisisel-program/'
+      path: '/kisisel-program'
+      fullPath: '/kisisel-program/'
+      preLoaderRoute: typeof KisiselProgramIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ozel-program/odeme': {
+      id: '/ozel-program/odeme'
+      path: '/ozel-program/odeme'
+      fullPath: '/ozel-program/odeme'
+      preLoaderRoute: typeof OzelProgramOdemeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorluk/satin-al': {
+      id: '/mentorluk/satin-al'
+      path: '/mentorluk/satin-al'
+      fullPath: '/mentorluk/satin-al'
+      preLoaderRoute: typeof MentorlukSatinAlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kisisel-program/odeme': {
+      id: '/kisisel-program/odeme'
+      path: '/kisisel-program/odeme'
+      fullPath: '/kisisel-program/odeme'
+      preLoaderRoute: typeof KisiselProgramOdemeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +240,12 @@ const rootRouteChildren: RootRouteChildren = {
   AnaRoute: AnaRoute,
   LoginRoute: LoginRoute,
   PlaygroundRoute: PlaygroundRoute,
+  KisiselProgramOdemeRoute: KisiselProgramOdemeRoute,
+  MentorlukSatinAlRoute: MentorlukSatinAlRoute,
+  OzelProgramOdemeRoute: OzelProgramOdemeRoute,
+  KisiselProgramIndexRoute: KisiselProgramIndexRoute,
+  MentorlukIndexRoute: MentorlukIndexRoute,
+  OzelProgramIndexRoute: OzelProgramIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

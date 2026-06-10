@@ -8,3 +8,4 @@
 - feat: /playground bileşen kataloğu — tüm primitive'ler görsel doğrulama. SSR 200, typecheck+lint temiz.
 - feat: tasarım sistemi pattern katmanı — PageHero, PricingCard, MediaCard (dashboard 2x kopyanın yerine), EventCard, CinematicVideoFrame. Sebep: feature-seviyesi ortak modüller; ekranlar diziye dizecek. src/ui/design-system/patterns/\*
 - feat(faz2): landing (ana) yeni modüllerle kuruldu — SiteHeader/SiteFooter (ui/shared), ProgramScene, HeroParticles/ScrollGlow (hidrasyon-güvenli), Dialog primitive, BarcodeCTA, WaitlistForm (onSubmit enjekte=DIP). pricing domain'e taşındı. Hero/Interlude/Vsl section'ları features/marketing. Stripe/Supabase Faz 3 stub. SSR 200.
+- feat(faz2): program sayfaları — kisisel (PricingCard + upsell accordion), ozel (radio plan seçici), mentorluk (VSL + Neden Mentör). features/programs; ince route'lar checkout nav'ı enjekte eder; ProgramScene 3x tekrar tek modüle indi. /odeme + satin-al stub'ları (Faz 3). 8 route SSR 200.
