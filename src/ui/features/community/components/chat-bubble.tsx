@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { emojiOnlyCount } from "../lib/is-emoji-only";
 
 export function ChatBubble({
   mine,
@@ -8,6 +9,7 @@ export function ChatBubble({
   nameColor,
   content,
   time,
+  allowEmojiOnly,
   children,
 }: {
   mine: boolean;
@@ -16,9 +18,23 @@ export function ChatBubble({
   nameColor: string;
   content: string | null;
   time: string;
+  /** When true, a 1–3 emoji message renders large with no bubble. */
+  allowEmojiOnly?: boolean;
   /** Media / reply-quote rendered above the text. */
   children?: ReactNode;
 }) {
+  const eo = allowEmojiOnly && content ? emojiOnlyCount(content) : 0;
+  if (eo > 0) {
+    return (
+      <div className={cn("flex flex-col", mine ? "items-end" : "items-start")}>
+        <span className="leading-none" style={{ fontSize: eo === 1 ? "52px" : "40px" }}>
+          {content}
+        </span>
+        <span className="mt-1 font-mono text-[9px] text-muted-foreground/50">{time}</span>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(

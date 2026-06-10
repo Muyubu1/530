@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import type { ChatMessage, NewChatMessage } from "@/domain/chat";
 import { useChat } from "./use-chat";
+import { useChatViewport } from "./use-chat-viewport";
 import { MessageList, type MessageListHandle } from "./components/message-list";
 import { Composer } from "./components/composer";
 import { ReplyBar } from "./components/reply-bar";
@@ -35,6 +36,8 @@ export function ChatPage() {
   const [viewerUrl, setViewerUrl] = useState<string | null>(null);
   const [editorFile, setEditorFile] = useState<File | null>(null);
   const listRef = useRef<MessageListHandle>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useChatViewport(rootRef);
 
   function handleSend(text: string) {
     const input: NewChatMessage = { content: text };
@@ -53,7 +56,7 @@ export function ChatPage() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-background">
+    <div ref={rootRef} className="flex h-[100dvh] flex-col bg-background">
       <header
         className="flex items-center justify-between gap-3 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
@@ -97,6 +100,7 @@ export function ChatPage() {
           onOpenMenu={(message, x, y) => setMenu({ message, x, y })}
           onScrollToReply={(id) => listRef.current?.scrollToMessage(id)}
           onOpenImage={(url) => setViewerUrl(url)}
+          onReply={(m) => setReplyTarget(m)}
         />
       )}
 

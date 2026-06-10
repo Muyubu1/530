@@ -20,6 +20,7 @@ interface Props {
   onOpenMenu: (message: ChatMessage, x: number, y: number) => void;
   onScrollToReply: (id: string) => void;
   onOpenImage: (url: string) => void;
+  onReply: (message: ChatMessage) => void;
 }
 
 export const MessageList = forwardRef<MessageListHandle, Props>(function MessageList(
@@ -31,6 +32,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
     onOpenMenu,
     onScrollToReply,
     onOpenImage,
+    onReply,
   },
   ref,
 ) {
@@ -92,6 +94,11 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
         aria-live="polite"
         className="h-full overflow-y-auto py-3 [scrollbar-width:thin]"
       >
+        <div className="mb-2 flex justify-center">
+          <span className="rounded-full bg-card/40 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+            topluluğa hoş geldin 👋
+          </span>
+        </div>
         {items.map((it) =>
           it.kind === "date" ? (
             <DateSeparator key={it.id} label={it.label} />
@@ -108,6 +115,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
               onOpenMenu={onOpenMenu}
               onScrollToReply={onScrollToReply}
               onOpenImage={onOpenImage}
+              onReply={onReply}
             />
           ),
         )}

@@ -751,3 +751,15 @@
     transform: scale(1.1);
   }
 }
+
+/* Chat message entrance */
+@keyframes chat-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

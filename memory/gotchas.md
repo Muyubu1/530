@@ -23,6 +23,9 @@
 **Gerçek sebep:** supabase-js createClient realtime client kurar; Node<22'de global WebSocket yok → patlar. Browser client lazy olduğu için etkilenmez; SERVER client (`client.server.ts`) eager.
 **Fix:** `client.server.ts`'te `import ws from "ws"; globalThis.WebSocket ??= ws;` (realtime kullanmıyoruz, sadece constructor'ı tatmin eder). Regresyon testi: `client.server.test.ts` (getUser bad-token → throw değil, düzgün hata). Ayrıca member yükleme efektlerine + gate hasPurchase'a try/catch eklendi (asılı kalmasın).
 
+## G7 — Chat medya için Supabase storage bucket gerekli
+**Not:** Topluluk görsel/ses yükleme `community-uploads` bucket'ına yazar (path `{uid}/...`, RLS path-scoped). Mevcut 5.30 projesinde var. Yoksa Supabase dashboard'dan oluşturulmalı (public read + RLS). Metin/reaksiyon/realtime bucket gerektirmez.
+
 ## G3 — vite.config plugin sırası
 
 **Not:** Lovable wrapper kaldırıldığı için elle: `tsConfigPaths → tailwindcss → tanstackStart → viteReact`. Sıra önemli; tanstackStart, viteReact'tan önce.
