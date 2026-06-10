@@ -9,6 +9,9 @@ const LINKS = [
   { to: "/kisisel-program", label: "kişisel program" },
   { to: "/ozel-program", label: "özel program" },
   { to: "/mentorluk", label: "mentörlük" },
+  { to: "/uye", label: "üye alanı" },
+  { to: "/uye/dersler", label: "üye · dersler" },
+  { to: "/uye/etkinlikler", label: "üye · etkinlikler" },
   { to: "/playground", label: "tasarım sistemi" },
 ] as const;
 

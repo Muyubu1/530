@@ -15,7 +15,7 @@ if (!url) {
   process.exit(1);
 }
 
-const sql = postgres(url);
+const sql = postgres(url, { onnotice: () => {} });
 
 try {
   await sql`create table if not exists schema_migrations (

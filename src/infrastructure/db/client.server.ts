@@ -8,4 +8,4 @@ if (!url) {
   throw new Error("DATABASE_URL is not set — see .env.example");
 }
 
-export const sql = postgres(url);
+export const sql = postgres(url, { onnotice: () => {} });

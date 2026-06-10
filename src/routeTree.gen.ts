@@ -9,17 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UyeRouteImport } from './routes/uye'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AnaRouteImport } from './routes/ana'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UyeIndexRouteImport } from './routes/uye/index'
 import { Route as OzelProgramIndexRouteImport } from './routes/ozel-program/index'
 import { Route as MentorlukIndexRouteImport } from './routes/mentorluk/index'
 import { Route as KisiselProgramIndexRouteImport } from './routes/kisisel-program/index'
+import { Route as UyeEtkinliklerRouteImport } from './routes/uye/etkinlikler'
 import { Route as OzelProgramOdemeRouteImport } from './routes/ozel-program/odeme'
 import { Route as MentorlukSatinAlRouteImport } from './routes/mentorluk/satin-al'
 import { Route as KisiselProgramOdemeRouteImport } from './routes/kisisel-program/odeme'
+import { Route as UyeDerslerIndexRouteImport } from './routes/uye/dersler/index'
+import { Route as UyeDerslerCourseIdRouteImport } from './routes/uye/dersler/$courseId'
 
+const UyeRoute = UyeRouteImport.update({
+  id: '/uye',
+  path: '/uye',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
   path: '/playground',
@@ -40,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UyeIndexRoute = UyeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UyeRoute,
+} as any)
 const OzelProgramIndexRoute = OzelProgramIndexRouteImport.update({
   id: '/ozel-program/',
   path: '/ozel-program/',
@@ -54,6 +69,11 @@ const KisiselProgramIndexRoute = KisiselProgramIndexRouteImport.update({
   id: '/kisisel-program/',
   path: '/kisisel-program/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const UyeEtkinliklerRoute = UyeEtkinliklerRouteImport.update({
+  id: '/etkinlikler',
+  path: '/etkinlikler',
+  getParentRoute: () => UyeRoute,
 } as any)
 const OzelProgramOdemeRoute = OzelProgramOdemeRouteImport.update({
   id: '/ozel-program/odeme',
@@ -70,18 +90,33 @@ const KisiselProgramOdemeRoute = KisiselProgramOdemeRouteImport.update({
   path: '/kisisel-program/odeme',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UyeDerslerIndexRoute = UyeDerslerIndexRouteImport.update({
+  id: '/dersler/',
+  path: '/dersler/',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyeDerslerCourseIdRoute = UyeDerslerCourseIdRouteImport.update({
+  id: '/dersler/$courseId',
+  path: '/dersler/$courseId',
+  getParentRoute: () => UyeRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/uye': typeof UyeRouteWithChildren
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
+  '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
+  '/uye/': typeof UyeIndexRoute
+  '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/dersler/': typeof UyeDerslerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,9 +126,13 @@ export interface FileRoutesByTo {
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
+  '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/kisisel-program': typeof KisiselProgramIndexRoute
   '/mentorluk': typeof MentorlukIndexRoute
   '/ozel-program': typeof OzelProgramIndexRoute
+  '/uye': typeof UyeIndexRoute
+  '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/dersler': typeof UyeDerslerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,12 +140,17 @@ export interface FileRoutesById {
   '/ana': typeof AnaRoute
   '/login': typeof LoginRoute
   '/playground': typeof PlaygroundRoute
+  '/uye': typeof UyeRouteWithChildren
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/ozel-program/odeme': typeof OzelProgramOdemeRoute
+  '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
+  '/uye/': typeof UyeIndexRoute
+  '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/dersler/': typeof UyeDerslerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,12 +159,17 @@ export interface FileRouteTypes {
     | '/ana'
     | '/login'
     | '/playground'
+    | '/uye'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
+    | '/uye/etkinlikler'
     | '/kisisel-program/'
     | '/mentorluk/'
     | '/ozel-program/'
+    | '/uye/'
+    | '/uye/dersler/$courseId'
+    | '/uye/dersler/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -130,21 +179,30 @@ export interface FileRouteTypes {
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
+    | '/uye/etkinlikler'
     | '/kisisel-program'
     | '/mentorluk'
     | '/ozel-program'
+    | '/uye'
+    | '/uye/dersler/$courseId'
+    | '/uye/dersler'
   id:
     | '__root__'
     | '/'
     | '/ana'
     | '/login'
     | '/playground'
+    | '/uye'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/ozel-program/odeme'
+    | '/uye/etkinlikler'
     | '/kisisel-program/'
     | '/mentorluk/'
     | '/ozel-program/'
+    | '/uye/'
+    | '/uye/dersler/$courseId'
+    | '/uye/dersler/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,6 +210,7 @@ export interface RootRouteChildren {
   AnaRoute: typeof AnaRoute
   LoginRoute: typeof LoginRoute
   PlaygroundRoute: typeof PlaygroundRoute
+  UyeRoute: typeof UyeRouteWithChildren
   KisiselProgramOdemeRoute: typeof KisiselProgramOdemeRoute
   MentorlukSatinAlRoute: typeof MentorlukSatinAlRoute
   OzelProgramOdemeRoute: typeof OzelProgramOdemeRoute
@@ -162,6 +221,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/uye': {
+      id: '/uye'
+      path: '/uye'
+      fullPath: '/uye'
+      preLoaderRoute: typeof UyeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/playground': {
       id: '/playground'
       path: '/playground'
@@ -190,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/uye/': {
+      id: '/uye/'
+      path: '/'
+      fullPath: '/uye/'
+      preLoaderRoute: typeof UyeIndexRouteImport
+      parentRoute: typeof UyeRoute
+    }
     '/ozel-program/': {
       id: '/ozel-program/'
       path: '/ozel-program'
@@ -210,6 +283,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/kisisel-program/'
       preLoaderRoute: typeof KisiselProgramIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/uye/etkinlikler': {
+      id: '/uye/etkinlikler'
+      path: '/etkinlikler'
+      fullPath: '/uye/etkinlikler'
+      preLoaderRoute: typeof UyeEtkinliklerRouteImport
+      parentRoute: typeof UyeRoute
     }
     '/ozel-program/odeme': {
       id: '/ozel-program/odeme'
@@ -232,14 +312,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KisiselProgramOdemeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/uye/dersler/': {
+      id: '/uye/dersler/'
+      path: '/dersler'
+      fullPath: '/uye/dersler/'
+      preLoaderRoute: typeof UyeDerslerIndexRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/dersler/$courseId': {
+      id: '/uye/dersler/$courseId'
+      path: '/dersler/$courseId'
+      fullPath: '/uye/dersler/$courseId'
+      preLoaderRoute: typeof UyeDerslerCourseIdRouteImport
+      parentRoute: typeof UyeRoute
+    }
   }
 }
+
+interface UyeRouteChildren {
+  UyeEtkinliklerRoute: typeof UyeEtkinliklerRoute
+  UyeIndexRoute: typeof UyeIndexRoute
+  UyeDerslerCourseIdRoute: typeof UyeDerslerCourseIdRoute
+  UyeDerslerIndexRoute: typeof UyeDerslerIndexRoute
+}
+
+const UyeRouteChildren: UyeRouteChildren = {
+  UyeEtkinliklerRoute: UyeEtkinliklerRoute,
+  UyeIndexRoute: UyeIndexRoute,
+  UyeDerslerCourseIdRoute: UyeDerslerCourseIdRoute,
+  UyeDerslerIndexRoute: UyeDerslerIndexRoute,
+}
+
+const UyeRouteWithChildren = UyeRoute._addFileChildren(UyeRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnaRoute: AnaRoute,
   LoginRoute: LoginRoute,
   PlaygroundRoute: PlaygroundRoute,
+  UyeRoute: UyeRouteWithChildren,
   KisiselProgramOdemeRoute: KisiselProgramOdemeRoute,
   MentorlukSatinAlRoute: MentorlukSatinAlRoute,
   OzelProgramOdemeRoute: OzelProgramOdemeRoute,

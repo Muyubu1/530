@@ -25,6 +25,14 @@ export {
   DialogDescription,
   DialogClose,
 } from "./primitives/dialog";
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "./primitives/dropdown-menu";
 
 // Backgrounds (decorative, drop inside a relative container)
 export {
@@ -46,3 +54,4 @@ export { MediaCard, type MediaCardProps } from "./patterns/media-card";
 export { EventCard, type EventCardProps } from "./patterns/event-card";
 export { PageHero, type PageHeroProps } from "./patterns/page-hero";
 export { ProgramScene } from "./patterns/program-scene";
+export { LessonThumb, type LessonThumbProps } from "./patterns/lesson-thumb";
