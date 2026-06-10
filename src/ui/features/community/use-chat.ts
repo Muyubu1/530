@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { ChatMessage, NewChatMessage, Reaction } from "@/domain/chat";
+import type { ChatMessage, MediaType, NewChatMessage, Reaction } from "@/domain/chat";
 import { supabaseChatGateway as gateway } from "@/ui/shared/chat/supabase-chat-gateway";
 import { useAuth } from "@/ui/shared/auth/auth-context";
 
@@ -94,6 +94,18 @@ export function useChat() {
     [reactions, user],
   );
 
+  const sendMedia = useCallback(
+    async (blob: Blob, ext: string, type: MediaType, content?: string) => {
+      try {
+        const url = await gateway.uploadMedia(blob, ext);
+        await gateway.sendMessage({ mediaUrl: url, mediaType: type, content: content ?? null });
+      } catch {
+        toast.error("Medya gönderilemedi.");
+      }
+    },
+    [],
+  );
+
   return {
     me: user,
     messages,
@@ -101,6 +113,7 @@ export function useChat() {
     loaded,
     memberCount,
     send,
+    sendMedia,
     remove,
     toggleReaction,
   };

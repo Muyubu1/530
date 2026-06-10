@@ -7,6 +7,7 @@ import { ChatAvatar } from "./chat-avatar";
 import { ChatBubble } from "./chat-bubble";
 import { ReactionPills } from "./reaction-pills";
 import { ReplyQuote } from "./reply-quote";
+import { MessageMedia } from "./message-media";
 
 export function MessageRow({
   message,
@@ -18,6 +19,7 @@ export function MessageRow({
   onToggleReaction,
   onOpenMenu,
   onScrollToReply,
+  onOpenImage,
 }: {
   message: ChatMessage;
   mine: boolean;
@@ -28,6 +30,7 @@ export function MessageRow({
   onToggleReaction: (emoji: string) => void;
   onOpenMenu: (message: ChatMessage, x: number, y: number) => void;
   onScrollToReply: (id: string) => void;
+  onOpenImage: (url: string) => void;
 }) {
   const time = new Date(message.createdAt).toLocaleTimeString("tr-TR", {
     hour: "2-digit",
@@ -91,6 +94,13 @@ export function MessageRow({
                 name={message.replyToName}
                 snippet={message.replyToSnippet ?? ""}
                 onClick={() => onScrollToReply(message.replyToId!)}
+              />
+            )}
+            {message.mediaUrl && message.mediaType && (
+              <MessageMedia
+                url={message.mediaUrl}
+                type={message.mediaType}
+                onOpenImage={onOpenImage}
               />
             )}
           </ChatBubble>

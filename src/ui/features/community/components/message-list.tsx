@@ -19,10 +19,19 @@ interface Props {
   onToggleReaction: (messageId: string, emoji: string) => void;
   onOpenMenu: (message: ChatMessage, x: number, y: number) => void;
   onScrollToReply: (id: string) => void;
+  onOpenImage: (url: string) => void;
 }
 
 export const MessageList = forwardRef<MessageListHandle, Props>(function MessageList(
-  { messages, meId, reactionsByMessage, onToggleReaction, onOpenMenu, onScrollToReply },
+  {
+    messages,
+    meId,
+    reactionsByMessage,
+    onToggleReaction,
+    onOpenMenu,
+    onScrollToReply,
+    onOpenImage,
+  },
   ref,
 ) {
   const items = useMemo(() => buildRenderItems(messages), [messages]);
@@ -98,6 +107,7 @@ export const MessageList = forwardRef<MessageListHandle, Props>(function Message
               onToggleReaction={(emoji) => onToggleReaction(it.message.id, emoji)}
               onOpenMenu={onOpenMenu}
               onScrollToReply={onScrollToReply}
+              onOpenImage={onOpenImage}
             />
           ),
         )}

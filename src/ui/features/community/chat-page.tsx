@@ -10,17 +10,30 @@ import { ReplyBar } from "./components/reply-bar";
 import { PinnedBar } from "./components/pinned-bar";
 import { ContextMenu } from "./components/context-menu";
 import { EmojiPicker } from "./components/emoji-picker";
+import { ImageViewer } from "./components/image-viewer";
+import { PhotoEditor } from "./components/photo-editor";
 
 const snippetOf = (m: ChatMessage) => (m.content ?? "📎 medya").slice(0, 80);
 
 export function ChatPage() {
-  const { me, messages, reactionsByMessage, loaded, memberCount, send, remove, toggleReaction } =
-    useChat();
+  const {
+    me,
+    messages,
+    reactionsByMessage,
+    loaded,
+    memberCount,
+    send,
+    sendMedia,
+    remove,
+    toggleReaction,
+  } = useChat();
 
   const [replyTarget, setReplyTarget] = useState<ChatMessage | null>(null);
   const [pinned, setPinned] = useState<ChatMessage | null>(null);
   const [menu, setMenu] = useState<{ message: ChatMessage; x: number; y: number } | null>(null);
   const [reactPickerFor, setReactPickerFor] = useState<ChatMessage | null>(null);
+  const [viewerUrl, setViewerUrl] = useState<string | null>(null);
+  const [editorFile, setEditorFile] = useState<File | null>(null);
   const listRef = useRef<MessageListHandle>(null);
 
   function handleSend(text: string) {
@@ -83,6 +96,7 @@ export function ChatPage() {
           onToggleReaction={toggleReaction}
           onOpenMenu={(message, x, y) => setMenu({ message, x, y })}
           onScrollToReply={(id) => listRef.current?.scrollToMessage(id)}
+          onOpenImage={(url) => setViewerUrl(url)}
         />
       )}
 
@@ -94,7 +108,11 @@ export function ChatPage() {
         />
       )}
 
-      <Composer onSend={handleSend} />
+      <Composer
+        onSend={handleSend}
+        onPickImage={(file) => setEditorFile(file)}
+        onAudio={({ blob, ext }) => sendMedia(blob, ext, "audio")}
+      />
 
       {menu && (
         <ContextMenu
@@ -129,6 +147,19 @@ export function ChatPage() {
             />
           </div>
         </div>
+      )}
+
+      {viewerUrl && <ImageViewer url={viewerUrl} onClose={() => setViewerUrl(null)} />}
+
+      {editorFile && (
+        <PhotoEditor
+          file={editorFile}
+          onCancel={() => setEditorFile(null)}
+          onSend={(blob, caption) => {
+            sendMedia(blob, "jpg", "image", caption || undefined);
+            setEditorFile(null);
+          }}
+        />
       )}
     </div>
   );
