@@ -27,3 +27,10 @@ export {
   StaticDust,
   MeasureMarks,
 } from "./backgrounds/backgrounds";
+
+// Patterns (composed from primitives)
+export { CinematicVideoFrame } from "./patterns/cinematic-video-frame";
+export { PricingCard, type PricingCardProps } from "./patterns/pricing-card";
+export { MediaCard, type MediaCardProps } from "./patterns/media-card";
+export { EventCard, type EventCardProps } from "./patterns/event-card";
+export { PageHero, type PageHeroProps } from "./patterns/page-hero";

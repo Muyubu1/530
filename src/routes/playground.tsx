@@ -16,7 +16,13 @@ import {
   ConcentricRings,
   DotGrid,
   StaticDust,
+  PageHero,
+  PricingCard,
+  MediaCard,
+  EventCard,
+  CinematicVideoFrame,
 } from "@/ui/design-system";
+import stairs from "@/assets/stairs.jpg";
 
 export const Route = createFileRoute("/playground")({
   component: Playground,
@@ -174,6 +180,70 @@ function Playground() {
             <Heading size="md">Kaydırınca yükselerek belirir</Heading>
           </Reveal>
         </div>
+      </Catalog>
+
+      <Catalog title="Pattern · PageHero">
+        <div className="overflow-hidden rounded-xl border border-border/40 bg-black">
+          <PageHero
+            eyebrow="kişisel program"
+            title={
+              <>
+                Halil Mamati'den <GradientText>1'e 1 Özel Mentörlük</GradientText>
+              </>
+            }
+            lead="Kendini ileriye taşımak ve zor zamanlarına çözüm aramak isteyenler için."
+            grain
+          >
+            <Button variant="cta" size="xl">
+              Başvur
+            </Button>
+          </PageHero>
+        </div>
+      </Catalog>
+
+      <Catalog title="Pattern · PricingCard">
+        <PricingCard
+          eyebrow="Program"
+          title="Halil Mamati"
+          subtitle="KİŞİSEL DANIŞMANLIK"
+          description="Bire bir, kişiye özel bir yolculuk."
+          features={[
+            "Bire bir kişisel oturumlar (4 görüşme + 4 saat)",
+            "Kişiye özel yol haritası ve takip",
+            "Sınırsız mesajlaşma desteği",
+          ]}
+          planLabel="1 Aylık Danışmanlık"
+          planMeta="4 görüşme + 4 saat"
+          price="24.750"
+          badge="Tercih Edilen"
+          ctaLabel="Ödemeye Geç"
+          elevated
+        />
+      </Catalog>
+
+      <Catalog title="Pattern · MediaCard">
+        <div className="max-w-xl">
+          <MediaCard
+            thumbnail={stairs}
+            title="Bölüm 1 — Şafak Disiplini"
+            ctaLabel="izlemeye devam et"
+            progress={42}
+          />
+        </div>
+      </Catalog>
+
+      <Catalog title="Pattern · EventCard">
+        <div className="max-w-xl">
+          <EventCard
+            title="5.30 Haftalık Spor Toplanması"
+            details={["Tarih: 10 Haziran 2026 · Saat 14:00", "Konum: İstanbul, Beylikdüzü"]}
+            actionLabel="katıl"
+          />
+        </div>
+      </Catalog>
+
+      <Catalog title="Pattern · CinematicVideoFrame">
+        <CinematicVideoFrame src="" poster={stairs} caption="kısa film · 03:12" />
       </Catalog>
     </div>
   );
