@@ -1,11 +1,43 @@
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import type { ChatMessage, NewChatMessage } from "@/domain/chat";
 import { useChat } from "./use-chat";
-import { MessageList } from "./components/message-list";
+import { MessageList, type MessageListHandle } from "./components/message-list";
 import { Composer } from "./components/composer";
+import { ReplyBar } from "./components/reply-bar";
+import { PinnedBar } from "./components/pinned-bar";
+import { ContextMenu } from "./components/context-menu";
+import { EmojiPicker } from "./components/emoji-picker";
+
+const snippetOf = (m: ChatMessage) => (m.content ?? "📎 medya").slice(0, 80);
 
 export function ChatPage() {
-  const { me, messages, loaded, memberCount, send, remove } = useChat();
+  const { me, messages, reactionsByMessage, loaded, memberCount, send, remove, toggleReaction } =
+    useChat();
+
+  const [replyTarget, setReplyTarget] = useState<ChatMessage | null>(null);
+  const [pinned, setPinned] = useState<ChatMessage | null>(null);
+  const [menu, setMenu] = useState<{ message: ChatMessage; x: number; y: number } | null>(null);
+  const [reactPickerFor, setReactPickerFor] = useState<ChatMessage | null>(null);
+  const listRef = useRef<MessageListHandle>(null);
+
+  function handleSend(text: string) {
+    const input: NewChatMessage = { content: text };
+    if (replyTarget) {
+      input.replyToId = replyTarget.id;
+      input.replyToName = replyTarget.displayName ?? "üye";
+      input.replyToSnippet = snippetOf(replyTarget);
+    }
+    send(input);
+    setReplyTarget(null);
+  }
+
+  function copyMessage(m: ChatMessage) {
+    if (m.content)
+      navigator.clipboard?.writeText(m.content).then(() => toast.success("Kopyalandı."));
+  }
 
   return (
     <div className="flex h-[100dvh] flex-col bg-background">
@@ -30,15 +62,74 @@ export function ChatPage() {
         <span className="h-9 w-9" />
       </header>
 
+      {pinned && (
+        <PinnedBar
+          message={pinned}
+          onScrollTo={() => listRef.current?.scrollToMessage(pinned.id)}
+          onClose={() => setPinned(null)}
+        />
+      )}
+
       {loaded && messages.length === 0 ? (
         <div className="flex flex-1 items-center justify-center">
           <p className="text-sm text-muted-foreground/60">İlk mesajı sen yaz 👋</p>
         </div>
       ) : (
-        <MessageList messages={messages} meId={me?.id} onDelete={remove} />
+        <MessageList
+          ref={listRef}
+          messages={messages}
+          meId={me?.id}
+          reactionsByMessage={reactionsByMessage}
+          onToggleReaction={toggleReaction}
+          onOpenMenu={(message, x, y) => setMenu({ message, x, y })}
+          onScrollToReply={(id) => listRef.current?.scrollToMessage(id)}
+        />
       )}
 
-      <Composer onSend={(text) => send({ content: text })} />
+      {replyTarget && (
+        <ReplyBar
+          name={replyTarget.displayName ?? "üye"}
+          snippet={snippetOf(replyTarget)}
+          onCancel={() => setReplyTarget(null)}
+        />
+      )}
+
+      <Composer onSend={handleSend} />
+
+      {menu && (
+        <ContextMenu
+          x={menu.x}
+          y={menu.y}
+          mine={menu.message.userId === me?.id}
+          canCopy={!!menu.message.content}
+          onReact={(e) => toggleReaction(menu.message.id, e)}
+          onMoreEmoji={() => {
+            setReactPickerFor(menu.message);
+            setMenu(null);
+          }}
+          onReply={() => setReplyTarget(menu.message)}
+          onPin={() => setPinned(menu.message)}
+          onCopy={() => copyMessage(menu.message)}
+          onDelete={() => remove(menu.message.id)}
+          onClose={() => setMenu(null)}
+        />
+      )}
+
+      {reactPickerFor && (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setReactPickerFor(null)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <EmojiPicker
+              onPick={(e) => {
+                toggleReaction(reactPickerFor.id, e);
+                setReactPickerFor(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

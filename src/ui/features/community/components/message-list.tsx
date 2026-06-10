@@ -1,39 +1,57 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import type { ChatMessage } from "@/domain/chat";
+import type { ChatMessage, Reaction } from "@/domain/chat";
 import { buildRenderItems } from "../lib/group-messages";
 import { MessageRow } from "./message-row";
 import { DateSeparator } from "./date-separator";
 
 const NEAR_BOTTOM_PX = 120;
+const EMPTY: Reaction[] = [];
 
-export function MessageList({
-  messages,
-  meId,
-  onDelete,
-}: {
+export interface MessageListHandle {
+  scrollToMessage: (id: string) => void;
+}
+
+interface Props {
   messages: ChatMessage[];
   meId?: string;
-  onDelete: (id: string) => void;
-}) {
+  reactionsByMessage: Map<string, Reaction[]>;
+  onToggleReaction: (messageId: string, emoji: string) => void;
+  onOpenMenu: (message: ChatMessage, x: number, y: number) => void;
+  onScrollToReply: (id: string) => void;
+}
+
+export const MessageList = forwardRef<MessageListHandle, Props>(function MessageList(
+  { messages, meId, reactionsByMessage, onToggleReaction, onOpenMenu, onScrollToReply },
+  ref,
+) {
   const items = useMemo(() => buildRenderItems(messages), [messages]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastCountRef = useRef(0);
   const [unread, setUnread] = useState(0);
   const [atBottom, setAtBottom] = useState(true);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
 
   const isNearBottom = () => {
     const el = scrollRef.current;
     if (!el) return true;
     return el.scrollHeight - el.scrollTop - el.clientHeight < NEAR_BOTTOM_PX;
   };
-
   const scrollToBottom = (smooth = false) => {
     const el = scrollRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
   };
 
-  // Auto-scroll on new messages (own or when already near the bottom).
+  useImperativeHandle(ref, () => ({
+    scrollToMessage: (id) => {
+      const el = scrollRef.current?.querySelector<HTMLElement>(`[data-mid="${id}"]`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHighlightId(id);
+      window.setTimeout(() => setHighlightId((cur) => (cur === id ? null : cur)), 1500);
+    },
+  }));
+
   useEffect(() => {
     const added = messages.length - lastCountRef.current;
     if (added > 0 && lastCountRef.current > 0) {
@@ -74,7 +92,12 @@ export function MessageList({
               message={it.message}
               mine={it.message.userId === meId}
               groupStart={it.groupStart}
-              onDelete={it.message.userId === meId ? () => onDelete(it.message.id) : undefined}
+              meId={meId}
+              reactions={reactionsByMessage.get(it.message.id) ?? EMPTY}
+              highlighted={highlightId === it.message.id}
+              onToggleReaction={(emoji) => onToggleReaction(it.message.id, emoji)}
+              onOpenMenu={onOpenMenu}
+              onScrollToReply={onScrollToReply}
             />
           ),
         )}
@@ -100,4 +123,4 @@ export function MessageList({
       )}
     </div>
   );
-}
+});
