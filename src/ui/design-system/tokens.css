@@ -1,0 +1,753 @@
+/*
+ * 5.30 Lab — Digital Cinematic Design System (single source of truth)
+ * Warm cinema black, mono palette. Subtle scanlines + glow.
+ * Display: Syne. UI: Plus Jakarta Sans. Mono / eyebrow: JetBrains Mono.
+ *
+ * This file owns ALL design tokens, base styles and reusable CSS utilities.
+ * Components must consume these tokens — never hardcode the raw values.
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-cream: var(--cream);
+  --color-ember: var(--ember);
+  --color-copper: var(--copper);
+  --font-display: "Syne", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-eyebrow: "JetBrains Mono", "Plus Jakarta Sans", monospace;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Pure monochrome cinema — neutral black & white */
+  --background: oklch(0.08 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.12 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.12 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+
+  /* Mono primary */
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.08 0 0);
+
+  --secondary: oklch(0.18 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+
+  --muted: oklch(0.18 0 0);
+  --muted-foreground: oklch(0.66 0 0);
+
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.08 0 0);
+
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(0.97 0 0);
+
+  --border: oklch(0.22 0 0);
+  --input: oklch(0.18 0 0);
+  --ring: oklch(0.96 0 0);
+
+  /* Aliases mapped to monochrome — keep names so components don't break */
+  --gold: oklch(0.96 0 0);
+  --gold-soft: oklch(0.78 0 0);
+  --ember: oklch(0.88 0 0);
+  --copper: oklch(0.55 0 0);
+  --cream: oklch(0.98 0 0);
+
+  --gradient-ember: linear-gradient(135deg, oklch(0.66 0 0), oklch(0.98 0 0));
+  --gradient-radial-warmth: radial-gradient(
+    ellipse at center,
+    oklch(1 0 0 / 0.08),
+    transparent 65%
+  );
+  --shadow-glow: 0 0 60px -10px oklch(1 0 0 / 0.25);
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.08 0.005 60);
+  --sidebar-foreground: oklch(0.94 0.012 75);
+  --sidebar-primary: oklch(0.78 0.13 78);
+  --sidebar-primary-foreground: oklch(0.1 0.005 60);
+  --sidebar-accent: oklch(0.16 0.008 60);
+  --sidebar-accent-foreground: oklch(0.94 0.012 75);
+  --sidebar-border: oklch(0.22 0.008 60);
+  --sidebar-ring: oklch(0.75 0.13 75);
+}
+
+.dark {
+  /* Same as :root — site is permanently mono-cinema dark. */
+  --background: oklch(0.08 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.12 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.12 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.08 0 0);
+  --secondary: oklch(0.18 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.18 0 0);
+  --muted-foreground: oklch(0.66 0 0);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.08 0 0);
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(0.97 0 0);
+  --border: oklch(0.22 0 0);
+  --input: oklch(0.18 0 0);
+  --ring: oklch(0.96 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.08 0.005 60);
+  --sidebar-foreground: oklch(0.94 0.012 75);
+  --sidebar-primary: oklch(0.78 0.13 78);
+  --sidebar-primary-foreground: oklch(0.1 0.005 60);
+  --sidebar-accent: oklch(0.16 0.008 60);
+  --sidebar-accent-foreground: oklch(0.94 0.012 75);
+  --sidebar-border: oklch(0.22 0.008 60);
+  --sidebar-ring: oklch(0.75 0.13 75);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "ss02", "cv11";
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 90% 55% at 50% -5%, oklch(0.9 0 0 / 0.1), transparent 65%),
+      radial-gradient(ellipse 70% 60% at 110% 90%, oklch(0.82 5 240 / 0.07), transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 85%, oklch(0.78 5 270 / 0.05), transparent 55%),
+      linear-gradient(180deg, oklch(1 0 0 / 0.04) 0%, oklch(1 0 0 / 0.015) 35%, transparent 60%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--background);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .font-eyebrow {
+    font-family: var(--font-eyebrow);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .text-gold {
+    color: var(--gold);
+  }
+  .text-ember {
+    color: var(--ember);
+  }
+  .text-cream {
+    color: var(--cream);
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--cream);
+    -webkit-box-shadow: 0 0 0 1000px transparent inset;
+    transition: background-color 9999s ease-in-out 0s;
+    caret-color: var(--cream);
+  }
+  .bg-gradient-ember {
+    background: var(--gradient-ember);
+  }
+  .text-gradient-ember {
+    background: var(--gradient-ember);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Hairline divider with a diamond in the middle, à la editorial cinema */
+  .rule-diamond {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--gold);
+  }
+  .rule-diamond::before,
+  .rule-diamond::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    max-width: 6rem;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in oklab, var(--gold) 50%, transparent),
+      transparent
+    );
+  }
+
+  /* Grainy film overlay */
+  .film-grain {
+    position: relative;
+  }
+  .film-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+  }
+
+  /* Animated film grain — shifts the noise tile rapidly for live cinema feel */
+  @keyframes grain-shift {
+    0% {
+      transform: translate(0, 0);
+    }
+    10% {
+      transform: translate(-5%, -8%);
+    }
+    20% {
+      transform: translate(-12%, 4%);
+    }
+    30% {
+      transform: translate(7%, -10%);
+    }
+    40% {
+      transform: translate(-7%, 12%);
+    }
+    50% {
+      transform: translate(-15%, 6%);
+    }
+    60% {
+      transform: translate(10%, -4%);
+    }
+    70% {
+      transform: translate(8%, 10%);
+    }
+    80% {
+      transform: translate(-6%, -12%);
+    }
+    90% {
+      transform: translate(4%, 8%);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+  .film-grain-animated {
+    position: relative;
+  }
+  .film-grain-animated::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    pointer-events: none;
+    opacity: 0.14;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.75'/></svg>");
+    background-repeat: repeat;
+    animation: grain-shift 1.2s steps(8) infinite;
+    will-change: transform;
+  }
+
+  /* Subtle digital scanlines — CRT / projector feel */
+  .scanlines {
+    position: relative;
+  }
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      oklch(1 0 0 / 0.04) 3px,
+      transparent 4px
+    );
+    mix-blend-mode: overlay;
+  }
+
+  /* Soft mono halo behind hero text */
+  .glow-ember {
+    text-shadow:
+      0 0 40px oklch(1 0 0 / 0.25),
+      0 0 80px oklch(1 0 0 / 0.12);
+  }
+
+  /* Vignette */
+  .vignette {
+    position: relative;
+  }
+  .vignette::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 40%, oklch(0 0 0 / 0.6) 100%);
+  }
+
+  @keyframes shimmer-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-rise {
+    animation: shimmer-in 1.2s ease-out both;
+  }
+
+  @keyframes ember-pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .animate-ember-pulse {
+    animation: ember-pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    47% {
+      opacity: 1;
+    }
+    48% {
+      opacity: 0.7;
+    }
+    49% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+  .animate-flicker {
+    animation: flicker 6s linear infinite;
+  }
+
+  /* ── Concentric rings cinematic reveal ── */
+  @keyframes ring-trace {
+    0% {
+      stroke-dashoffset: var(--ring-circ, 4000);
+      transform: scale(2.4) rotate(-160deg);
+      opacity: 0;
+    }
+    60% {
+      opacity: 1;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  .ring-trace {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ring-trace 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes ring-spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .ring-spin-slow {
+    transform-origin: 50% 50%;
+    animation: ring-spin-slow 90s linear infinite;
+  }
+
+  @keyframes ring-spin-rev {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  .ring-spin-rev {
+    animation: ring-spin-rev 60s linear infinite;
+  }
+
+  @keyframes ring-sweep {
+    from {
+      transform: rotate(0deg);
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    to {
+      transform: rotate(360deg);
+      opacity: 0.35;
+    }
+  }
+  .ring-sweep {
+    animation: ring-sweep 14s linear infinite;
+  }
+
+  @keyframes ring-cross-in {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .ring-cross {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ring-cross-in 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
+  }
+}
+
+/* Phone number input — themed to match cinema design */
+.phone-input-wrapper .PhoneInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.phone-input-wrapper .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.phone-input-wrapper .PhoneInputCountrySelect {
+  background: transparent;
+  color: var(--cream);
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+}
+.phone-input-wrapper .PhoneInputCountryIcon {
+  box-shadow: none;
+  background: transparent;
+}
+.phone-input-wrapper .PhoneInputCountryIcon--border {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--border) 60%, transparent);
+}
+.phone-input-wrapper .PhoneInputCountrySelectArrow {
+  color: color-mix(in oklab, var(--cream) 60%, transparent);
+  opacity: 0.8;
+}
+.phone-input-wrapper .PhoneInputInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cream);
+  width: 100%;
+  font-size: 0.875rem;
+  text-align: left;
+}
+.phone-input-wrapper .PhoneInputInput::placeholder {
+  color: color-mix(in oklab, var(--muted-foreground) 40%, transparent);
+}
+
+@keyframes twinkle-drift {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(var(--drift, 0), -6px) scale(1.2);
+  }
+}
+.twinkle-star {
+  animation: twinkle-drift ease-in-out infinite;
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+  will-change: opacity, transform;
+}
+
+/* ───── Hero cinematic particle field ───── */
+@keyframes hero-dust-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--peak, 0.6);
+  }
+  85% {
+    opacity: var(--peak, 0.6);
+  }
+  100% {
+    transform: translate3d(var(--drift, 0px), -120px, 0) scale(0.6);
+    opacity: 0;
+  }
+}
+.hero-dust {
+  animation-name: hero-dust-drift;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-iteration-count: infinite;
+  filter: blur(0.4px);
+  will-change: transform, opacity;
+}
+
+@keyframes hero-spark {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  40% {
+    opacity: 0.2;
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+  80% {
+    opacity: 0;
+  }
+}
+.hero-spark {
+  background: radial-gradient(
+    circle,
+    rgba(255, 210, 150, 0.95) 0%,
+    rgba(255, 160, 80, 0.6) 40%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 8px rgba(255, 180, 110, 0.7),
+    0 0 18px rgba(255, 140, 70, 0.35);
+  animation-name: hero-spark;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes hero-halo-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+.hero-halo {
+  background: radial-gradient(
+    circle,
+    rgba(255, 220, 180, 0.22) 0%,
+    rgba(255, 190, 140, 0.1) 35%,
+    transparent 70%
+  );
+  filter: blur(30px);
+  animation: hero-halo-pulse 6s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes hero-ray-sweep {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) rotate(8deg);
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.hero-ray {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 235, 200, 0.18) 30%,
+    rgba(255, 235, 200, 0.05) 60%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  filter: blur(18px);
+  transform-origin: 50% 0%;
+  animation: hero-ray-sweep ease-in-out infinite;
+  will-change: opacity, transform;
+}
+.hero-ray-a {
+  animation-duration: 11s;
+  transform: translateX(-50%) rotate(8deg);
+}
+.hero-ray-b {
+  animation-duration: 14s;
+  animation-delay: -4s;
+  transform: translateX(-50%) rotate(-6deg);
+  opacity: 0.3;
+}
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes barcode-scan {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(100% + 80px));
+  }
+}
+
+@keyframes border-beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes gold-badge-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklab, var(--gold) 55%, transparent),
+      0 0 14px 0 color-mix(in oklab, var(--gold) 35%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px color-mix(in oklab, var(--gold) 0%, transparent),
+      0 0 22px 2px color-mix(in oklab, var(--gold) 55%, transparent);
+  }
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.border-beam-wrap {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0deg,
+    transparent 280deg,
+    color-mix(in oklab, var(--gold) 80%, transparent) 320deg,
+    #ffffff 350deg,
+    color-mix(in oklab, var(--gold) 80%, transparent) 380deg,
+    transparent 420deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-beam-spin 3.5s linear infinite;
+}
+
+@keyframes vsl-pause-hint {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}

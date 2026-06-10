@@ -1,0 +1,5 @@
+/* Tailwind entry — thin. All design tokens live in the design-system. */
+@import "tailwindcss" source(none);
+@source "./";
+@import "tw-animate-css";
+@import "./ui/design-system/tokens.css";
