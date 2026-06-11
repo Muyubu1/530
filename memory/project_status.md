@@ -5,11 +5,13 @@
 5.30 Lab'in arayüzünü (cinematic mono tasarım) yeni temiz bir projeye taşımak — DRY, SOLID,
 modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini eklemek.
 
-## Şu an: Faz 8 (üye ertelenenler) bitti — sıradaki karar bekliyor
+## Şu an: Faz 9 (fiyat-kontrol) bitti — eski sistemin görünür ekranları TAMAM
 
-Tasarım, public, auth, üye alanı (+materyaller/avatar/admin bekleme-listesi/abonelik), chat, Stripe
-ödeme tamam. Patika EN SON. Sıradaki: **içerik Supabase'e** (deploy ön-koşulu) / **e-posta+unsubscribe** /
-**deploy** / fiyat-kontrol (Stripe). Ön-koşullar: avatars bucket, admin rolü, Stripe sk/pk.
+Tasarım, public, auth, üye alanı (+materyaller/avatar/admin: bekleme-listesi & fiyat-kontrol/abonelik),
+chat, Stripe ödeme tamam. **Kalanlar dış kuruluma bağlı:** içerik→Supabase (deploy ön-koşulu),
+e-posta+unsubscribe (Resend), deploy. Bunlar kullanıcının Supabase bağlantısı/Stripe anahtarı/SMTP
+kurulumunu bekliyor. **Patika** (asıl hedef) — existing bitince sıra ona; mevcut stack'le başlanabilir.
+Ön-koşullar: avatars bucket, admin rolü (user_roles), Stripe sk/pk.
 
 ## Tamamlanan
 

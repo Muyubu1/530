@@ -6,6 +6,7 @@ import {
   Calendar,
   ChevronRight,
   CreditCard,
+  DollarSign,
   Library,
   Settings,
   StickyNote,
@@ -70,7 +71,10 @@ export function ProfilPage() {
         <RoomCard to="/uye/etkinlikler" Icon={Calendar} label="etkinlikler" />
         <RoomCard to="/uye/profil/abonelik" Icon={CreditCard} label="aboneliğim" />
         {admin && (
-          <RoomCard to="/uye/profil/bekleme-listesi" Icon={Users} label="bekleme listesi" />
+          <>
+            <RoomCard to="/uye/profil/bekleme-listesi" Icon={Users} label="bekleme listesi" />
+            <RoomCard to="/uye/profil/fiyat-kontrol" Icon={DollarSign} label="fiyat kontrol" />
+          </>
         )}
       </div>
     </div>
@@ -83,6 +87,7 @@ type RoomLink =
   | "/uye/profil/ayarlar"
   | "/uye/profil/abonelik"
   | "/uye/profil/bekleme-listesi"
+  | "/uye/profil/fiyat-kontrol"
   | "/uye/kutuphane"
   | "/uye/guncellemeler"
   | "/uye/etkinlikler";
