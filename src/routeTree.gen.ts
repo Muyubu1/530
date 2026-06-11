@@ -34,7 +34,9 @@ import { Route as UyeProfilIndexRouteImport } from './routes/uye/profil/index'
 import { Route as UyeDerslerIndexRouteImport } from './routes/uye/dersler/index'
 import { Route as UyeProfilVideolarRouteImport } from './routes/uye/profil/videolar'
 import { Route as UyeProfilNotlarRouteImport } from './routes/uye/profil/notlar'
+import { Route as UyeProfilBeklemeListesiRouteImport } from './routes/uye/profil/bekleme-listesi'
 import { Route as UyeProfilAyarlarRouteImport } from './routes/uye/profil/ayarlar'
+import { Route as UyeProfilAbonelikRouteImport } from './routes/uye/profil/abonelik'
 import { Route as UyeDerslerCourseIdRouteImport } from './routes/uye/dersler/$courseId'
 
 const UyeRoute = UyeRouteImport.update({
@@ -162,9 +164,19 @@ const UyeProfilNotlarRoute = UyeProfilNotlarRouteImport.update({
   path: '/profil/notlar',
   getParentRoute: () => UyeRoute,
 } as any)
+const UyeProfilBeklemeListesiRoute = UyeProfilBeklemeListesiRouteImport.update({
+  id: '/profil/bekleme-listesi',
+  path: '/profil/bekleme-listesi',
+  getParentRoute: () => UyeRoute,
+} as any)
 const UyeProfilAyarlarRoute = UyeProfilAyarlarRouteImport.update({
   id: '/profil/ayarlar',
   path: '/profil/ayarlar',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyeProfilAbonelikRoute = UyeProfilAbonelikRouteImport.update({
+  id: '/profil/abonelik',
+  path: '/profil/abonelik',
   getParentRoute: () => UyeRoute,
 } as any)
 const UyeDerslerCourseIdRoute = UyeDerslerCourseIdRouteImport.update({
@@ -196,7 +208,9 @@ export interface FileRoutesByFullPath {
   '/ozel-program/': typeof OzelProgramIndexRoute
   '/uye/': typeof UyeIndexRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/profil/abonelik': typeof UyeProfilAbonelikRoute
   '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
+  '/uye/profil/bekleme-listesi': typeof UyeProfilBeklemeListesiRoute
   '/uye/profil/notlar': typeof UyeProfilNotlarRoute
   '/uye/profil/videolar': typeof UyeProfilVideolarRoute
   '/uye/dersler/': typeof UyeDerslerIndexRoute
@@ -224,7 +238,9 @@ export interface FileRoutesByTo {
   '/ozel-program': typeof OzelProgramIndexRoute
   '/uye': typeof UyeIndexRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/profil/abonelik': typeof UyeProfilAbonelikRoute
   '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
+  '/uye/profil/bekleme-listesi': typeof UyeProfilBeklemeListesiRoute
   '/uye/profil/notlar': typeof UyeProfilNotlarRoute
   '/uye/profil/videolar': typeof UyeProfilVideolarRoute
   '/uye/dersler': typeof UyeDerslerIndexRoute
@@ -254,7 +270,9 @@ export interface FileRoutesById {
   '/ozel-program/': typeof OzelProgramIndexRoute
   '/uye/': typeof UyeIndexRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
+  '/uye/profil/abonelik': typeof UyeProfilAbonelikRoute
   '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
+  '/uye/profil/bekleme-listesi': typeof UyeProfilBeklemeListesiRoute
   '/uye/profil/notlar': typeof UyeProfilNotlarRoute
   '/uye/profil/videolar': typeof UyeProfilVideolarRoute
   '/uye/dersler/': typeof UyeDerslerIndexRoute
@@ -285,7 +303,9 @@ export interface FileRouteTypes {
     | '/ozel-program/'
     | '/uye/'
     | '/uye/dersler/$courseId'
+    | '/uye/profil/abonelik'
     | '/uye/profil/ayarlar'
+    | '/uye/profil/bekleme-listesi'
     | '/uye/profil/notlar'
     | '/uye/profil/videolar'
     | '/uye/dersler/'
@@ -313,7 +333,9 @@ export interface FileRouteTypes {
     | '/ozel-program'
     | '/uye'
     | '/uye/dersler/$courseId'
+    | '/uye/profil/abonelik'
     | '/uye/profil/ayarlar'
+    | '/uye/profil/bekleme-listesi'
     | '/uye/profil/notlar'
     | '/uye/profil/videolar'
     | '/uye/dersler'
@@ -342,7 +364,9 @@ export interface FileRouteTypes {
     | '/ozel-program/'
     | '/uye/'
     | '/uye/dersler/$courseId'
+    | '/uye/profil/abonelik'
     | '/uye/profil/ayarlar'
+    | '/uye/profil/bekleme-listesi'
     | '/uye/profil/notlar'
     | '/uye/profil/videolar'
     | '/uye/dersler/'
@@ -545,11 +569,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UyeProfilNotlarRouteImport
       parentRoute: typeof UyeRoute
     }
+    '/uye/profil/bekleme-listesi': {
+      id: '/uye/profil/bekleme-listesi'
+      path: '/profil/bekleme-listesi'
+      fullPath: '/uye/profil/bekleme-listesi'
+      preLoaderRoute: typeof UyeProfilBeklemeListesiRouteImport
+      parentRoute: typeof UyeRoute
+    }
     '/uye/profil/ayarlar': {
       id: '/uye/profil/ayarlar'
       path: '/profil/ayarlar'
       fullPath: '/uye/profil/ayarlar'
       preLoaderRoute: typeof UyeProfilAyarlarRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/profil/abonelik': {
+      id: '/uye/profil/abonelik'
+      path: '/profil/abonelik'
+      fullPath: '/uye/profil/abonelik'
+      preLoaderRoute: typeof UyeProfilAbonelikRouteImport
       parentRoute: typeof UyeRoute
     }
     '/uye/dersler/$courseId': {
@@ -569,7 +607,9 @@ interface UyeRouteChildren {
   UyeToplulukRoute: typeof UyeToplulukRoute
   UyeIndexRoute: typeof UyeIndexRoute
   UyeDerslerCourseIdRoute: typeof UyeDerslerCourseIdRoute
+  UyeProfilAbonelikRoute: typeof UyeProfilAbonelikRoute
   UyeProfilAyarlarRoute: typeof UyeProfilAyarlarRoute
+  UyeProfilBeklemeListesiRoute: typeof UyeProfilBeklemeListesiRoute
   UyeProfilNotlarRoute: typeof UyeProfilNotlarRoute
   UyeProfilVideolarRoute: typeof UyeProfilVideolarRoute
   UyeDerslerIndexRoute: typeof UyeDerslerIndexRoute
@@ -583,7 +623,9 @@ const UyeRouteChildren: UyeRouteChildren = {
   UyeToplulukRoute: UyeToplulukRoute,
   UyeIndexRoute: UyeIndexRoute,
   UyeDerslerCourseIdRoute: UyeDerslerCourseIdRoute,
+  UyeProfilAbonelikRoute: UyeProfilAbonelikRoute,
   UyeProfilAyarlarRoute: UyeProfilAyarlarRoute,
+  UyeProfilBeklemeListesiRoute: UyeProfilBeklemeListesiRoute,
   UyeProfilNotlarRoute: UyeProfilNotlarRoute,
   UyeProfilVideolarRoute: UyeProfilVideolarRoute,
   UyeDerslerIndexRoute: UyeDerslerIndexRoute,

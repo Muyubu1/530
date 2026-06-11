@@ -23,8 +23,13 @@
 **Gerçek sebep:** supabase-js createClient realtime client kurar; Node<22'de global WebSocket yok → patlar. Browser client lazy olduğu için etkilenmez; SERVER client (`client.server.ts`) eager.
 **Fix:** `client.server.ts`'te `import ws from "ws"; globalThis.WebSocket ??= ws;` (realtime kullanmıyoruz, sadece constructor'ı tatmin eder). Regresyon testi: `client.server.test.ts` (getUser bad-token → throw değil, düzgün hata). Ayrıca member yükleme efektlerine + gate hasPurchase'a try/catch eklendi (asılı kalmasın).
 
+## G9 — Avatar & admin ön-koşulları
+
+**Avatar:** yükleme Supabase **`avatars`** bucket'ına yazar (path `{uid}/...`, public). Yoksa "yüklenemedi" toast'ı. Avatar URL'i auth user_metadata.avatar_url'de tutulur (profiles tablosu değil) → onAuthStateChange ile AuthUser.avatarUrl güncellenir. **Admin:** bekleme-listesi `user_roles`'te `admin` rolü ister (kendi rolünü RLS ile görür; waitlist select admin RLS'ine bağlı). Admin değilse sayfa "yetkin yok" gösterir (doğru). Materyaller lokal Postgres'te, dosyalar public URL (seed dummy PDF).
+
 ## G8 — Stripe: doğrudan secret key (Lovable proxy yok)
-**Not:** Eski uygulama Stripe'a Lovable gateway proxy üzerinden bağlanıyordu (connection key). refactor530 **doğrudan** `STRIPE_SECRET_KEY` (sk_test/sk_live) kullanır — eski "secret" çalışmaz. `.env`'e `VITE_STRIPE_PUBLISHABLE_KEY` (pk) + `STRIPE_SECRET_KEY` (sk) eklenmeli. Tutar Stripe ürün/fiyatından değil **domain/pricing**'den (PaymentIntent amount=amountTRY*100) → Stripe dashboard'da ürün kurmaya gerek yok. Test kartı: 4242 4242 4242 4242. Webhook ertelendi (purchases kaydı client-side, RLS anon insert).
+
+**Not:** Eski uygulama Stripe'a Lovable gateway proxy üzerinden bağlanıyordu (connection key). refactor530 **doğrudan** `STRIPE_SECRET_KEY` (sk_test/sk_live) kullanır — eski "secret" çalışmaz. `.env`'e `VITE_STRIPE_PUBLISHABLE_KEY` (pk) + `STRIPE_SECRET_KEY` (sk) eklenmeli. Tutar Stripe ürün/fiyatından değil **domain/pricing**'den (PaymentIntent amount=amountTRY\*100) → Stripe dashboard'da ürün kurmaya gerek yok. Test kartı: 4242 4242 4242 4242. Webhook ertelendi (purchases kaydı client-side, RLS anon insert).
 
 ## G7 — Chat medya için Supabase storage bucket gerekli
 

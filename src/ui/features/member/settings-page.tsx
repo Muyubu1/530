@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Eyebrow, Heading, Card, Input, Label, Button } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
@@ -11,6 +11,32 @@ export function SettingsPage() {
   const [pw2, setPw2] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPw, setSavingPw] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const initials =
+    (user?.displayName || "?")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((s) => s[0]?.toUpperCase())
+      .join("") || "?";
+
+  async function onAvatarFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    if (f.size > 5 * 1024 * 1024) return toast.error("Dosya 5MB'tan küçük olmalı.");
+    setUploadingAvatar(true);
+    try {
+      await auth.uploadAvatar(f);
+      toast.success("Avatar güncellendi.");
+    } catch {
+      toast.error("Avatar yüklenemedi. (avatars bucket'ı var mı?)");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
 
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
@@ -44,7 +70,30 @@ export function SettingsPage() {
         Ayarlar
       </Heading>
 
-      <Card variant="subtle" className="mt-8 p-6">
+      <Card variant="subtle" className="mt-8 flex items-center gap-4 p-6">
+        <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-cream/20 bg-cream/5">
+          {user?.avatarUrl ? (
+            <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <span className="font-mono text-sm font-semibold text-cream/80">{initials}</span>
+          )}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display text-sm text-cream">{user?.displayName}</p>
+          <p className="truncate text-xs text-muted-foreground/60">{user?.email}</p>
+        </div>
+        <input ref={fileRef} type="file" accept="image/*" hidden onChange={onAvatarFile} />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploadingAvatar}
+        >
+          {uploadingAvatar ? "…" : "değiştir"}
+        </Button>
+      </Card>
+
+      <Card variant="subtle" className="mt-4 p-6">
         <form onSubmit={saveProfile} className="space-y-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70">
             profil

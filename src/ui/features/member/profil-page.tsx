@@ -9,6 +9,7 @@ import {
   Library,
   Settings,
   StickyNote,
+  Users,
 } from "lucide-react";
 import { Eyebrow, Heading, Card } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
@@ -17,9 +18,14 @@ import { listAllNotesFn, listSavedLessonsFn } from "@/server/learning";
 export function ProfilPage() {
   const { user, auth } = useAuth();
   const [counts, setCounts] = useState<{ notes: number; saved: number } | null>(null);
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    auth
+      .isAdmin()
+      .then((ok) => !cancelled && setAdmin(ok))
+      .catch(() => {});
     (async () => {
       try {
         const token = await auth.getAccessToken();
@@ -62,7 +68,10 @@ export function ProfilPage() {
         <RoomCard to="/uye/kutuphane" Icon={Library} label="kütüphane" />
         <RoomCard to="/uye/guncellemeler" Icon={Bell} label="güncellemeler" />
         <RoomCard to="/uye/etkinlikler" Icon={Calendar} label="etkinlikler" />
-        <SoonCard Icon={CreditCard} label="aboneliğim" />
+        <RoomCard to="/uye/profil/abonelik" Icon={CreditCard} label="aboneliğim" />
+        {admin && (
+          <RoomCard to="/uye/profil/bekleme-listesi" Icon={Users} label="bekleme listesi" />
+        )}
       </div>
     </div>
   );
@@ -72,6 +81,8 @@ type RoomLink =
   | "/uye/profil/notlar"
   | "/uye/profil/videolar"
   | "/uye/profil/ayarlar"
+  | "/uye/profil/abonelik"
+  | "/uye/profil/bekleme-listesi"
   | "/uye/kutuphane"
   | "/uye/guncellemeler"
   | "/uye/etkinlikler";
@@ -107,21 +118,5 @@ function RoomCard({
         <ChevronRight className="h-4 w-4 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5" />
       </Card>
     </Link>
-  );
-}
-
-function SoonCard({ Icon, label }: { Icon: typeof Settings; label: string }) {
-  return (
-    <Card variant="subtle" className="flex items-center justify-between p-5 opacity-50">
-      <div className="flex items-center gap-3">
-        <Icon className="h-4 w-4 text-cream/50" strokeWidth={1.5} />
-        <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-          {label}
-        </span>
-      </div>
-      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
-        yakında
-      </span>
-    </Card>
   );
 }

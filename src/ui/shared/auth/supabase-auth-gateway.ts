@@ -4,8 +4,13 @@ import { getSupabaseBrowser } from "./supabase-client";
 
 function toUser(u: User | null | undefined): AuthUser | null {
   if (!u?.email) return null;
-  const meta = (u.user_metadata ?? {}) as { display_name?: string };
-  return { id: u.id, email: u.email, displayName: meta.display_name || u.email.split("@")[0] };
+  const meta = (u.user_metadata ?? {}) as { display_name?: string; avatar_url?: string };
+  return {
+    id: u.id,
+    email: u.email,
+    displayName: meta.display_name || u.email.split("@")[0],
+    avatarUrl: meta.avatar_url ?? null,
+  };
 }
 
 const origin = () => (typeof window !== "undefined" ? window.location.origin : "");
@@ -83,4 +88,57 @@ export const supabaseAuthGateway: AuthGateway = {
     const { data } = await getSupabaseBrowser().auth.getSession();
     return data.session?.access_token ?? null;
   },
+
+  async uploadAvatar(file) {
+    const sb = getSupabaseBrowser();
+    const {
+      data: { user },
+    } = await sb.auth.getUser();
+    if (!user) throw new Error("Oturum bulunamadı.");
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage
+      .from("avatars")
+      .upload(path, file, { upsert: true, contentType: file.type || undefined });
+    if (upErr) throw upErr;
+    const url = sb.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+    const { error: updErr } = await sb.auth.updateUser({ data: { avatar_url: url } });
+    if (updErr) throw updErr;
+    return url;
+  },
+
+  async isAdmin() {
+    const sb = getSupabaseBrowser();
+    const {
+      data: { user },
+    } = await sb.auth.getUser();
+    if (!user) return false;
+    const { data } = await sb.from("user_roles").select("role").eq("user_id", user.id);
+    return ((data ?? []) as { role: string }[]).some((r) => r.role === "admin");
+  },
+
+  async listWaitlist() {
+    const { data, error } = await getSupabaseBrowser()
+      .from("waitlist")
+      .select("id, name, email, phone, source, created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return ((data ?? []) as WaitlistRow[]).map((r) => ({
+      id: r.id,
+      name: r.name ?? "",
+      email: r.email,
+      phone: r.phone ?? undefined,
+      source: r.source,
+      createdAt: new Date(r.created_at),
+    }));
+  },
 };
+
+interface WaitlistRow {
+  id: string;
+  name: string | null;
+  email: string;
+  phone: string | null;
+  source: string;
+  created_at: string;
+}

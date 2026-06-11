@@ -2,11 +2,13 @@
  * Auth domain — the gateway port and value types.
  * No framework, no Supabase. A client-side adapter implements `AuthGateway`.
  */
+import type { WaitlistEntry } from "./waitlist";
 
 export interface AuthUser {
   id: string;
   email: string;
   displayName: string;
+  avatarUrl: string | null;
 }
 
 export type AuthStatus = "checking" | "authed" | "unauthed";
@@ -41,4 +43,10 @@ export interface AuthGateway {
   hasPurchase(email: string): Promise<boolean>;
   /** Current session access token (JWT) for authenticated server calls. */
   getAccessToken(): Promise<string | null>;
+  /** Uploads an avatar to storage and stores its URL on the user; returns the URL. */
+  uploadAvatar(file: File): Promise<string>;
+  /** True if the current user has the admin role. */
+  isAdmin(): Promise<boolean>;
+  /** Admin-only: all waitlist entries (RLS gates this to admins). */
+  listWaitlist(): Promise<WaitlistEntry[]>;
 }

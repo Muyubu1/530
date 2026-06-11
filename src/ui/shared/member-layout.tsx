@@ -90,9 +90,13 @@ export function MemberLayout({ user }: { user: AuthUser }) {
             <DropdownMenuTrigger asChild>
               <button
                 aria-label="hesap menüsü"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/30 bg-transparent font-mono text-[10px] uppercase tracking-[0.15em] text-cream/80 transition-colors hover:border-cream hover:text-cream focus:outline-none"
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-cream/30 bg-transparent font-mono text-[10px] uppercase tracking-[0.15em] text-cream/80 transition-colors hover:border-cream hover:text-cream focus:outline-none"
               >
-                {initials}
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  initials
+                )}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" sideOffset={10} className="w-56">

@@ -9,6 +9,7 @@ import type { LessonNote } from "@/domain/learning";
 import { useAuth } from "@/ui/shared/auth/auth-context";
 import { setProgress } from "@/lib/watchProgress";
 import { useLessonState } from "./use-lesson-state";
+import { MaterialsPanel } from "./materials-panel";
 import { cn } from "@/lib/utils";
 
 /** Course detail: player + lesson switcher + completion / saved / notes. */
@@ -125,6 +126,8 @@ export function CourseDetailPage({
                   </Link>
                 )}
               </div>
+
+              <MaterialsPanel lessonId={active.id} />
 
               <NotesPanel
                 notes={notes}
