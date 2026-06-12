@@ -9,10 +9,10 @@ const CX = 150;
 
 export function JourneyMap({
   currentDay,
-  onPickToday,
+  onPickDay,
 }: {
   currentDay: number;
-  onPickToday: () => void;
+  onPickDay: (day: number) => void;
 }) {
   const pts = DAYS.map((_, i) => ({ x: CX + AMP * Math.sin(i * 0.7), y: R + i * GAP }));
   const height = R * 2 + (DAYS.length - 1) * GAP;
@@ -50,7 +50,7 @@ export function JourneyMap({
             <DayNode
               day={d.day}
               state={state}
-              onClick={state === "today" ? onPickToday : undefined}
+              onClick={state === "locked" ? undefined : () => onPickDay(d.day)}
             />
           </div>
         );
