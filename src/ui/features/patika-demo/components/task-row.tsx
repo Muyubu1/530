@@ -36,7 +36,17 @@ export function TaskRow({
   const [note, setNote] = useState("");
 
   return (
-    <Card variant="subtle" className={cn("p-4 transition-colors", done && "border-emerald-500/30")}>
+    <Card
+      variant="subtle"
+      onClick={editable ? onToggle : undefined}
+      role={editable ? "button" : undefined}
+      aria-pressed={editable ? done : undefined}
+      className={cn(
+        "select-none p-4 transition-colors",
+        done && "border-emerald-500/30",
+        editable && "cursor-pointer hover:border-cream/30",
+      )}
+    >
       <div className="flex items-center gap-3">
         <span
           className={cn(
@@ -54,27 +64,25 @@ export function TaskRow({
           </p>
           <p className="text-xs text-muted-foreground/60">{task.detail}</p>
         </div>
-        <button
-          type="button"
-          disabled={!editable}
-          onClick={onToggle}
-          aria-label={done ? "geri al" : "tamamla"}
+        <span
+          aria-hidden
           className={cn(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all active:scale-90",
+            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all",
             done
-              ? "scale-100 border-emerald-500 bg-emerald-500 text-background"
-              : "border-cream/40 text-transparent hover:border-cream hover:bg-cream/10",
+              ? "border-emerald-500 bg-emerald-500 text-background"
+              : "border-cream/40 text-transparent",
             !editable && "opacity-40",
           )}
         >
           <Check className="h-4 w-4" strokeWidth={3} />
-        </button>
+        </span>
       </div>
 
       {editable &&
         (noteOpen ? (
           <textarea
             value={note}
+            onClick={(e) => e.stopPropagation()}
             onChange={(e) => setNote(e.target.value)}
             rows={2}
             placeholder="kısa not (isteğe bağlı)…"
@@ -83,7 +91,10 @@ export function TaskRow({
         ) : (
           <button
             type="button"
-            onClick={() => setNoteOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setNoteOpen(true);
+            }}
             className="mt-2 pl-12 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 transition-colors hover:text-cream/60"
           >
             + not ekle
