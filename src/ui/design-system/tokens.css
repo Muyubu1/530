@@ -781,3 +781,29 @@
     stroke-dashoffset: -22;
   }
 }
+
+/* Day-complete celebration */
+@keyframes celebrate-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes particle-burst {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--tx), var(--ty)) scale(0.5);
+    opacity: 0;
+  }
+}

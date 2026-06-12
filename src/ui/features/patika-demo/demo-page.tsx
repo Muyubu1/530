@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { Eyebrow, Heading } from "@/ui/design-system";
@@ -8,16 +8,31 @@ import { JourneyMap } from "./components/journey-map";
 import { TodayPanel } from "./components/today-panel";
 import { BadgeShelf } from "./components/badge-shelf";
 import { RewardModal } from "./components/reward-modal";
+import { DayComplete } from "./components/day-complete";
 import type { DemoBadge } from "./lib/mock-journey";
 
 export function PatikaDemoPage() {
   const j = useDemoJourney();
   const [reward, setReward] = useState<DemoBadge | null>(null);
+  const [celebrate, setCelebrate] = useState<{
+    day: number;
+    streak: number;
+    points: number;
+  } | null>(null);
+  const pendingReward = useRef<DemoBadge | null>(null);
 
   function handleCompleteDay() {
-    const badge = j.completeDay();
-    if (badge) setReward(badge);
+    const day = j.currentDay;
+    pendingReward.current = j.completeDay();
+    setCelebrate({ day, streak: day, points: 30 });
   }
+
+  const finishCelebration = useCallback(() => {
+    setCelebrate(null);
+    const badge = pendingReward.current;
+    pendingReward.current = null;
+    if (badge) setReward(badge);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -80,6 +95,15 @@ export function PatikaDemoPage() {
           <BadgeShelf earned={j.earnedBadges} />
         </div>
       </div>
+
+      {celebrate && (
+        <DayComplete
+          day={celebrate.day}
+          streak={celebrate.streak}
+          points={celebrate.points}
+          onDone={finishCelebration}
+        />
+      )}
 
       <RewardModal badge={reward} onClose={() => setReward(null)} />
     </div>
