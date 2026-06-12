@@ -40,13 +40,13 @@ export function TaskRow({
       <div className="flex items-center gap-3">
         <span
           className={cn(
-            "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-colors",
             done
               ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-              : "border-cream/20 bg-cream/5 text-cream/80",
+              : "border-cream/25 bg-cream/10 text-cream",
           )}
         >
-          <Icon className="h-4 w-4" strokeWidth={1.5} />
+          <Icon className="h-5 w-5" strokeWidth={1.75} />
         </span>
         <div className="min-w-0 flex-1">
           <p className={cn("text-sm text-cream", done && "text-cream/50 line-through")}>
@@ -60,10 +60,10 @@ export function TaskRow({
           onClick={onToggle}
           aria-label={done ? "geri al" : "tamamla"}
           className={cn(
-            "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors",
+            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all active:scale-90",
             done
-              ? "border-emerald-500 bg-emerald-500 text-background"
-              : "border-cream/40 text-transparent hover:border-cream",
+              ? "scale-100 border-emerald-500 bg-emerald-500 text-background"
+              : "border-cream/40 text-transparent hover:border-cream hover:bg-cream/10",
             !editable && "opacity-40",
           )}
         >

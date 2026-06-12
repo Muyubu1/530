@@ -1,18 +1,28 @@
 import { CalendarDays, Flame, Trophy, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function Stat({
   icon: Icon,
   value,
   label,
+  delay,
+  iconClass,
 }: {
   icon: LucideIcon;
   value: string | number;
   label: string;
+  delay: number;
+  iconClass?: string;
 }) {
   return (
-    <div className="flex flex-1 flex-col items-center gap-1 rounded-xl border border-border/40 bg-card/30 py-3">
-      <Icon className="h-4 w-4 text-cream/70" strokeWidth={1.5} />
-      <span className="font-display text-lg text-cream">{value}</span>
+    <div
+      className="flex flex-1 flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/30 py-4 [animation:node-pop_0.5s_ease-out_both]"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 bg-cream/5">
+        <Icon className={cn("h-5 w-5 text-cream", iconClass)} strokeWidth={1.75} />
+      </span>
+      <span className="font-display text-xl text-cream">{value}</span>
       <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">
         {label}
       </span>
@@ -33,9 +43,20 @@ export function StatBar({
 }) {
   return (
     <div className="flex gap-3">
-      <Stat icon={CalendarDays} value={`${Math.min(currentDay, total)}/${total}`} label="gün" />
-      <Stat icon={Flame} value={streak} label="seri" />
-      <Stat icon={Trophy} value={points} label="puan" />
+      <Stat
+        icon={CalendarDays}
+        value={`${Math.min(currentDay, total)}/${total}`}
+        label="gün"
+        delay={0}
+      />
+      <Stat
+        icon={Flame}
+        value={streak}
+        label="seri"
+        delay={80}
+        iconClass={streak > 0 ? "animate-flicker" : undefined}
+      />
+      <Stat icon={Trophy} value={points} label="puan" delay={160} />
     </div>
   );
 }

@@ -30,10 +30,11 @@ export function JourneyMap({
           points={line}
           fill="none"
           stroke="oklch(0.98 0 0)"
-          strokeOpacity="0.16"
+          strokeOpacity="0.22"
           strokeWidth="2"
           strokeDasharray="2 9"
           strokeLinecap="round"
+          style={{ animation: "path-flow 3s linear infinite" }}
         />
       </svg>
       {DAYS.map((d, i) => {
@@ -41,7 +42,11 @@ export function JourneyMap({
           d.day < currentDay ? "done" : d.day === currentDay ? "today" : "locked";
         const p = pts[i];
         return (
-          <div key={d.day} className="absolute" style={{ left: p.x - R, top: p.y - R }}>
+          <div
+            key={d.day}
+            className="absolute [animation:node-pop_0.45s_ease-out_both]"
+            style={{ left: p.x - R, top: p.y - R, animationDelay: `${i * 30}ms` }}
+          >
             <DayNode
               day={d.day}
               state={state}
