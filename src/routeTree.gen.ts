@@ -14,6 +14,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
+import { Route as PatikaDemoRouteImport } from './routes/patika-demo'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AnaRouteImport } from './routes/ana'
@@ -63,6 +64,11 @@ const PlaygroundRoute = PlaygroundRouteImport.update({
 const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
   id: '/payment-success',
   path: '/payment-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatikaDemoRoute = PatikaDemoRouteImport.update({
+  id: '/patika-demo',
+  path: '/patika-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/patika-demo': typeof PatikaDemoRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/playground': typeof PlaygroundRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/patika-demo': typeof PatikaDemoRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/playground': typeof PlaygroundRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -260,6 +268,7 @@ export interface FileRoutesById {
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/patika-demo': typeof PatikaDemoRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/playground': typeof PlaygroundRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -294,6 +303,7 @@ export interface FileRouteTypes {
     | '/ana'
     | '/forgot-password'
     | '/login'
+    | '/patika-demo'
     | '/payment-success'
     | '/playground'
     | '/reset-password'
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/ana'
     | '/forgot-password'
     | '/login'
+    | '/patika-demo'
     | '/payment-success'
     | '/playground'
     | '/reset-password'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/ana'
     | '/forgot-password'
     | '/login'
+    | '/patika-demo'
     | '/payment-success'
     | '/playground'
     | '/reset-password'
@@ -390,6 +402,7 @@ export interface RootRouteChildren {
   AnaRoute: typeof AnaRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  PatikaDemoRoute: typeof PatikaDemoRoute
   PaymentSuccessRoute: typeof PaymentSuccessRoute
   PlaygroundRoute: typeof PlaygroundRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -439,6 +452,13 @@ declare module '@tanstack/react-router' {
       path: '/payment-success'
       fullPath: '/payment-success'
       preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patika-demo': {
+      id: '/patika-demo'
+      path: '/patika-demo'
+      fullPath: '/patika-demo'
+      preLoaderRoute: typeof PatikaDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -660,6 +680,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnaRoute: AnaRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  PatikaDemoRoute: PatikaDemoRoute,
   PaymentSuccessRoute: PaymentSuccessRoute,
   PlaygroundRoute: PlaygroundRoute,
   ResetPasswordRoute: ResetPasswordRoute,

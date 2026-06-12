@@ -12,6 +12,7 @@ const LINKS = [
   { to: "/uye", label: "üye alanı" },
   { to: "/uye/dersler", label: "üye · dersler" },
   { to: "/uye/etkinlikler", label: "üye · etkinlikler" },
+  { to: "/patika-demo", label: "patika (demo)" },
   { to: "/playground", label: "tasarım sistemi" },
 ] as const;
 
