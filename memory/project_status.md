@@ -5,13 +5,14 @@
 5.30 Lab'in arayüzünü (cinematic mono tasarım) yeni temiz bir projeye taşımak — DRY, SOLID,
 modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini eklemek.
 
-## Şu an: Faz 9 (fiyat-kontrol) bitti — eski sistemin görünür ekranları TAMAM
+## Şu an: TEK BACKEND = yeni Supabase (530 / zsyuanrcdkempsjtalim). Lokal her şey ona karşı çalışıyor.
 
-Tasarım, public, auth, üye alanı (+materyaller/avatar/admin: bekleme-listesi & fiyat-kontrol/abonelik),
-chat, Stripe ödeme tamam. **Kalanlar dış kuruluma bağlı:** içerik→Supabase (deploy ön-koşulu),
-e-posta+unsubscribe (Resend), deploy. Bunlar kullanıcının Supabase bağlantısı/Stripe anahtarı/SMTP
-kurulumunu bekliyor. **Patika** (asıl hedef) — existing bitince sıra ona; mevcut stack'le başlanabilir.
-Ön-koşullar: avatars bucket, admin rolü (user_roles), Stripe sk/pk.
+Lokal Postgres bırakıldı. DATABASE_URL = Supabase **Supavisor pooler** (aws-1-ap-south-1, session 5432;
+Vercel için transaction 6543, `prepare:false`). `supabase/setup.sql` (Supabase-native şema) + migrations
+0002–0005 (içerik/kullanıcı) yeni projeye uygulandı. Demo admin: `admin.530.demo@gmail.com` / `Admin.530.2026`
+(member+admin, gate açık). Eski tüm ekranlar (tasarım/public/auth/üye/chat/Stripe/admin) hazır.
+**Sıradaki:** (1) zengin/mantıklı tohum verisi (kullanıcı isteyecek), (2) **Vercel deploy** — Nitro plugin
++ transaction pooler (6543) connection string + repo bağla + env. Sonra geliştirme. Patika asıl hedef (sonra).
 
 ## Tamamlanan
 
