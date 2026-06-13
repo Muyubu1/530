@@ -6,11 +6,9 @@ import {
   Calendar,
   ChevronRight,
   CreditCard,
-  DollarSign,
   Library,
   Settings,
   StickyNote,
-  Users,
 } from "lucide-react";
 import { Eyebrow, Heading, Card } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
@@ -19,14 +17,9 @@ import { listAllNotesFn, listSavedLessonsFn } from "@/server/learning";
 export function ProfilPage() {
   const { user, auth } = useAuth();
   const [counts, setCounts] = useState<{ notes: number; saved: number } | null>(null);
-  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    auth
-      .isAdmin()
-      .then((ok) => !cancelled && setAdmin(ok))
-      .catch(() => {});
     (async () => {
       try {
         const token = await auth.getAccessToken();
@@ -70,12 +63,6 @@ export function ProfilPage() {
         <RoomCard to="/uye/guncellemeler" Icon={Bell} label="güncellemeler" />
         <RoomCard to="/uye/etkinlikler" Icon={Calendar} label="etkinlikler" />
         <RoomCard to="/uye/profil/abonelik" Icon={CreditCard} label="aboneliğim" />
-        {admin && (
-          <>
-            <RoomCard to="/uye/profil/bekleme-listesi" Icon={Users} label="bekleme listesi" />
-            <RoomCard to="/uye/profil/fiyat-kontrol" Icon={DollarSign} label="fiyat kontrol" />
-          </>
-        )}
       </div>
     </div>
   );
@@ -86,8 +73,6 @@ type RoomLink =
   | "/uye/profil/videolar"
   | "/uye/profil/ayarlar"
   | "/uye/profil/abonelik"
-  | "/uye/profil/bekleme-listesi"
-  | "/uye/profil/fiyat-kontrol"
   | "/uye/kutuphane"
   | "/uye/guncellemeler"
   | "/uye/etkinlikler";

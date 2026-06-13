@@ -24,11 +24,15 @@ export function LoginPage() {
     if (emailErr || pwErr) return;
     setLoading(true);
     const { error } = await auth.signInWithPassword(email.trim().toLowerCase(), password);
-    setLoading(false);
-    if (error) return toast.error("Giriş başarısız. Bilgileri kontrol et.");
+    if (error) {
+      setLoading(false);
+      return toast.error("Giriş başarısız. Bilgileri kontrol et.");
+    }
     if (typeof window !== "undefined")
       window.localStorage.setItem("530lab-remember-me", String(remember));
-    router.navigate({ to: "/uye" });
+    const admin = await auth.isAdmin();
+    setLoading(false);
+    router.navigate({ to: admin ? "/admin" : "/uye" });
   }
 
   return (

@@ -1,5 +1,13 @@
+import { useEffect, useState } from "react";
 import { Link, Outlet, useRouter, useLocation } from "@tanstack/react-router";
-import { Home, MessageCircle, User as UserIcon, Dumbbell, LogOut } from "lucide-react";
+import {
+  Home,
+  MessageCircle,
+  User as UserIcon,
+  Dumbbell,
+  LogOut,
+  LayoutDashboard,
+} from "lucide-react";
 import {
   Wordmark,
   DropdownMenu,
@@ -10,6 +18,7 @@ import {
   DropdownMenuSeparator,
 } from "@/ui/design-system";
 import type { AuthUser } from "@/domain/auth";
+import { useAuth } from "./auth/auth-context";
 
 const AMBIENCE = [
   "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 225, 235, 0.18), transparent 65%)",
@@ -35,6 +44,14 @@ const NAV: NavItem[] = [
 export function MemberLayout({ user }: { user: AuthUser }) {
   const router = useRouter();
   const location = useLocation();
+  const { auth } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    auth
+      .isAdmin()
+      .then(setIsAdmin)
+      .catch(() => {});
+  }, [auth]);
   // The chat is an immersive full-height surface: hide the shell chrome there.
   const isChat = location.pathname.startsWith("/uye/topluluk");
   const initials =
@@ -107,6 +124,15 @@ export function MemberLayout({ user }: { user: AuthUser }) {
                 </p>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {isAdmin && (
+                <DropdownMenuItem
+                  onSelect={() => router.navigate({ to: "/admin" })}
+                  className="gap-2.5 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/80 focus:text-cream"
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  yönetim paneli
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onSelect={() => router.navigate({ to: "/" })}
                 className="gap-2.5 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/80 focus:text-cream"

@@ -46,10 +46,14 @@ export function SignupPage({ email }: { email: string }) {
       displayName: name.trim(),
       lastName: lastName.trim(),
     });
-    setLoading(false);
-    if (error) return toast.error("Kayıt başarısız. Lütfen tekrar dene.");
+    if (error) {
+      setLoading(false);
+      return toast.error("Kayıt başarısız. Lütfen tekrar dene.");
+    }
     toast.success("Hesabın oluşturuldu.");
-    router.navigate({ to: "/uye" });
+    const admin = await auth.isAdmin();
+    setLoading(false);
+    router.navigate({ to: admin ? "/admin" : "/uye" });
   }
 
   if (checking) {
