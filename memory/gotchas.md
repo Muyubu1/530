@@ -1,6 +1,7 @@
 # Gotchas
 
 ## G10 — Supabase Postgres: pooler şart + email validasyonu
+
 **IPv6:** Direct host `db.<ref>.supabase.co` IPv6-only → bu ortamdan ENOTFOUND. **Çözüm:** Supavisor **pooler** (IPv4): `aws-1-ap-south-1.pooler.supabase.com`, user `postgres.<ref>`, session 5432 / transaction 6543. Host prefix `aws-0` DEĞİL `aws-1` çıktı (tenant not found uyarısıyla bulundu). `prepare:false` zorunlu (transaction pooler). Şifredeki özel karakter URL-encode (`**`→`%2A%2A`).
 **Email:** GoTrue signup sahte/MX'siz domain'i reddeder ("Email address invalid") — `@gmail.com` gibi MX'li domain gerekir. Onayı SQL ile geç: `update auth.users set email_confirmed_at=now()`. Roller direkt SQL ile (`insert into user_roles ... 'admin'`).
 **Çalıştırma:** dış DB'ye bağlanan komutlar sandbox kapalı (`dangerouslyDisableSandbox`) gerektirir.

@@ -16,6 +16,7 @@ import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
 import { Route as PatikaDemoRouteImport } from './routes/patika-demo'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as GecicihubRouteImport } from './routes/gecicihub'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AnaRouteImport } from './routes/ana'
 import { Route as IndexRouteImport } from './routes/index'
@@ -74,6 +75,11 @@ const PatikaDemoRoute = PatikaDemoRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GecicihubRoute = GecicihubRouteImport.update({
+  id: '/gecicihub',
+  path: '/gecicihub',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/gecicihub': typeof GecicihubRoute
   '/login': typeof LoginRoute
   '/patika-demo': typeof PatikaDemoRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/gecicihub': typeof GecicihubRoute
   '/login': typeof LoginRoute
   '/patika-demo': typeof PatikaDemoRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -267,6 +275,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ana': typeof AnaRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/gecicihub': typeof GecicihubRoute
   '/login': typeof LoginRoute
   '/patika-demo': typeof PatikaDemoRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -302,6 +311,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ana'
     | '/forgot-password'
+    | '/gecicihub'
     | '/login'
     | '/patika-demo'
     | '/payment-success'
@@ -335,6 +345,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ana'
     | '/forgot-password'
+    | '/gecicihub'
     | '/login'
     | '/patika-demo'
     | '/payment-success'
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ana'
     | '/forgot-password'
+    | '/gecicihub'
     | '/login'
     | '/patika-demo'
     | '/payment-success'
@@ -401,6 +413,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnaRoute: typeof AnaRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  GecicihubRoute: typeof GecicihubRoute
   LoginRoute: typeof LoginRoute
   PatikaDemoRoute: typeof PatikaDemoRoute
   PaymentSuccessRoute: typeof PaymentSuccessRoute
@@ -466,6 +479,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gecicihub': {
+      id: '/gecicihub'
+      path: '/gecicihub'
+      fullPath: '/gecicihub'
+      preLoaderRoute: typeof GecicihubRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -679,6 +699,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnaRoute: AnaRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  GecicihubRoute: GecicihubRoute,
   LoginRoute: LoginRoute,
   PatikaDemoRoute: PatikaDemoRoute,
   PaymentSuccessRoute: PaymentSuccessRoute,
