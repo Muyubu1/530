@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ProgramScene, Eyebrow, Heading, Card, Button, Input } from "@/ui/design-system";
+import { ProgramScene, Eyebrow, Heading, Card, Button } from "@/ui/design-system";
 import { SiteHeader } from "@/ui/shared/site-header";
+import { ValidatedField } from "@/ui/shared/forms/validated-field";
+import * as validate from "@/lib/validation";
 import { PaymentTestModeBanner } from "@/ui/shared/stripe/payment-test-mode-banner";
 import { StripePaymentForm } from "@/ui/shared/stripe/stripe-payment-form";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function PaymentPage({
   planKey,
@@ -23,6 +23,7 @@ export function PaymentPage({
 }) {
   const [email, setEmail] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const emailErr = validate.email(email);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -48,23 +49,24 @@ export function PaymentPage({
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                if (EMAIL_RE.test(email)) setConfirmed(true);
+                if (!emailErr) setConfirmed(true);
               }}
               className="mt-5 space-y-3"
             >
-              <Input
+              <ValidatedField
                 type="email"
                 autoComplete="email"
                 placeholder="E-posta adresin"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={setEmail}
+                error={emailErr}
               />
               <Button
                 type="submit"
                 variant="cream"
                 size="lg"
                 className="w-full"
-                disabled={!EMAIL_RE.test(email)}
+                disabled={!!emailErr}
               >
                 devam et
               </Button>

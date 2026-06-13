@@ -12,7 +12,8 @@ DATABASE_URL = Supabase **Supavisor pooler** (aws-1-ap-south-1, session 5432; Ve
 hub → `/gecicihub`; `/ana`→`/` redirect). **Zengin tohum**: 4 kurs / 29 ders (görsel+video) / 7 etkinlik /
 6 güncelleme / 6 materyal / 7 topluluk mesajı + reaksiyon. Demo admin: `admin.530.demo@gmail.com` /
 `Admin.530.2026`. **Sıradaki:** **Vercel deploy** — Nitro Vite plugin + Transaction pooler (6543) string
-+ repo bağla + env. Sonra: gerçek Patika (asıl hedef), e-posta/unsubscribe, içerik yönetim paneli.
+
+- repo bağla + env. Sonra: gerçek Patika (asıl hedef), e-posta/unsubscribe, içerik yönetim paneli.
 
 ## Tamamlanan
 

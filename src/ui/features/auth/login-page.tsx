@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Button, Input, Checkbox } from "@/ui/design-system";
+import { Button, Checkbox } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
-import { AuthShell, Field, GoogleButton } from "./auth-shell";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { ValidatedField } from "@/ui/shared/forms/validated-field";
+import * as validate from "@/lib/validation";
+import { AuthShell, GoogleButton } from "./auth-shell";
 
 export function LoginPage() {
   const { auth } = useAuth();
@@ -15,10 +15,13 @@ export function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  const emailErr = validate.email(email);
+  const pwErr = validate.password(password);
+  const canSubmit = !emailErr && !pwErr && !loading;
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!EMAIL_RE.test(email)) return toast.error("Geçerli bir e-posta gir.");
-    if (password.length < 6) return toast.error("Şifre en az 6 karakter olmalı.");
+    if (emailErr || pwErr) return;
     setLoading(true);
     const { error } = await auth.signInWithPassword(email.trim().toLowerCase(), password);
     setLoading(false);
@@ -42,26 +45,27 @@ export function LoginPage() {
       }
     >
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="e-posta" htmlFor="email">
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="sen@ornek.com"
-          />
-        </Field>
-        <Field label="şifre" htmlFor="password">
-          <Input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-          />
-        </Field>
+        <ValidatedField
+          label="e-posta"
+          id="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={setEmail}
+          error={emailErr}
+          placeholder="sen@ornek.com"
+        />
+        <ValidatedField
+          label="şifre"
+          id="password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={setPassword}
+          error={pwErr}
+          placeholder="••••••••"
+          showValid={false}
+        />
         <div className="flex items-center justify-between">
           <label className="flex cursor-pointer items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
             <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} />
@@ -74,7 +78,7 @@ export function LoginPage() {
             şifremi unuttum
           </Link>
         </div>
-        <Button type="submit" variant="cream" size="lg" className="w-full" disabled={loading}>
+        <Button type="submit" variant="cream" size="lg" className="w-full" disabled={!canSubmit}>
           {loading ? "giriş yapılıyor…" : "giriş yap"}
         </Button>
       </form>

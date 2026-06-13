@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Eyebrow, Heading, Card, Input, Label, Button } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
+import { ValidatedField } from "@/ui/shared/forms/validated-field";
+import * as validate from "@/lib/validation";
 
 export function SettingsPage() {
   const { user, auth } = useAuth();
@@ -38,8 +40,14 @@ export function SettingsPage() {
     }
   }
 
+  const nameErr = validate.required(name, "Ad");
+  const pwErr = validate.password(pw);
+  const pw2Err = validate.match(pw, pw2);
+  const canSavePassword = !pwErr && !pw2Err && pw2.length > 0 && !savingPw;
+
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
+    if (nameErr) return;
     setSavingProfile(true);
     const { error } = await auth.updateProfile(name.trim(), lastName.trim());
     setSavingProfile(false);
@@ -49,8 +57,7 @@ export function SettingsPage() {
 
   async function savePassword(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 6) return toast.error("Şifre en az 6 karakter olmalı.");
-    if (pw !== pw2) return toast.error("Şifreler eşleşmiyor.");
+    if (!canSavePassword) return;
     setSavingPw(true);
     const { error } = await auth.updatePassword(pw);
     setSavingPw(false);
@@ -99,20 +106,20 @@ export function SettingsPage() {
             profil
           </p>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="name">ad</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="lastName">soyad</Label>
-              <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-            </div>
+            <ValidatedField label="ad" id="name" value={name} onChange={setName} error={nameErr} />
+            <ValidatedField
+              label="soyad"
+              id="lastName"
+              value={lastName}
+              onChange={setLastName}
+              error={null}
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="email">e-posta</Label>
             <Input id="email" value={user?.email ?? ""} disabled className="opacity-70" />
           </div>
-          <Button type="submit" variant="cream" disabled={savingProfile}>
+          <Button type="submit" variant="cream" disabled={!!nameErr || savingProfile}>
             {savingProfile ? "kaydediliyor…" : "kaydet"}
           </Button>
         </form>
@@ -123,27 +130,25 @@ export function SettingsPage() {
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70">
             şifre değiştir
           </p>
-          <div className="space-y-1.5">
-            <Label htmlFor="pw">yeni şifre</Label>
-            <Input
-              id="pw"
-              type="password"
-              autoComplete="new-password"
-              value={pw}
-              onChange={(e) => setPw(e.target.value)}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="pw2">şifre tekrar</Label>
-            <Input
-              id="pw2"
-              type="password"
-              autoComplete="new-password"
-              value={pw2}
-              onChange={(e) => setPw2(e.target.value)}
-            />
-          </div>
-          <Button type="submit" variant="cream" disabled={savingPw}>
+          <ValidatedField
+            label="yeni şifre"
+            id="pw"
+            type="password"
+            autoComplete="new-password"
+            value={pw}
+            onChange={setPw}
+            error={pwErr}
+          />
+          <ValidatedField
+            label="şifre tekrar"
+            id="pw2"
+            type="password"
+            autoComplete="new-password"
+            value={pw2}
+            onChange={setPw2}
+            error={pw2Err}
+          />
+          <Button type="submit" variant="cream" disabled={!canSavePassword}>
             {savingPw ? "güncelleniyor…" : "şifreyi güncelle"}
           </Button>
         </form>

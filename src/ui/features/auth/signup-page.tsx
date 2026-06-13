@@ -3,6 +3,8 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button, Input } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
+import { ValidatedField } from "@/ui/shared/forms/validated-field";
+import * as validate from "@/lib/validation";
 import { AuthShell, Field, GoogleButton } from "./auth-shell";
 
 /** Signup is purchase-gated: the e-mail must already exist in `purchases`. */
@@ -28,11 +30,15 @@ export function SignupPage({ email }: { email: string }) {
     });
   }, [email, auth]);
 
+  const nameErr = validate.required(name, "Ad");
+  const lastErr = validate.required(lastName, "Soyad");
+  const pwErr = validate.password(password);
+  const confErr = validate.match(password, confirm);
+  const canSubmit = !nameErr && !lastErr && !pwErr && !confErr && confirm.length > 0 && !loading;
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !lastName.trim()) return toast.error("Ad ve soyad gerekli.");
-    if (password.length < 6) return toast.error("Şifre en az 6 karakter olmalı.");
-    if (password !== confirm) return toast.error("Şifreler eşleşmiyor.");
+    if (!canSubmit) return;
     setLoading(true);
     const { error } = await auth.signUp({
       email: email.trim().toLowerCase(),
@@ -80,36 +86,38 @@ export function SignupPage({ email }: { email: string }) {
     <AuthShell eyebrow="kayıt" title="Hesabını oluştur">
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <Field label="ad" htmlFor="name">
-            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-          </Field>
-          <Field label="soyad" htmlFor="lastName">
-            <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-          </Field>
+          <ValidatedField label="ad" id="name" value={name} onChange={setName} error={nameErr} />
+          <ValidatedField
+            label="soyad"
+            id="lastName"
+            value={lastName}
+            onChange={setLastName}
+            error={lastErr}
+          />
         </div>
         <Field label="e-posta">
           <Input value={email} disabled className="opacity-70" />
         </Field>
-        <Field label="şifre" htmlFor="password">
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="en az 6 karakter"
-          />
-        </Field>
-        <Field label="şifre tekrar" htmlFor="confirm">
-          <Input
-            id="confirm"
-            type="password"
-            autoComplete="new-password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-          />
-        </Field>
-        <Button type="submit" variant="cream" size="lg" className="w-full" disabled={loading}>
+        <ValidatedField
+          label="şifre"
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={setPassword}
+          error={pwErr}
+          placeholder="en az 6 karakter"
+        />
+        <ValidatedField
+          label="şifre tekrar"
+          id="confirm"
+          type="password"
+          autoComplete="new-password"
+          value={confirm}
+          onChange={setConfirm}
+          error={confErr}
+        />
+        <Button type="submit" variant="cream" size="lg" className="w-full" disabled={!canSubmit}>
           {loading ? "oluşturuluyor…" : "hesabı oluştur"}
         </Button>
       </form>

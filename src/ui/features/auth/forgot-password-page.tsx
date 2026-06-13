@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Button, Input } from "@/ui/design-system";
+import { Button } from "@/ui/design-system";
 import { useAuth } from "@/ui/shared/auth/auth-context";
-import { AuthShell, Field } from "./auth-shell";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { ValidatedField } from "@/ui/shared/forms/validated-field";
+import * as validate from "@/lib/validation";
+import { AuthShell } from "./auth-shell";
 
 export function ForgotPasswordPage() {
   const { auth } = useAuth();
@@ -13,9 +13,11 @@ export function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
+  const emailErr = validate.email(email);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!EMAIL_RE.test(email)) return toast.error("Geçerli bir e-posta gir.");
+    if (emailErr) return;
     setLoading(true);
     const { error } = await auth.resetPasswordForEmail(email.trim().toLowerCase());
     setLoading(false);
@@ -53,17 +55,23 @@ export function ForgotPasswordPage() {
       }
     >
       <form onSubmit={onSubmit} className="space-y-4">
-        <Field label="e-posta" htmlFor="email">
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="sen@ornek.com"
-          />
-        </Field>
-        <Button type="submit" variant="cream" size="lg" className="w-full" disabled={loading}>
+        <ValidatedField
+          label="e-posta"
+          id="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={setEmail}
+          error={emailErr}
+          placeholder="sen@ornek.com"
+        />
+        <Button
+          type="submit"
+          variant="cream"
+          size="lg"
+          className="w-full"
+          disabled={!!emailErr || loading}
+        >
           {loading ? "gönderiliyor…" : "sıfırlama bağlantısı gönder"}
         </Button>
       </form>
