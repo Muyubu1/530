@@ -1,10 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminComingSoon } from "@/ui/features/admin/coming-soon";
+import { AdminEventsPage } from "@/ui/features/admin/events-page";
 
 export const Route = createFileRoute("/admin/etkinlikler")({
-  component: EtkinliklerRoute,
+  component: AdminEventsPage,
 });
-
-function EtkinliklerRoute() {
-  return <AdminComingSoon title="Etkinlikler" />;
-}

@@ -34,18 +34,19 @@ import { Route as OzelProgramOdemeRouteImport } from './routes/ozel-program/odem
 import { Route as MentorlukTesekkurlerRouteImport } from './routes/mentorluk/tesekkurler'
 import { Route as MentorlukSatinAlRouteImport } from './routes/mentorluk/satin-al'
 import { Route as KisiselProgramOdemeRouteImport } from './routes/kisisel-program/odeme'
-import { Route as AdminKurslarRouteImport } from './routes/admin/kurslar'
 import { Route as AdminGuncellemelerRouteImport } from './routes/admin/guncellemeler'
 import { Route as AdminFiyatKontrolRouteImport } from './routes/admin/fiyat-kontrol'
 import { Route as AdminEtkinliklerRouteImport } from './routes/admin/etkinlikler'
 import { Route as AdminBeklemeListesiRouteImport } from './routes/admin/bekleme-listesi'
 import { Route as UyeProfilIndexRouteImport } from './routes/uye/profil/index'
 import { Route as UyeDerslerIndexRouteImport } from './routes/uye/dersler/index'
+import { Route as AdminKurslarIndexRouteImport } from './routes/admin/kurslar/index'
 import { Route as UyeProfilVideolarRouteImport } from './routes/uye/profil/videolar'
 import { Route as UyeProfilNotlarRouteImport } from './routes/uye/profil/notlar'
 import { Route as UyeProfilAyarlarRouteImport } from './routes/uye/profil/ayarlar'
 import { Route as UyeProfilAbonelikRouteImport } from './routes/uye/profil/abonelik'
 import { Route as UyeDerslerCourseIdRouteImport } from './routes/uye/dersler/$courseId'
+import { Route as AdminKurslarCourseIdRouteImport } from './routes/admin/kurslar/$courseId'
 
 const UyeRoute = UyeRouteImport.update({
   id: '/uye',
@@ -172,11 +173,6 @@ const KisiselProgramOdemeRoute = KisiselProgramOdemeRouteImport.update({
   path: '/kisisel-program/odeme',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminKurslarRoute = AdminKurslarRouteImport.update({
-  id: '/kurslar',
-  path: '/kurslar',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminGuncellemelerRoute = AdminGuncellemelerRouteImport.update({
   id: '/guncellemeler',
   path: '/guncellemeler',
@@ -207,6 +203,11 @@ const UyeDerslerIndexRoute = UyeDerslerIndexRouteImport.update({
   path: '/dersler/',
   getParentRoute: () => UyeRoute,
 } as any)
+const AdminKurslarIndexRoute = AdminKurslarIndexRouteImport.update({
+  id: '/kurslar/',
+  path: '/kurslar/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const UyeProfilVideolarRoute = UyeProfilVideolarRouteImport.update({
   id: '/profil/videolar',
   path: '/profil/videolar',
@@ -232,6 +233,11 @@ const UyeDerslerCourseIdRoute = UyeDerslerCourseIdRouteImport.update({
   path: '/dersler/$courseId',
   getParentRoute: () => UyeRoute,
 } as any)
+const AdminKurslarCourseIdRoute = AdminKurslarCourseIdRouteImport.update({
+  id: '/kurslar/$courseId',
+  path: '/kurslar/$courseId',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -250,7 +256,6 @@ export interface FileRoutesByFullPath {
   '/admin/etkinlikler': typeof AdminEtkinliklerRoute
   '/admin/fiyat-kontrol': typeof AdminFiyatKontrolRoute
   '/admin/guncellemeler': typeof AdminGuncellemelerRoute
-  '/admin/kurslar': typeof AdminKurslarRoute
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/mentorluk/tesekkurler': typeof MentorlukTesekkurlerRoute
@@ -264,11 +269,13 @@ export interface FileRoutesByFullPath {
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
   '/uye/': typeof UyeIndexRoute
+  '/admin/kurslar/$courseId': typeof AdminKurslarCourseIdRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
   '/uye/profil/abonelik': typeof UyeProfilAbonelikRoute
   '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
   '/uye/profil/notlar': typeof UyeProfilNotlarRoute
   '/uye/profil/videolar': typeof UyeProfilVideolarRoute
+  '/admin/kurslar/': typeof AdminKurslarIndexRoute
   '/uye/dersler/': typeof UyeDerslerIndexRoute
   '/uye/profil/': typeof UyeProfilIndexRoute
 }
@@ -287,7 +294,6 @@ export interface FileRoutesByTo {
   '/admin/etkinlikler': typeof AdminEtkinliklerRoute
   '/admin/fiyat-kontrol': typeof AdminFiyatKontrolRoute
   '/admin/guncellemeler': typeof AdminGuncellemelerRoute
-  '/admin/kurslar': typeof AdminKurslarRoute
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/mentorluk/tesekkurler': typeof MentorlukTesekkurlerRoute
@@ -301,11 +307,13 @@ export interface FileRoutesByTo {
   '/mentorluk': typeof MentorlukIndexRoute
   '/ozel-program': typeof OzelProgramIndexRoute
   '/uye': typeof UyeIndexRoute
+  '/admin/kurslar/$courseId': typeof AdminKurslarCourseIdRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
   '/uye/profil/abonelik': typeof UyeProfilAbonelikRoute
   '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
   '/uye/profil/notlar': typeof UyeProfilNotlarRoute
   '/uye/profil/videolar': typeof UyeProfilVideolarRoute
+  '/admin/kurslar': typeof AdminKurslarIndexRoute
   '/uye/dersler': typeof UyeDerslerIndexRoute
   '/uye/profil': typeof UyeProfilIndexRoute
 }
@@ -327,7 +335,6 @@ export interface FileRoutesById {
   '/admin/etkinlikler': typeof AdminEtkinliklerRoute
   '/admin/fiyat-kontrol': typeof AdminFiyatKontrolRoute
   '/admin/guncellemeler': typeof AdminGuncellemelerRoute
-  '/admin/kurslar': typeof AdminKurslarRoute
   '/kisisel-program/odeme': typeof KisiselProgramOdemeRoute
   '/mentorluk/satin-al': typeof MentorlukSatinAlRoute
   '/mentorluk/tesekkurler': typeof MentorlukTesekkurlerRoute
@@ -341,11 +348,13 @@ export interface FileRoutesById {
   '/mentorluk/': typeof MentorlukIndexRoute
   '/ozel-program/': typeof OzelProgramIndexRoute
   '/uye/': typeof UyeIndexRoute
+  '/admin/kurslar/$courseId': typeof AdminKurslarCourseIdRoute
   '/uye/dersler/$courseId': typeof UyeDerslerCourseIdRoute
   '/uye/profil/abonelik': typeof UyeProfilAbonelikRoute
   '/uye/profil/ayarlar': typeof UyeProfilAyarlarRoute
   '/uye/profil/notlar': typeof UyeProfilNotlarRoute
   '/uye/profil/videolar': typeof UyeProfilVideolarRoute
+  '/admin/kurslar/': typeof AdminKurslarIndexRoute
   '/uye/dersler/': typeof UyeDerslerIndexRoute
   '/uye/profil/': typeof UyeProfilIndexRoute
 }
@@ -368,7 +377,6 @@ export interface FileRouteTypes {
     | '/admin/etkinlikler'
     | '/admin/fiyat-kontrol'
     | '/admin/guncellemeler'
-    | '/admin/kurslar'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/mentorluk/tesekkurler'
@@ -382,11 +390,13 @@ export interface FileRouteTypes {
     | '/mentorluk/'
     | '/ozel-program/'
     | '/uye/'
+    | '/admin/kurslar/$courseId'
     | '/uye/dersler/$courseId'
     | '/uye/profil/abonelik'
     | '/uye/profil/ayarlar'
     | '/uye/profil/notlar'
     | '/uye/profil/videolar'
+    | '/admin/kurslar/'
     | '/uye/dersler/'
     | '/uye/profil/'
   fileRoutesByTo: FileRoutesByTo
@@ -405,7 +415,6 @@ export interface FileRouteTypes {
     | '/admin/etkinlikler'
     | '/admin/fiyat-kontrol'
     | '/admin/guncellemeler'
-    | '/admin/kurslar'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/mentorluk/tesekkurler'
@@ -419,11 +428,13 @@ export interface FileRouteTypes {
     | '/mentorluk'
     | '/ozel-program'
     | '/uye'
+    | '/admin/kurslar/$courseId'
     | '/uye/dersler/$courseId'
     | '/uye/profil/abonelik'
     | '/uye/profil/ayarlar'
     | '/uye/profil/notlar'
     | '/uye/profil/videolar'
+    | '/admin/kurslar'
     | '/uye/dersler'
     | '/uye/profil'
   id:
@@ -444,7 +455,6 @@ export interface FileRouteTypes {
     | '/admin/etkinlikler'
     | '/admin/fiyat-kontrol'
     | '/admin/guncellemeler'
-    | '/admin/kurslar'
     | '/kisisel-program/odeme'
     | '/mentorluk/satin-al'
     | '/mentorluk/tesekkurler'
@@ -458,11 +468,13 @@ export interface FileRouteTypes {
     | '/mentorluk/'
     | '/ozel-program/'
     | '/uye/'
+    | '/admin/kurslar/$courseId'
     | '/uye/dersler/$courseId'
     | '/uye/profil/abonelik'
     | '/uye/profil/ayarlar'
     | '/uye/profil/notlar'
     | '/uye/profil/videolar'
+    | '/admin/kurslar/'
     | '/uye/dersler/'
     | '/uye/profil/'
   fileRoutesById: FileRoutesById
@@ -666,13 +678,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KisiselProgramOdemeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/kurslar': {
-      id: '/admin/kurslar'
-      path: '/kurslar'
-      fullPath: '/admin/kurslar'
-      preLoaderRoute: typeof AdminKurslarRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/guncellemeler': {
       id: '/admin/guncellemeler'
       path: '/guncellemeler'
@@ -715,6 +720,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UyeDerslerIndexRouteImport
       parentRoute: typeof UyeRoute
     }
+    '/admin/kurslar/': {
+      id: '/admin/kurslar/'
+      path: '/kurslar'
+      fullPath: '/admin/kurslar/'
+      preLoaderRoute: typeof AdminKurslarIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/uye/profil/videolar': {
       id: '/uye/profil/videolar'
       path: '/profil/videolar'
@@ -750,6 +762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UyeDerslerCourseIdRouteImport
       parentRoute: typeof UyeRoute
     }
+    '/admin/kurslar/$courseId': {
+      id: '/admin/kurslar/$courseId'
+      path: '/kurslar/$courseId'
+      fullPath: '/admin/kurslar/$courseId'
+      preLoaderRoute: typeof AdminKurslarCourseIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -758,8 +777,9 @@ interface AdminRouteChildren {
   AdminEtkinliklerRoute: typeof AdminEtkinliklerRoute
   AdminFiyatKontrolRoute: typeof AdminFiyatKontrolRoute
   AdminGuncellemelerRoute: typeof AdminGuncellemelerRoute
-  AdminKurslarRoute: typeof AdminKurslarRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminKurslarCourseIdRoute: typeof AdminKurslarCourseIdRoute
+  AdminKurslarIndexRoute: typeof AdminKurslarIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -767,8 +787,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEtkinliklerRoute: AdminEtkinliklerRoute,
   AdminFiyatKontrolRoute: AdminFiyatKontrolRoute,
   AdminGuncellemelerRoute: AdminGuncellemelerRoute,
-  AdminKurslarRoute: AdminKurslarRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminKurslarCourseIdRoute: AdminKurslarCourseIdRoute,
+  AdminKurslarIndexRoute: AdminKurslarIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
