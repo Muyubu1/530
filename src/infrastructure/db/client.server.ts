@@ -8,4 +8,6 @@ if (!url) {
   throw new Error("DATABASE_URL is not set — see .env.example");
 }
 
-export const sql = postgres(url, { onnotice: () => {} });
+// `prepare: false` is required for Supabase's transaction pooler (and harmless
+// on the session pooler) so the same code runs locally and on Vercel.
+export const sql = postgres(url, { prepare: false, onnotice: () => {} });
