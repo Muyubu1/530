@@ -10,8 +10,10 @@ modül-modül. Ardından "Patika" (Duolingo-vari yolculuk takibi) özelliğini e
 DATABASE_URL = Supabase **Supavisor pooler** (aws-1-ap-south-1, session 5432; Vercel için transaction
 6543, `prepare:false`). setup.sql + migrations 0002–0006 uygulandı. **Landing artık `/`** (eski geçici
 hub → `/gecicihub`; `/ana`→`/` redirect). **Zengin tohum**: 4 kurs / 29 ders (görsel+video) / 7 etkinlik /
-6 güncelleme / 6 materyal / 7 topluluk mesajı + reaksiyon. Demo admin: `admin.530.demo@gmail.com` /
-`Admin.530.2026`. **Sıradaki:** **Vercel deploy** — Nitro Vite plugin + Transaction pooler (6543) string
+6 güncelleme / 6 materyal / 7 topluluk mesajı + reaksiyon. **Admin/üye AYRIK**: admin→`/admin` (dashboard
++ TAM CRUD CMS: kurslar/dersler/materyaller/etkinlikler/güncellemeler; requireAdmin gate), üye→`/uye`.
+Girişler: admin `admin.530.demo@gmail.com`/`Admin.530.2026`, üye `uye.530.demo@gmail.com`/`Uye.530.2026`.
+Formlarda realtime doğrulama + şifre-göster. **Sıradaki:** **Vercel deploy** — Nitro Vite plugin + Transaction pooler (6543) string
 
 - repo bağla + env. Sonra: gerçek Patika (asıl hedef), e-posta/unsubscribe, içerik yönetim paneli.
 
