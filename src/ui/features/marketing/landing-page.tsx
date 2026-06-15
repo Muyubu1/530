@@ -115,7 +115,7 @@ export function LandingPage({
             // over the pinned stage (wrong order + "fast" tail).
             pin: true,
             anticipatePin: 1,
-            scrub: heavy ? 1.1 : 1,
+            scrub: heavy ? 0.8 : 0.9,
             invalidateOnRefresh: true,
             onUpdate: (self) => updateHud(self.progress),
           },
@@ -284,18 +284,18 @@ export function LandingPage({
       const mm = gsap.matchMedia(root);
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        buildClimb("reduced", 1.4);
+        buildClimb("reduced", 1.2);
       });
 
       mm.add("(min-width: 760px) and (prefers-reduced-motion: no-preference)", () => {
-        buildClimb("full", 1.7);
+        buildClimb("full", 1.3);
 
         // Lenis smooth scroll, driven by the GSAP ticker (single rAF source).
         const lenis = new Lenis({
-          duration: 1.4,
+          duration: 1.1,
           smoothWheel: true,
-          wheelMultiplier: 0.9,
-          lerp: 0.08,
+          wheelMultiplier: 1.0,
+          lerp: 0.1,
         });
         lenisRef.current = lenis;
         lenis.on("scroll", ScrollTrigger.update);
@@ -358,7 +358,7 @@ export function LandingPage({
       });
 
       mm.add("(max-width: 759px) and (prefers-reduced-motion: no-preference)", () => {
-        buildClimb("lite", 1.2);
+        buildClimb("lite", 1.0);
       });
 
       // ── Lower sections: gentle background parallax via scrubbed ScrollTriggers. ──
