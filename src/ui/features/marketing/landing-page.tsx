@@ -1,14 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
+import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { Reveal } from "@/ui/design-system";
 import type { WaitlistData, WaitlistResult } from "@/ui/shared/waitlist-form";
+
+const N = 8;
+const WORDS = ["", "DİPTE", "SABIR", "AZİM", "İNANÇ", "VARIŞ", "KARDEŞLİK", "SIRA SENDE"];
+// Pacing: a lead hold on the hero, then one "beat" per image, trailing hold for the finale.
+const HOLD_LEAD = 0.6;
+const HOLD_TAIL = 0.8;
+const center = (i: number) => HOLD_LEAD + i; // beat-time at which image i is sharp & centered
+const TOTAL = HOLD_LEAD + (N - 1) + HOLD_TAIL;
 
 /**
  * The marketing landing — an immersive, scroll-driven cinematic climb followed
- * by the system / elimination / invite / application sections. Ported from the
- * standalone "530V2" design; the climb is animated imperatively in a single
- * rAF loop (see the mount effect), with Lenis for smooth scroll.
+ * by the system / elimination / invite / application sections.
+ *
+ * The climb is one pinned GSAP timeline driven by ScrollTrigger (scrub): a
+ * continuous camera dolly through 8 image planes with long overlapping
+ * cross-dissolves, per-frame Ken Burns, layered parallax, a colour grade that
+ * warms toward the summit, and synced light-leaks. Lenis drives smooth scroll
+ * via the GSAP ticker. Motion degrades gracefully (touch / reduced-motion)
+ * through gsap.matchMedia.
  */
 export function LandingPage({
   onWaitlistSubmit,
@@ -21,326 +38,336 @@ export function LandingPage({
   const [accepted, setAccepted] = useState(false);
   const [sending, setSending] = useState(false);
 
-  // ── Cinematic engine: pinned 3D climb, parallax, motes, grain, reveal ──────
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+  useGSAP(
+    () => {
+      const root = rootRef.current;
+      if (!root) return;
+      gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-    const N = 8;
-    const words = ["", "DİPTE", "SABIR", "AZİM", "İNANÇ", "VARIŞ", "KARDEŞLİK", "SIRA SENDE"];
+      const q = gsap.utils.selector(root);
+      const layers = gsap.utils.toArray<HTMLElement>(q(".cine-layer"));
+      const imgs = gsap.utils.toArray<HTMLElement>(q(".cine-img"));
+      const segs = gsap.utils.toArray<HTMLElement>(q(".cine-seg"));
+      const hudFill = q(".hud-fill")[0] as HTMLElement | undefined;
+      const hud = q(".cine-hud")[0] as HTMLElement | undefined;
+      const hudWord = q(".hud-word")[0] as HTMLElement | undefined;
+      const hudNum = q(".hud-num")[0] as HTMLElement | undefined;
+      const leak = q(".light-leak")[0] as HTMLElement | undefined;
+      const bright = q(".bright-overlay")[0] as HTMLElement | undefined;
+      const warm = q(".cine-grade-warm")[0] as HTMLElement | undefined;
+      const world = q(".cine-world")[0] as HTMLElement | undefined;
+      const fx = q(".cine-fx")[0] as HTMLElement | undefined;
+      const textWrap = q(".cine-text")[0] as HTMLElement | undefined;
 
-    const cine = root.querySelector<HTMLElement>(".cine-section");
-    const world = root.querySelector<HTMLElement>(".cine-world");
-    const fx = root.querySelector<HTMLElement>(".cine-fx");
-    const textWrap = root.querySelector<HTMLElement>(".cine-text");
-    const layers = Array.from(root.querySelectorAll<HTMLElement>(".cine-layer"));
-    const imgs = Array.from(root.querySelectorAll<HTMLImageElement>(".cine-img"));
-    const segs = Array.from(root.querySelectorAll<HTMLElement>(".cine-seg"));
-    const overlay = root.querySelector<HTMLElement>(".bright-overlay");
-    const hud = root.querySelector<HTMLElement>(".cine-hud");
-    const hudFill = root.querySelector<HTMLElement>(".hud-fill");
-    const hudWord = root.querySelector<HTMLElement>(".hud-word");
-    const hudNum = root.querySelector<HTMLElement>(".hud-num");
-    const leak = root.querySelector<HTMLElement>(".light-leak");
-    const segLines = segs.map((s) => Array.from(s.querySelectorAll<HTMLElement>(".ln")));
-    const stairWords = segs.map((s) => s.querySelector<HTMLElement>(".stair-word"));
-    if (!cine) return;
+      const clamp01 = gsap.utils.clamp(0, 1);
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const touch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 760;
+      /** HUD chapter / progress — discrete word + fill, driven from scroll progress. */
+      let hudIdx = -1;
+      const updateHud = (p: number) => {
+        if (hudFill) hudFill.style.height = (p * 100).toFixed(1) + "%";
+        if (hud) {
+          const inA = clamp01((p - 0.015) / 0.05);
+          const outA = clamp01((0.99 - p) / 0.04);
+          hud.style.opacity = (inA * outA).toFixed(3);
+        }
+        const idx = Math.round(p * (N - 1));
+        if (idx !== hudIdx && hudWord && hudNum) {
+          hudIdx = idx;
+          hudWord.textContent = WORDS[idx] || "";
+          hudNum.textContent = "0" + (idx + 1) + " / 0" + N;
+        }
+      };
 
-    imgs.forEach((im) => {
-      const s = im.getAttribute("src");
-      if (s) {
-        const p = new Image();
-        p.src = s;
-      }
-    });
+      /**
+       * Build the pinned climb timeline. `motion` controls fidelity:
+       *  full   → dolly + Ken Burns + blur + parallax + leak + grade
+       *  lite   → dolly + crossfade + grade (no blur/parallax/leak, touch)
+       *  reduced→ plain opacity cross-dissolves only
+       */
+      const buildClimb = (motion: "full" | "lite" | "reduced", scrubVh: number) => {
+        const rich = motion !== "reduced";
+        const heavy = motion === "full";
 
-    // lines start hidden (except the hero segment)
-    segLines.forEach((lines, si) => {
-      if (si === 0) return;
-      lines.forEach((ln) => {
-        ln.style.opacity = "0";
-        ln.style.willChange = "opacity,transform,filter";
-      });
-    });
+        // Initial states (also what no-JS users see is the SSR markup; set before paint).
+        layers.forEach((l, i) => gsap.set(l, { opacity: i === 0 ? 1 : 0 }));
+        segs.forEach((s, i) => {
+          if (i === 0) return;
+          gsap.set(s, { opacity: 0 });
+          gsap.set(s.querySelectorAll(".ln"), { opacity: 0 });
+        });
 
-    let mx = 0,
-      my = 0,
-      cx = 0,
-      cy = 0,
-      raf = 0,
-      hudIdx = -1;
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: ".cine-section",
+            start: "top top",
+            end: () => "+=" + window.innerHeight * scrubVh,
+            pin: ".cine-stage",
+            scrub: heavy ? 1.2 : 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => updateHud(self.progress),
+          },
+        });
 
-    const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-    const ease = (t: number) => t * t * (3 - 2 * t);
-    const easeOut = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(2, -9 * t));
-
-    const layout = () => {
-      const small = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 760;
-      const factor = small ? 6.0 : 10.8;
-      cine.style.height = Math.round(factor * window.innerHeight) + "px";
-    };
-
-    const buildMotes = () => {
-      const host = root.querySelector<HTMLElement>(".motes");
-      if (!host || reduce) return;
-      const count = touch ? 14 : 34;
-      let html = "";
-      for (let i = 0; i < count; i++) {
-        const x = (Math.random() * 120 - 10).toFixed(2);
-        const y = (Math.random() * 120 - 10).toFixed(2);
-        const zz = (Math.random() * 650 - 500).toFixed(0);
-        const sz = (Math.random() * 2.4 + 1).toFixed(2);
-        const dur = (Math.random() * 14 + 12).toFixed(1);
-        const del = (-Math.random() * 20).toFixed(1);
-        const op = (Math.random() * 0.4 + 0.18).toFixed(2);
-        const mxx = (Math.random() * 40 - 20).toFixed(0);
-        html +=
-          '<span style="position:absolute;left:' +
-          x +
-          "%;top:" +
-          y +
-          "%;transform:translateZ(" +
-          zz +
-          'px);transform-style:preserve-3d;"><span style="display:block;width:' +
-          sz +
-          "px;height:" +
-          sz +
-          "px;border-radius:50%;background:radial-gradient(circle,#eaf2f6,rgba(234,242,246,0));--mo:" +
-          op +
-          ";--mx:" +
-          mxx +
-          "px;animation:cineMote " +
-          dur +
-          "s linear " +
-          del +
-          's infinite;"></span></span>';
-      }
-      host.innerHTML = html;
-    };
-
-    const frame = () => {
-      const rect = cine.getBoundingClientRect();
-      const total = cine.offsetHeight - window.innerHeight;
-      let P = total > 0 ? -rect.top / total : 0;
-      P = clamp(P);
-
-      cx += (mx - cx) * 0.06;
-      cy += (my - cy) * 0.06;
-      const tt = (typeof performance !== "undefined" ? performance.now() : 0) / 1000;
-      const bX = reduce ? 0 : Math.sin(tt * 0.16) * 0.55;
-      const bY = reduce ? 0 : Math.cos(tt * 0.12) * 0.45;
-      const bT = reduce ? 0 : Math.sin(tt * 0.2) * 5;
-      if (world)
-        world.style.transform =
-          "rotateX(" +
-          (-cy * 2.0 + bY).toFixed(3) +
-          "deg) rotateY(" +
-          (cx * 2.0 + bX).toFixed(3) +
-          "deg) translate3d(" +
-          (cx * 8).toFixed(2) +
-          "px," +
-          (cy * 8 + bT).toFixed(2) +
-          "px,0)";
-      if (fx)
-        fx.style.transform =
-          "translate3d(" + (cx * 28).toFixed(2) + "px," + (cy * 24).toFixed(2) + "px,0)";
-      if (textWrap)
-        textWrap.style.transform =
-          "translate3d(" + (cx * -8).toFixed(2) + "px," + (cy * -8).toFixed(2) + "px,0)";
-
-      const segW = 1 / (N - 1);
-      for (let i = 0; i < N; i++) {
-        const c = i / (N - 1);
-        const rel = (P - c) / segW;
-
-        const layer = layers[i];
-        const a = Math.abs(rel);
-        let op = clamp(1 - (a - 0.28) / 0.5);
-        op = op * op * (3 - 2 * op);
-        const blur = touch ? 0 : clamp(a / 0.7) * 5.5;
-        const scale = 1.05 + 0.075 * clamp((rel + 0.85) / 1.7);
-        const tx = rel * 5;
-        const ty = rel * -7;
-        if (layer) {
-          layer.style.opacity = op.toFixed(3);
-          layer.style.transform = reduce
-            ? "none"
-            : "translate3d(" +
-              tx.toFixed(1) +
-              "px," +
-              ty.toFixed(1) +
-              "px,0) scale(" +
-              scale.toFixed(4) +
-              ")";
-          layer.style.filter =
-            !reduce && blur > 0.05 && op > 0.02 ? "blur(" + blur.toFixed(2) + "px)" : "none";
+        // ── Continuous camera dolly — never resets across the whole climb. ──
+        if (rich && world) {
+          tl.fromTo(
+            world,
+            { scale: 1.06, yPercent: 2 },
+            { scale: heavy ? 1.34 : 1.24, yPercent: -3, duration: TOTAL },
+            0,
+          );
         }
 
-        const tOp = ease(clamp(1 - Math.abs(rel) / 0.62));
-        const seg = segs[i];
-        if (seg) {
-          seg.style.opacity = tOp.toFixed(3);
-          seg.style.pointerEvents = tOp > 0.5 ? "auto" : "none";
+        // ── Colour grade: cold/dark at the base → brighter, warmer at the summit. ──
+        if (bright) tl.fromTo(bright, { opacity: 0.42 }, { opacity: 0.05, duration: TOTAL }, 0);
+        if (rich && warm) tl.fromTo(warm, { opacity: 0 }, { opacity: 0.22, duration: TOTAL }, 0);
+
+        // ── Per-image cross-dissolve with push-through (the anti-slideshow core). ──
+        layers.forEach((layer, i) => {
+          const t = center(i);
+          if (i > 0) {
+            // rushes toward camera, settles sharp
+            tl.fromTo(
+              layer,
+              {
+                opacity: 0,
+                scale: heavy ? 1.18 : 1.1,
+                yPercent: rich ? 3 : 0,
+                filter: heavy ? "blur(14px)" : "blur(0px)",
+              },
+              {
+                opacity: 1,
+                scale: heavy ? 1.06 : 1.04,
+                yPercent: 0,
+                filter: "blur(0px)",
+                duration: 0.7,
+                ease: rich ? "power2.out" : "none",
+              },
+              t - 0.7,
+            );
+          }
+          if (i < N - 1) {
+            // keeps moving + blurs out as the next plane arrives (overlap ≈ 0.7 beat)
+            tl.to(
+              layer,
+              {
+                opacity: 0,
+                scale: heavy ? 1.24 : 1.12,
+                yPercent: rich ? -5 : 0,
+                filter: heavy ? "blur(18px)" : "blur(0px)",
+                duration: 0.9,
+                ease: rich ? "power2.in" : "none",
+              },
+              t + 0.25,
+            );
+          }
+        });
+
+        // ── Per-frame Ken Burns — held frames stay alive (ambient, infinite). ──
+        if (heavy) {
+          imgs.forEach((img, i) => {
+            gsap.to(img, {
+              scale: 1.08,
+              xPercent: i % 2 ? -2.5 : 2.5,
+              yPercent: i % 2 ? 2 : -2,
+              duration: 16 + i,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+            });
+          });
         }
 
-        const sw = stairWords[i];
-        if (sw && !reduce) {
-          sw.style.transform =
-            "translate(-50%,-50%) translate3d(" +
-            (rel * 90).toFixed(1) +
-            "px," +
-            (rel * -26).toFixed(1) +
-            "px,0) scale(" +
-            (1.12 - rel * 0.1).toFixed(3) +
-            ")";
-        }
-
-        if (i > 0) {
-          const lines = segLines[i];
-          for (let li = 0; li < lines.length; li++) {
-            const ln = lines[li];
-            if (reduce) {
-              ln.style.opacity = tOp.toFixed(3);
-              ln.style.transform = "none";
-              ln.style.filter = "none";
-              continue;
-            }
+        // ── Text segments — lines flow in (blur+scale+slide), drift out in the dolly dir. ──
+        segs.forEach((seg, i) => {
+          if (i === 0) {
+            // hero handled by CSS entrance; just dissolve it out as the climb begins
+            tl.to(seg, { opacity: 0, duration: 0.6, ease: "power2.in" }, center(0) + 0.3);
+            return;
+          }
+          const t = center(i);
+          const lines = gsap.utils.toArray<HTMLElement>(seg.querySelectorAll(".ln"));
+          tl.to(seg, { opacity: 1, duration: 0.01 }, t - 0.55);
+          lines.forEach((ln, li) => {
             const dir = (i + li) % 2 === 0 ? -1 : 1;
-            const lp = easeOut(clamp(1 - (Math.abs(rel) + li * 0.13) / 0.6));
-            const inv = 1 - lp;
-            const enterX = inv * dir * 150;
-            const enterRot = inv * dir * 4.2;
-            const driftX = rel * (li === 0 ? -46 : 60) * lp;
-            const floatY = Math.sin(tt * 0.55 + i * 1.3 + li * 0.9) * 4 * lp;
-            const lblur = inv * 9;
-            ln.style.opacity = lp.toFixed(3);
-            ln.style.transform =
-              "translate3d(" +
-              (enterX + driftX).toFixed(1) +
-              "px," +
-              floatY.toFixed(1) +
-              "px,0) rotate(" +
-              enterRot.toFixed(2) +
-              "deg)";
-            ln.style.filter = lblur > 0.05 ? "blur(" + lblur.toFixed(2) + "px)" : "none";
+            tl.fromTo(
+              ln,
+              {
+                opacity: 0,
+                xPercent: rich ? dir * 26 : 0,
+                yPercent: rich ? 18 : 0,
+                scale: rich ? 0.96 : 1,
+                filter: heavy ? "blur(10px)" : "blur(0px)",
+              },
+              {
+                opacity: 1,
+                xPercent: 0,
+                yPercent: 0,
+                scale: 1,
+                filter: "blur(0px)",
+                duration: 0.55,
+                ease: rich ? "expo.out" : "none",
+              },
+              t - 0.5 + li * 0.08,
+            );
+          });
+          if (i < N - 1) {
+            tl.to(
+              seg,
+              {
+                opacity: 0,
+                yPercent: rich ? -6 : 0,
+                filter: heavy ? "blur(8px)" : "blur(0px)",
+                duration: 0.55,
+                ease: "power2.in",
+              },
+              t + 0.4,
+            );
+            gsap.set(seg, { yPercent: 0 }); // reset baseline (gsap restores on revert)
+          }
+
+          // giant stair-words drift past like environmental signage
+          if (heavy) {
+            const sw = seg.querySelector<HTMLElement>(".stair-word");
+            if (sw) {
+              tl.fromTo(
+                sw,
+                { xPercent: 9, scale: 1.16, opacity: 1 },
+                { xPercent: -9, scale: 1.04, duration: 1.8, ease: "none" },
+                t - 0.9,
+              );
+            }
+          }
+        });
+
+        // ── Light-leak flares at each transition midpoint, sweeping across. ──
+        if (heavy && leak) {
+          for (let j = 0; j < N - 1; j++) {
+            const mid = (center(j) + center(j + 1)) / 2;
+            tl.fromTo(
+              leak,
+              { opacity: 0, xPercent: -30, rotate: 2 },
+              { opacity: 0.5, xPercent: 8, rotate: 5, duration: 0.35, ease: "power1.in" },
+              mid - 0.35,
+            ).to(leak, { opacity: 0, xPercent: 42, duration: 0.4, ease: "power1.out" }, mid);
           }
         }
-      }
 
-      if (leak && !reduce) {
-        const f = P * (N - 1);
-        const frac = f - Math.floor(f);
-        let lk = 1 - Math.abs(frac - 0.5) * 2;
-        lk = ease(clamp(lk));
-        const sweep = (frac - 0.5) * 150;
-        leak.style.opacity = (lk * 0.55).toFixed(3);
-        leak.style.transform =
-          "translate3d(" +
-          (40 + sweep).toFixed(1) +
-          "%,0,0) rotate(" +
-          (4 + lk * 3).toFixed(1) +
-          "deg)";
-      }
-
-      const b = clamp(P / 0.72);
-      if (overlay) overlay.style.opacity = (0.44 * (1 - b) + 0.04).toFixed(3);
-
-      if (hud && hudFill && hudWord && hudNum) {
-        const hudOp = ease(clamp((P - 0.015) / 0.05)) * ease(clamp((0.99 - P) / 0.04));
-        hud.style.opacity = hudOp.toFixed(3);
-        hudFill.style.height = (P * 100).toFixed(1) + "%";
-        const idx = Math.round(P * (N - 1));
-        if (hudIdx !== idx) {
-          hudIdx = idx;
-          hudWord.textContent = words[idx] || "";
-          hudNum.textContent = "0" + (idx + 1) + " / 08";
-        }
-      }
-    };
-
-    buildMotes();
-    layout();
-
-    const onResize = () => layout();
-    window.addEventListener("resize", onResize);
-
-    let onMove: ((e: PointerEvent) => void) | undefined;
-    if (!touch) {
-      onMove = (e: PointerEvent) => {
-        mx = (e.clientX / window.innerWidth - 0.5) * 2;
-        my = (e.clientY / window.innerHeight - 0.5) * 2;
+        updateHud(0);
+        return tl;
       };
-      window.addEventListener("pointermove", onMove, { passive: true });
-    }
 
-    if (!reduce && !touch) {
-      const lenis = new Lenis({
-        duration: 1.4,
-        smoothWheel: true,
-        wheelMultiplier: 0.88,
-        lerp: 0.072,
+      // ── Responsive / accessible fidelity tiers ──────────────────────────────
+      const mm = gsap.matchMedia(root);
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        buildClimb("reduced", 8);
       });
-      lenisRef.current = lenis;
-      const loop = (t: number) => {
-        lenis.raf(t);
-        frame();
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    } else {
-      const loop = () => {
-        frame();
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    }
-    frame();
 
-    // scroll-reveal for the content sections below the climb
-    const items = Array.from(root.querySelectorAll<HTMLElement>(".reveal"));
-    items.forEach((el) => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(30px)";
-      el.style.transition =
-        "opacity 0.95s cubic-bezier(0.22,0.61,0.36,1), transform 0.95s cubic-bezier(0.22,0.61,0.36,1)";
-    });
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          const el = e.target as HTMLElement;
-          const sibs = Array.from(
-            el.parentElement?.querySelectorAll<HTMLElement>(":scope > .reveal") ?? [],
-          );
-          const idx = sibs.indexOf(el);
-          el.style.transitionDelay = Math.max(0, idx) * 0.08 + "s";
-          el.style.opacity = "1";
-          el.style.transform = "translateY(0)";
-          io.unobserve(el);
+      mm.add("(min-width: 760px) and (prefers-reduced-motion: no-preference)", () => {
+        buildClimb("full", 16);
+
+        // Lenis smooth scroll, driven by the GSAP ticker (single rAF source).
+        const lenis = new Lenis({
+          duration: 1.4,
+          smoothWheel: true,
+          wheelMultiplier: 0.9,
+          lerp: 0.075,
         });
-      },
-      { threshold: 0.16, rootMargin: "0px 0px -8% 0px" },
-    );
-    items.forEach((el) => io.observe(el));
+        lenisRef.current = lenis;
+        lenis.on("scroll", ScrollTrigger.update);
+        const tick = (time: number) => lenis.raf(time * 1000);
+        gsap.ticker.add(tick);
+        gsap.ticker.lagSmoothing(0);
 
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-      if (onMove) window.removeEventListener("pointermove", onMove);
-      io.disconnect();
-      if (lenisRef.current) {
-        try {
-          lenisRef.current.destroy();
-        } catch {
-          /* noop */
+        // Pointer parallax — buttery micro-motion layered over the scroll dolly.
+        const setWorldRX = world
+          ? gsap.quickTo(world, "rotationX", { duration: 0.8, ease: "power3" })
+          : null;
+        const setWorldRY = world
+          ? gsap.quickTo(world, "rotationY", { duration: 0.8, ease: "power3" })
+          : null;
+        const setFxX = fx ? gsap.quickTo(fx, "xPercent", { duration: 0.9, ease: "power3" }) : null;
+        const setFxY = fx ? gsap.quickTo(fx, "yPercent", { duration: 0.9, ease: "power3" }) : null;
+        const setTxtX = textWrap
+          ? gsap.quickTo(textWrap, "xPercent", { duration: 1, ease: "power3" })
+          : null;
+        const onMove = (e: PointerEvent) => {
+          const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+          const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+          setWorldRY?.(nx * 2.2);
+          setWorldRX?.(-ny * 2.0);
+          setFxX?.(nx * 2.4);
+          setFxY?.(ny * 2.0);
+          setTxtX?.(nx * -1.2);
+        };
+        window.addEventListener("pointermove", onMove, { passive: true });
+
+        // Subtle 3D tilt on the invite card.
+        const card = root.querySelector<HTMLElement>(".cine-invite-card");
+        let cardMove: ((e: PointerEvent) => void) | undefined;
+        let cardLeave: (() => void) | undefined;
+        if (card) {
+          const rx = gsap.quickTo(card, "rotationX", { duration: 0.6, ease: "power3" });
+          const ry = gsap.quickTo(card, "rotationY", { duration: 0.6, ease: "power3" });
+          cardMove = (e: PointerEvent) => {
+            const r = card.getBoundingClientRect();
+            rx(-((e.clientY - r.top) / r.height - 0.5) * 8);
+            ry(((e.clientX - r.left) / r.width - 0.5) * 10);
+          };
+          cardLeave = () => {
+            rx(0);
+            ry(0);
+          };
+          card.addEventListener("pointermove", cardMove);
+          card.addEventListener("pointerleave", cardLeave);
+          gsap.set(card, { transformPerspective: 900 });
         }
-        lenisRef.current = null;
-      }
-    };
-  }, []);
+
+        return () => {
+          gsap.ticker.remove(tick);
+          lenis.destroy();
+          lenisRef.current = null;
+          window.removeEventListener("pointermove", onMove);
+          if (card && cardMove) card.removeEventListener("pointermove", cardMove);
+          if (card && cardLeave) card.removeEventListener("pointerleave", cardLeave);
+        };
+      });
+
+      mm.add("(max-width: 759px) and (prefers-reduced-motion: no-preference)", () => {
+        buildClimb("lite", 9);
+      });
+
+      // ── Lower sections: gentle background parallax via scrubbed ScrollTriggers. ──
+      gsap.utils.toArray<HTMLElement>(q(".parallax-slow")).forEach((el) => {
+        gsap.fromTo(
+          el,
+          { yPercent: -8 },
+          {
+            yPercent: 8,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+          },
+        );
+      });
+      // Hairlines draw in under section eyebrows.
+      gsap.utils.toArray<HTMLElement>(q(".hairline")).forEach((el) => {
+        gsap.fromTo(
+          el,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            transformOrigin: "left center",
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 85%" },
+          },
+        );
+      });
+    },
+    { scope: rootRef },
+  );
 
   function acceptInvite() {
     if (accepted) return;
@@ -349,11 +376,7 @@ export function LandingPage({
     setTimeout(() => {
       if (!target) return;
       if (lenisRef.current) lenisRef.current.scrollTo(target, { offset: 0, duration: 1.6 });
-      else
-        window.scrollTo({
-          top: target.getBoundingClientRect().top + window.scrollY,
-          behavior: "smooth",
-        });
+      else target.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 480);
   }
 
@@ -382,6 +405,7 @@ export function LandingPage({
     letterSpacing: "-0.012em",
     color: "#EAEEF1",
     textWrap: "balance",
+    willChange: "transform,opacity,filter",
   };
   const stairWordStyle: React.CSSProperties = {
     fontFamily: "'Anton',sans-serif",
@@ -430,13 +454,12 @@ export function LandingPage({
       {/* ============ CINEMATIC PINNED CLIMB ============ */}
       <section
         className="cine-section"
-        style={{ position: "relative", height: "1080vh", background: "#0B0F14" }}
+        style={{ position: "relative", height: "100vh", background: "#0B0F14" }}
       >
         <div
           className="cine-stage"
           style={{
-            position: "sticky",
-            top: 0,
+            position: "relative",
             height: "100vh",
             width: "100%",
             overflow: "hidden",
@@ -452,6 +475,7 @@ export function LandingPage({
               inset: 0,
               transformStyle: "preserve-3d",
               willChange: "transform",
+              filter: "contrast(1.08) saturate(0.86) brightness(0.97)",
             }}
           >
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n, i) => (
@@ -477,7 +501,6 @@ export function LandingPage({
                     height: "100%",
                     objectFit: "cover",
                     objectPosition: "center",
-                    transform: "scale(1)",
                   }}
                 />
               </div>
@@ -562,24 +585,37 @@ export function LandingPage({
             />
           </div>
 
-          {/* mood / readability overlays */}
+          {/* colour grade + readability overlays */}
           <div
             className="bright-overlay"
             style={{
               position: "absolute",
               inset: 0,
               background: "#070A0E",
-              opacity: 0.4,
+              opacity: 0.5,
               pointerEvents: "none",
             }}
           />
           <div
+            className="cine-grade-warm"
+            style={{
+              position: "absolute",
+              inset: 0,
+              opacity: 0,
+              pointerEvents: "none",
+              mixBlendMode: "soft-light",
+              background:
+                "radial-gradient(120% 90% at 50% 18%, rgba(255,226,180,0.5), rgba(214,180,140,0.12) 45%, transparent 72%)",
+            }}
+          />
+          <div
+            className="cine-vignette"
             style={{
               position: "absolute",
               inset: 0,
               pointerEvents: "none",
               background:
-                "radial-gradient(130% 120% at 50% 40%, transparent 48%, rgba(7,10,14,0.7) 100%)",
+                "radial-gradient(125% 115% at 50% 42%, transparent 44%, rgba(7,10,14,0.78) 100%)",
             }}
           />
           <div
@@ -998,6 +1034,7 @@ export function LandingPage({
                     letterSpacing: "0.2em",
                     textTransform: "uppercase",
                     color: "#B9C6CF",
+                    willChange: "transform,opacity,filter",
                   }}
                 >
                   Bu, bir adamın hikâyesiydi.
@@ -1013,6 +1050,7 @@ export function LandingPage({
                     letterSpacing: "0.01em",
                     color: "#F1F5F7",
                     textShadow: "0 10px 60px rgba(0,0,0,0.55)",
+                    willChange: "transform,opacity,filter",
                   }}
                 >
                   Sıradaki sensin.
@@ -1096,14 +1134,20 @@ export function LandingPage({
           background: "#0B0F14",
           padding: "clamp(110px,16vh,200px) 24px",
           borderTop: "1px solid rgba(230,235,238,0.10)",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-          <div className="reveal" style={eyebrowStyle}>
+        <div className="parallax-slow" style={sectionGhost}>
+          08
+        </div>
+        <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative" }}>
+          <Reveal variant="fade-down" style={eyebrowStyle}>
             08 — SİSTEM
-          </div>
-          <div
-            className="reveal"
+          </Reveal>
+          <div className="hairline" style={hairlineStyle} />
+          <Reveal
+            variant="blur-in"
+            delay={80}
             style={{
               marginTop: 18,
               fontFamily: "'Playfair Display',serif",
@@ -1113,9 +1157,11 @@ export function LandingPage({
             }}
           >
             5.30 nedir?
-          </div>
-          <h2
-            className="reveal"
+          </Reveal>
+          <Reveal
+            variant="letter-rise"
+            delay={140}
+            as="h2"
             style={{
               margin: "14px 0 0",
               fontFamily: "'Archivo',sans-serif",
@@ -1129,7 +1175,7 @@ export function LandingPage({
             }}
           >
             5.30 bir motivasyon değil. Bir sistemdir.
-          </h2>
+          </Reveal>
 
           <div
             style={{
@@ -1145,10 +1191,11 @@ export function LandingPage({
               { n: "01", t: "DİSİPLİN", d: "Sözünü tut, erken kalk." },
               { n: "02", t: "İNANÇ", d: "Kendinden büyük bir şeye bağlan." },
               { n: "03", t: "KARDEŞLİK", d: "Yalnız yürüme." },
-            ].map((p) => (
-              <div
+            ].map((p, i) => (
+              <Reveal
                 key={p.n}
-                className="reveal"
+                variant="fade-up"
+                delay={i * 110}
                 style={{ background: "#0B0F14", padding: "40px 34px" }}
               >
                 <div
@@ -1175,11 +1222,11 @@ export function LandingPage({
                 <p style={{ margin: "14px 0 0", fontSize: 16, lineHeight: 1.6, color: "#8593A0" }}>
                   {p.d}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <div className="reveal" style={{ marginTop: "clamp(56px,8vh,90px)" }}>
+          <Reveal variant="fade-up" delay={60} style={{ marginTop: "clamp(56px,8vh,90px)" }}>
             <div style={eyebrowStyle}>NE ALIYORSUN</div>
             <div
               style={{
@@ -1208,7 +1255,7 @@ export function LandingPage({
                 </div>
               ))}
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -1220,14 +1267,21 @@ export function LandingPage({
           background: "#11161C",
           padding: "clamp(110px,16vh,200px) 24px",
           borderTop: "1px solid rgba(230,235,238,0.10)",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-          <div className="reveal" style={eyebrowStyle}>
+        <div className="parallax-slow" style={sectionGhost}>
+          09
+        </div>
+        <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative" }}>
+          <Reveal variant="fade-down" style={eyebrowStyle}>
             09 — ELEME
-          </div>
-          <h2
-            className="reveal"
+          </Reveal>
+          <div className="hairline" style={hairlineStyle} />
+          <Reveal
+            variant="letter-rise"
+            delay={120}
+            as="h2"
             style={{
               margin: "18px 0 0",
               fontFamily: "'Archivo',sans-serif",
@@ -1239,7 +1293,7 @@ export function LandingPage({
             }}
           >
             Bu herkes için değil.
-          </h2>
+          </Reveal>
 
           <div
             style={{
@@ -1249,7 +1303,7 @@ export function LandingPage({
               gap: 48,
             }}
           >
-            <div className="reveal">
+            <Reveal variant="slide-right">
               <div
                 style={{
                   fontFamily: "'Space Mono',monospace",
@@ -1289,8 +1343,8 @@ export function LandingPage({
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="reveal">
+            </Reveal>
+            <Reveal variant="slide-left" delay={120}>
               <div
                 style={{
                   fontFamily: "'Space Mono',monospace",
@@ -1330,7 +1384,7 @@ export function LandingPage({
                   </div>
                 ))}
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -1346,89 +1400,90 @@ export function LandingPage({
           overflow: "hidden",
         }}
       >
-        <div
-          className="reveal"
-          style={{
-            maxWidth: 680,
-            margin: "0 auto",
-            position: "relative",
-            background: "linear-gradient(180deg,#12171E,#0E1318)",
-            border: "1px solid rgba(230,235,238,0.14)",
-            padding: "clamp(44px,7vw,80px) clamp(28px,6vw,72px)",
-            textAlign: "center",
-            boxShadow: "0 40px 120px rgba(0,0,0,0.5)",
-          }}
-        >
+        <Reveal variant="scale-in" style={{ maxWidth: 680, margin: "0 auto" }}>
           <div
+            className="cine-invite-card"
             style={{
-              position: "absolute",
-              inset: 10,
-              border: "1px solid rgba(230,235,238,0.06)",
-              pointerEvents: "none",
-            }}
-          />
-          <div
-            style={{
-              fontFamily: "'Space Mono',monospace",
-              fontSize: 11,
-              letterSpacing: "0.4em",
-              textTransform: "uppercase",
-              color: "#8593A0",
+              position: "relative",
+              background: "linear-gradient(180deg,#12171E,#0E1318)",
+              border: "1px solid rgba(230,235,238,0.14)",
+              padding: "clamp(44px,7vw,80px) clamp(28px,6vw,72px)",
+              textAlign: "center",
+              boxShadow: "0 40px 120px rgba(0,0,0,0.5)",
+              transformStyle: "preserve-3d",
             }}
           >
-            10 — DAVET
+            <div
+              style={{
+                position: "absolute",
+                inset: 10,
+                border: "1px solid rgba(230,235,238,0.06)",
+                pointerEvents: "none",
+              }}
+            />
+            <div
+              style={{
+                fontFamily: "'Space Mono',monospace",
+                fontSize: 11,
+                letterSpacing: "0.4em",
+                textTransform: "uppercase",
+                color: "#8593A0",
+              }}
+            >
+              10 — DAVET
+            </div>
+            <h2
+              style={{
+                margin: "26px 0 0",
+                fontFamily: "'Anton',sans-serif",
+                fontSize: "clamp(38px,6.5vw,68px)",
+                lineHeight: 0.98,
+                letterSpacing: "0.01em",
+                color: "#E6EBEE",
+              }}
+            >
+              5.30'a davet edildin.
+            </h2>
+            <p
+              style={{
+                margin: "26px auto 0",
+                maxWidth: "30ch",
+                fontFamily: "'Playfair Display',serif",
+                fontStyle: "italic",
+                fontSize: "clamp(18px,2.4vw,26px)",
+                lineHeight: 1.4,
+                color: "#B9C6CF",
+              }}
+            >
+              Kalabalığa değil — kendine hesap veren bir hayata.
+            </p>
+            <button
+              type="button"
+              className="cine-btn"
+              onClick={acceptInvite}
+              disabled={accepted}
+              style={{
+                marginTop: 40,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 12,
+                padding: "20px 40px",
+                border: "none",
+                cursor: accepted ? "default" : "pointer",
+                background: "#E6EBEE",
+                color: "#0B0F14",
+                fontFamily: "'Space Mono',monospace",
+                fontSize: 13,
+                fontWeight: 700,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+              }}
+            >
+              {accepted ? "DAVET KABUL EDİLDİ ✓" : "DAVETİ KABUL ET"}
+            </button>
           </div>
-          <h2
-            style={{
-              margin: "26px 0 0",
-              fontFamily: "'Anton',sans-serif",
-              fontSize: "clamp(38px,6.5vw,68px)",
-              lineHeight: 0.98,
-              letterSpacing: "0.01em",
-              color: "#E6EBEE",
-            }}
-          >
-            5.30'a davet edildin.
-          </h2>
-          <p
-            style={{
-              margin: "26px auto 0",
-              maxWidth: "30ch",
-              fontFamily: "'Playfair Display',serif",
-              fontStyle: "italic",
-              fontSize: "clamp(18px,2.4vw,26px)",
-              lineHeight: 1.4,
-              color: "#B9C6CF",
-            }}
-          >
-            Kalabalığa değil — kendine hesap veren bir hayata.
-          </p>
-          <button
-            type="button"
-            className="cine-btn"
-            onClick={acceptInvite}
-            disabled={accepted}
-            style={{
-              marginTop: 40,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 12,
-              padding: "20px 40px",
-              border: "none",
-              cursor: accepted ? "default" : "pointer",
-              background: "#E6EBEE",
-              color: "#0B0F14",
-              fontFamily: "'Space Mono',monospace",
-              fontSize: 13,
-              fontWeight: 700,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-            }}
-          >
-            {accepted ? "DAVET KABUL EDİLDİ ✓" : "DAVETİ KABUL ET"}
-          </button>
-        </div>
+        </Reveal>
       </section>
 
       {/* ============ BÖLÜM 11 — BAŞVUR ============ */}
@@ -1442,14 +1497,16 @@ export function LandingPage({
         }}
       >
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <div className="reveal" style={{ ...eyebrowStyle, textAlign: "center" }}>
+          <Reveal variant="fade-down" style={{ ...eyebrowStyle, textAlign: "center" }}>
             11 — BAŞVUR
-          </div>
+          </Reveal>
 
           {!submitted ? (
             <>
-              <h2
-                className="reveal"
+              <Reveal
+                variant="letter-rise"
+                delay={100}
+                as="h2"
                 style={{
                   margin: "18px 0 0",
                   fontFamily: "'Archivo',sans-serif",
@@ -1462,7 +1519,7 @@ export function LandingPage({
                 }}
               >
                 Kardeşliğe başvur.
-              </h2>
+              </Reveal>
               <form
                 onSubmit={handleSubmit}
                 style={{
@@ -1472,8 +1529,9 @@ export function LandingPage({
                   gap: 36,
                 }}
               >
-                <label
-                  className="reveal"
+                <Reveal
+                  variant="fade-up"
+                  as="label"
                   style={{ display: "flex", flexDirection: "column", gap: 12 }}
                 >
                   <span
@@ -1488,9 +1546,11 @@ export function LandingPage({
                     Ad Soyad
                   </span>
                   <input name="name" required autoComplete="name" style={fieldStyle} />
-                </label>
-                <label
-                  className="reveal"
+                </Reveal>
+                <Reveal
+                  variant="fade-up"
+                  delay={80}
+                  as="label"
                   style={{ display: "flex", flexDirection: "column", gap: 12 }}
                 >
                   <span
@@ -1505,9 +1565,11 @@ export function LandingPage({
                     İletişim — e-posta veya Instagram
                   </span>
                   <input name="contact" required style={fieldStyle} />
-                </label>
-                <label
-                  className="reveal"
+                </Reveal>
+                <Reveal
+                  variant="fade-up"
+                  delay={160}
+                  as="label"
                   style={{ display: "flex", flexDirection: "column", gap: 12 }}
                 >
                   <span
@@ -1526,10 +1588,10 @@ export function LandingPage({
                     rows={3}
                     style={{ ...fieldStyle, resize: "none", lineHeight: 1.5 }}
                   />
-                </label>
+                </Reveal>
                 <button
                   type="submit"
-                  className="cine-btn reveal"
+                  className="cine-btn"
                   disabled={sending}
                   style={{
                     marginTop: 8,
@@ -1615,4 +1677,27 @@ const fieldStyle: React.CSSProperties = {
   fontSize: 20,
   color: "#E6EBEE",
   transition: "border-color .3s ease",
+};
+
+/** Oversized faint section index that drifts slower than content (parallax depth). */
+const sectionGhost: React.CSSProperties = {
+  position: "absolute",
+  top: "8%",
+  right: "4%",
+  fontFamily: "'Anton',sans-serif",
+  fontSize: "clamp(160px,28vw,420px)",
+  lineHeight: 0.8,
+  color: "rgba(230,235,238,0.022)",
+  pointerEvents: "none",
+  userSelect: "none",
+  willChange: "transform",
+};
+
+const hairlineStyle: React.CSSProperties = {
+  height: 1,
+  width: 120,
+  marginTop: 18,
+  background: "linear-gradient(to right, rgba(230,235,238,0.5), transparent)",
+  transform: "scaleX(0)",
+  transformOrigin: "left center",
 };

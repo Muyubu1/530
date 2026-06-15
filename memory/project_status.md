@@ -63,6 +63,10 @@ hub → `/gecicihub`; `/ana`→`/` redirect). **Zengin tohum**: 4 kurs / 29 ders
   üst girdisi + decisions D10/D11. Pinned 3D tırmanış + 4 bölüm; eski hero/interlude/vsl/barcode
   sections silindi. `lenis` eklendi, görseller `public/landing/`.
 - Başvuru formu mevcut waitlist backend'e bağlandı (contact+why; email opsiyonel).
-- **YARIN/KULLANICI:** (1) migration 0007'yi Supabase'e uygula (IG-only başvurular için; SQL
-  editöründe `src/infrastructure/db/migrations/0007_waitlist_application.sql`). (2) `npm run dev`
-  ile sinematik scroll'u tarayıcıda doğrula (Lenis/parallax/HUD/reveal + form submit + /login linki).
+- Sinematik motor **rAF → GSAP ScrollTrigger**'a taşındı + tüm sayfa profesyonelleştirildi (sürekli
+  dolly, örtüşen dissolve, film grade, parallax, Reveal varyantları, pointer tilt). Lenis →
+  gsap.ticker. Dep: gsap 3.15 + @gsap/react 2.1. Detay: decisions D11 (güncel) + changelog.
+- **YARIN/KULLANICI:** (1) migration 0007'yi Supabase'e uygula (IG-only başvurular için;
+  `src/infrastructure/db/migrations/0007_waitlist_application.sql`). (2) Tarayıcıda görsel/runtime
+  doğrula — http://localhost:5174/ (scroll: dolly/dissolve/HUD/grade + alt bölüm reveal/parallax +
+  Davet tilt + form). GSAP runtime'ı henüz tarayıcıda test edilmedi (Playwright kullanıcı onayı bekler).

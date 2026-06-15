@@ -20,6 +20,8 @@ interface RevealProps {
   once?: boolean;
   threshold?: number;
   as?: keyof React.JSX.IntrinsicElements;
+  /** Extra static styles merged under the animation styles (no transform/opacity). */
+  style?: React.CSSProperties;
 }
 
 const initialStyles: Record<Variant, React.CSSProperties> = {
@@ -54,6 +56,7 @@ export function Reveal({
   once = true,
   threshold = 0.18,
   as: Tag = "div",
+  style: extraStyle,
 }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
   const [shown, setShown] = useState(false);
@@ -83,6 +86,7 @@ export function Reveal({
   }, [once, threshold]);
 
   const style: React.CSSProperties = {
+    ...extraStyle,
     transition: `opacity ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, filter ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, clip-path ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
     willChange: "opacity, transform, filter, clip-path",
     ...(shown ? activeStyles : initialStyles[variant]),
