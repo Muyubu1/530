@@ -109,7 +109,12 @@ export function LandingPage({
             start: "top top",
             // beat-normalised length → consistent, comfortable pace regardless of beat spacing
             end: () => "+=" + Math.round(TOTAL * vhPerBeat * window.innerHeight),
-            pin: ".cine-stage",
+            // Pin the SECTION itself (not the inner stage): ScrollTrigger then adds a correct
+            // pin-spacer at the root so the content sections below are pushed past the whole
+            // climb — otherwise the section's fixed 100vh clips the spacer and content paints
+            // over the pinned stage (wrong order + "fast" tail).
+            pin: true,
+            anticipatePin: 1,
             scrub: heavy ? 1.1 : 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => updateHud(self.progress),
@@ -382,6 +387,9 @@ export function LandingPage({
           },
         );
       });
+
+      // Recompute pin-spacing / start-end once layout (fonts, images) has settled.
+      ScrollTrigger.refresh();
     },
     { scope: rootRef },
   );
