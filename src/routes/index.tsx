@@ -5,11 +5,11 @@ import { submitWaitlistFn } from "@/server/waitlist";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "5.30 Lab — Bir Topluluk Değil. Bir Standart." },
+      { title: "5.30 — Sıradan bir adamdan, sıra dışı bir adama." },
       {
         name: "description",
         content:
-          "Disiplinini, bedenini, zihnini ve günlük sistemini yeniden inşa et. 28 günlük başlangıç. 6 aylık dönüşüm.",
+          "5.30 bir motivasyon değil, bir sistemdir. Disiplin · İnanç · Kardeşlik. Sözünü tutan adamların kardeşliğine başvur.",
       },
     ],
   }),

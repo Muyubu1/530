@@ -13,12 +13,12 @@ export function makeWaitlistRepository(): WaitlistRepository {
     async add(entry: NewWaitlistEntry): Promise<void> {
       try {
         await sql`
-          insert into waitlist (name, email, phone, source)
-          values (${entry.name || null}, ${entry.email}, ${entry.phone ?? null}, 'landing')
+          insert into waitlist (name, email, phone, contact, why, source)
+          values (${entry.name || null}, ${entry.email ?? null}, ${entry.phone ?? null}, ${entry.contact ?? null}, ${entry.why ?? null}, 'landing')
         `;
       } catch (err) {
         if (err && typeof err === "object" && "code" in err && err.code === UNIQUE_VIOLATION) {
-          throw new DuplicateEmailError(entry.email);
+          throw new DuplicateEmailError(entry.email ?? "");
         }
         throw err;
       }

@@ -94,18 +94,27 @@ grant execute on function public.email_has_purchase(text) to anon, authenticated
 -- ──────────────────────── waitlist ───────────────────────
 create table if not exists public.waitlist (
   id uuid primary key default gen_random_uuid(),
-  email text not null unique,
+  email text unique,
   name text,
   phone text,
+  contact text,
+  why text,
   source text,
   created_at timestamptz not null default now()
 );
+-- Application form ("başvur") may carry a non-email contact (e.g. Instagram).
+alter table public.waitlist alter column email drop not null;
+alter table public.waitlist add column if not exists contact text;
+alter table public.waitlist add column if not exists why text;
 alter table public.waitlist enable row level security;
 
 drop policy if exists "Anyone can join waitlist" on public.waitlist;
 create policy "Anyone can join waitlist" on public.waitlist
   for insert to anon, authenticated
-  with check (email is not null and email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$');
+  with check (
+    (email is null and contact is not null)
+    or email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+  );
 drop policy if exists "Admins view waitlist" on public.waitlist;
 create policy "Admins view waitlist" on public.waitlist
   for select using (public.has_role(auth.uid(), 'admin'));

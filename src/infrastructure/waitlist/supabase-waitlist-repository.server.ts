@@ -13,12 +13,14 @@ export function makeSupabaseWaitlistRepository(): WaitlistRepository {
     async add(entry: NewWaitlistEntry): Promise<void> {
       const { error } = await supabaseServer.from("waitlist").insert({
         name: entry.name || null,
-        email: entry.email,
+        email: entry.email ?? null,
         phone: entry.phone ?? null,
+        contact: entry.contact ?? null,
+        why: entry.why ?? null,
         source: "landing",
       });
       if (!error) return;
-      if (error.code === UNIQUE_VIOLATION) throw new DuplicateEmailError(entry.email);
+      if (error.code === UNIQUE_VIOLATION) throw new DuplicateEmailError(entry.email ?? "");
       throw new Error(`[waitlist] insert failed: ${error.message}`);
     },
   };

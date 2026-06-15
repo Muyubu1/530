@@ -6,8 +6,13 @@
 
 export interface NewWaitlistEntry {
   name: string;
-  email: string;
+  /** Validated e-mail when the contact is an address; otherwise undefined. */
+  email?: string;
   phone?: string;
+  /** Raw contact as typed — e-mail or an Instagram handle. */
+  contact?: string;
+  /** Free-text "why are you here?" from the application form. */
+  why?: string;
 }
 
 export interface WaitlistEntry extends NewWaitlistEntry {

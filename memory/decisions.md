@@ -49,3 +49,15 @@
 
 **Bağlam:** `@tanstack/start-storage-context` node>=22.12 istiyor; makinede node 20.19.4.
 **Karar:** Şimdilik node 20 ile devam — dev+SSR+build sorunsuz çalışıyor (uyarı zararsız). Sorun çıkarsa node 22'ye geçilecek. Bkz. gotchas.
+
+## D10 — Landing 530V2 portu + waitlist'in başvuru sink'ine dönüşmesi
+
+**Bağlam:** Ana sayfa, scroll'a bağlı sinematik bir landing (530V2 statik "DC" HTML) ile değiştirildi. Yeni "Başvur" formu Ad/İletişim(e-posta veya Instagram)/Neden topluyor; mevcut waitlist şeması sadece name/email/phone ve RLS geçerli email zorunlu kılıyordu.
+**Seçenekler:** (a) form'u sadece görsel bırak; (b) email zorunlu kıl; (c) şemayı genişlet.
+**Karar:** (c). NewWaitlistEntry'ye opsiyonel `contact`+`why`, email opsiyonel. submitWaitlist: contact email-benzeriyse `email`'e de yazar (dedup), ham değer hep `contact`'ta. waitlist tablosu: contact/why kolonları, email nullable, RLS `(email null && contact var) || email-format`. setup.sql + migration 0007_waitlist_application.
+**Sonuç:** Tek backend, IG-only başvurular da kaydedilir. Admin bekleme-listesi iletişim+neden sütunları + CSV güncellendi. **DİKKAT:** 0007 Supabase'e uygulanana kadar IG-only (non-email) başvurular RLS'e takılır; email-benzeri contact zaten çalışır.
+
+## D11 — Sinematik landing imperative rAF + Lenis
+
+**Bağlam:** 530V2 deneyimi DOM'u rAF içinde imperative sürüyor (pinned 3D dünya, parallax, motes, grain, light-leak, HUD, per-line reveal) + Lenis smooth scroll.
+**Karar:** Tek `useEffect` (mount) içinde port edildi; `rootRef` üzerinden querySelector, cleanup'ta rAF iptal + Lenis.destroy + IO disconnect + listener kaldırma. Lenis npm paketi (CDN değil). Keyframe'ler `styles.css`'te `cine*` prefiksli + `.cine-landing` scope (global sızıntı yok). Görseller `public/landing/`. Header/footer YOK (immersive); üye erişimi için sağ üst diskret `/login`. reduce-motion ve touch dallanmaları korundu.

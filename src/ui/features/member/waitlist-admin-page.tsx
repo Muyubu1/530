@@ -36,9 +36,17 @@ export function WaitlistAdminPage() {
   }, [auth]);
 
   function exportCsv() {
-    const header = "tarih,ad,e-posta,telefon,kaynak";
+    const header = "tarih,ad,iletişim,e-posta,telefon,neden,kaynak";
     const lines = rows.map((r) =>
-      [format(r.createdAt, "yyyy-MM-dd HH:mm"), r.name, r.email, r.phone ?? "", r.source]
+      [
+        format(r.createdAt, "yyyy-MM-dd HH:mm"),
+        r.name,
+        r.contact ?? "",
+        r.email ?? "",
+        r.phone ?? "",
+        r.why ?? "",
+        r.source,
+      ]
         .map(csvCell)
         .join(","),
     );
@@ -89,8 +97,8 @@ export function WaitlistAdminPage() {
               <tr className="border-b border-border/40">
                 <th className="py-2 pr-3">tarih</th>
                 <th className="py-2 pr-3">ad</th>
-                <th className="py-2 pr-3">e-posta</th>
-                <th className="py-2 pr-3">telefon</th>
+                <th className="py-2 pr-3">iletişim</th>
+                <th className="py-2 pr-3">neden</th>
                 <th className="py-2">kaynak</th>
               </tr>
             </thead>
@@ -101,8 +109,10 @@ export function WaitlistAdminPage() {
                     {format(r.createdAt, "dd.MM.yyyy")}
                   </td>
                   <td className="py-2 pr-3">{r.name || "—"}</td>
-                  <td className="py-2 pr-3">{r.email}</td>
-                  <td className="py-2 pr-3">{r.phone || "—"}</td>
+                  <td className="py-2 pr-3">{r.contact || r.email || "—"}</td>
+                  <td className="max-w-[20ch] truncate py-2 pr-3 text-muted-foreground/70">
+                    {r.why || "—"}
+                  </td>
                   <td className="py-2 text-muted-foreground/60">{r.source}</td>
                 </tr>
               ))}

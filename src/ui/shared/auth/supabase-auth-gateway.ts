@@ -120,14 +120,16 @@ export const supabaseAuthGateway: AuthGateway = {
   async listWaitlist() {
     const { data, error } = await getSupabaseBrowser()
       .from("waitlist")
-      .select("id, name, email, phone, source, created_at")
+      .select("id, name, email, phone, contact, why, source, created_at")
       .order("created_at", { ascending: false });
     if (error) throw error;
     return ((data ?? []) as WaitlistRow[]).map((r) => ({
       id: r.id,
       name: r.name ?? "",
-      email: r.email,
+      email: r.email ?? undefined,
       phone: r.phone ?? undefined,
+      contact: r.contact ?? undefined,
+      why: r.why ?? undefined,
       source: r.source,
       createdAt: new Date(r.created_at),
     }));
@@ -137,8 +139,10 @@ export const supabaseAuthGateway: AuthGateway = {
 interface WaitlistRow {
   id: string;
   name: string | null;
-  email: string;
+  email: string | null;
   phone: string | null;
+  contact: string | null;
+  why: string | null;
   source: string;
   created_at: string;
 }

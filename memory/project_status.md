@@ -11,11 +11,12 @@ DATABASE_URL = Supabase **Supavisor pooler** (aws-1-ap-south-1, session 5432; Ve
 6543, `prepare:false`). setup.sql + migrations 0002–0006 uygulandı. **Landing artık `/`** (eski geçici
 hub → `/gecicihub`; `/ana`→`/` redirect). **Zengin tohum**: 4 kurs / 29 ders (görsel+video) / 7 etkinlik /
 6 güncelleme / 6 materyal / 7 topluluk mesajı + reaksiyon. **Admin/üye AYRIK**: admin→`/admin` (dashboard
-+ TAM CRUD CMS: kurslar/dersler/materyaller/etkinlikler/güncellemeler; requireAdmin gate), üye→`/uye`.
-Girişler: admin `admin.530.demo@gmail.com`/`Admin.530.2026`, üye `uye.530.demo@gmail.com`/`Uye.530.2026`.
-Formlarda realtime doğrulama + şifre-göster. **Sıradaki:** **Vercel deploy** — Nitro Vite plugin + Transaction pooler (6543) string
 
-- repo bağla + env. Sonra: gerçek Patika (asıl hedef), e-posta/unsubscribe, içerik yönetim paneli.
+- TAM CRUD CMS: kurslar/dersler/materyaller/etkinlikler/güncellemeler; requireAdmin gate), üye→`/uye`.
+  Girişler: admin `admin.530.demo@gmail.com`/`Admin.530.2026`, üye `uye.530.demo@gmail.com`/`Uye.530.2026`.
+  Formlarda realtime doğrulama + şifre-göster. **Sıradaki:** **Vercel deploy** — Nitro Vite plugin + Transaction pooler (6543) string
+
+* repo bağla + env. Sonra: gerçek Patika (asıl hedef), e-posta/unsubscribe, içerik yönetim paneli.
 
 ## Tamamlanan
 
@@ -55,3 +56,13 @@ Formlarda realtime doğrulama + şifre-göster. **Sıradaki:** **Vercel deploy**
 
 - Faz 0→4 tek oturumda (11+ commit). Auth eklendi, waitlist Supabase'e swap'landı (ports&adapters
   kanıtı). Tarayıcı testi: /login, /signup?email=, /forgot-password, /uye (gate), /ana waitlist.
+
+## Son Oturum Notu (2026-06-15)
+
+- Ana sayfa (`/`) tamamen yeni sinematik landing ile değiştirildi (530V2 portu). Detay: changelog
+  üst girdisi + decisions D10/D11. Pinned 3D tırmanış + 4 bölüm; eski hero/interlude/vsl/barcode
+  sections silindi. `lenis` eklendi, görseller `public/landing/`.
+- Başvuru formu mevcut waitlist backend'e bağlandı (contact+why; email opsiyonel).
+- **YARIN/KULLANICI:** (1) migration 0007'yi Supabase'e uygula (IG-only başvurular için; SQL
+  editöründe `src/infrastructure/db/migrations/0007_waitlist_application.sql`). (2) `npm run dev`
+  ile sinematik scroll'u tarayıcıda doğrula (Lenis/parallax/HUD/reveal + form submit + /login linki).
