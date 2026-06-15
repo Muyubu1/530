@@ -10,11 +10,13 @@ import type { WaitlistData, WaitlistResult } from "@/ui/shared/waitlist-form";
 
 const N = 8;
 const WORDS = ["", "DİPTE", "SABIR", "AZİM", "İNANÇ", "VARIŞ", "KARDEŞLİK", "SIRA SENDE"];
-// Pacing: a lead hold on the hero, then one "beat" per image, trailing hold for the finale.
+// Pacing: a lead hold on the hero, one "beat" of scroll-time per image, trailing hold for the
+// finale. BEAT spaces the story beats so each caption gets a clean, non-overlapping window.
+const BEAT = 1.25;
 const HOLD_LEAD = 0.6;
-const HOLD_TAIL = 0.8;
-const center = (i: number) => HOLD_LEAD + i; // beat-time at which image i is sharp & centered
-const TOTAL = HOLD_LEAD + (N - 1) + HOLD_TAIL;
+const HOLD_TAIL = 0.9;
+const center = (i: number) => HOLD_LEAD + i * BEAT; // beat-time at which image i is sharp & centered
+const TOTAL = HOLD_LEAD + (N - 1) * BEAT + HOLD_TAIL;
 
 /**
  * The marketing landing — an immersive, scroll-driven cinematic climb followed
@@ -84,16 +86,20 @@ export function LandingPage({
        *  lite   → dolly + crossfade + grade (no blur/parallax/leak, touch)
        *  reduced→ plain opacity cross-dissolves only
        */
-      const buildClimb = (motion: "full" | "lite" | "reduced", scrubVh: number) => {
+      const buildClimb = (motion: "full" | "lite" | "reduced", vhPerBeat: number) => {
         const rich = motion !== "reduced";
         const heavy = motion === "full";
 
         // Initial states (also what no-JS users see is the SSR markup; set before paint).
+        // Segment containers stay visible; their LINES carry visibility so only one caption
+        // is ever readable at a time (no cross-segment text collision during transitions).
         layers.forEach((l, i) => gsap.set(l, { opacity: i === 0 ? 1 : 0 }));
         segs.forEach((s, i) => {
           if (i === 0) return;
-          gsap.set(s, { opacity: 0 });
+          gsap.set(s, { opacity: 1 });
           gsap.set(s.querySelectorAll(".ln"), { opacity: 0 });
+          const sw = s.querySelector(".stair-word");
+          if (sw) gsap.set(sw, { opacity: 0 });
         });
 
         const tl = gsap.timeline({
@@ -101,9 +107,10 @@ export function LandingPage({
           scrollTrigger: {
             trigger: ".cine-section",
             start: "top top",
-            end: () => "+=" + window.innerHeight * scrubVh,
+            // beat-normalised length → consistent, comfortable pace regardless of beat spacing
+            end: () => "+=" + Math.round(TOTAL * vhPerBeat * window.innerHeight),
             pin: ".cine-stage",
-            scrub: heavy ? 1.2 : 1,
+            scrub: heavy ? 1.1 : 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => updateHud(self.progress),
           },
@@ -179,25 +186,27 @@ export function LandingPage({
           });
         }
 
-        // ── Text segments — lines flow in (blur+scale+slide), drift out in the dolly dir. ──
+        // ── Text segments — SEQUENTIAL captions. The lines (not the seg container) carry
+        //    visibility, and each caption fully clears before the next enters, so two
+        //    captions never overlap. Image cross-dissolves still overlap (cinematic). ──
         segs.forEach((seg, i) => {
           if (i === 0) {
             // hero handled by CSS entrance; just dissolve it out as the climb begins
-            tl.to(seg, { opacity: 0, duration: 0.6, ease: "power2.in" }, center(0) + 0.3);
+            tl.to(seg, { opacity: 0, duration: 0.5, ease: "power2.in" }, center(0) + 0.45);
             return;
           }
           const t = center(i);
           const lines = gsap.utils.toArray<HTMLElement>(seg.querySelectorAll(".ln"));
-          tl.to(seg, { opacity: 1, duration: 0.01 }, t - 0.55);
+          // lines flow in (blur + scale + slide from alternating sides)
           lines.forEach((ln, li) => {
             const dir = (i + li) % 2 === 0 ? -1 : 1;
             tl.fromTo(
               ln,
               {
                 opacity: 0,
-                xPercent: rich ? dir * 26 : 0,
-                yPercent: rich ? 18 : 0,
-                scale: rich ? 0.96 : 1,
+                xPercent: rich ? dir * 24 : 0,
+                yPercent: rich ? 16 : 0,
+                scale: rich ? 0.965 : 1,
                 filter: heavy ? "blur(10px)" : "blur(0px)",
               },
               {
@@ -206,37 +215,45 @@ export function LandingPage({
                 yPercent: 0,
                 scale: 1,
                 filter: "blur(0px)",
-                duration: 0.55,
+                duration: 0.5,
                 ease: rich ? "expo.out" : "none",
               },
-              t - 0.5 + li * 0.08,
+              t - 0.42 + li * 0.06,
             );
           });
+          // lines clear (opacity only — no drift into the neighbour) before the next caption
           if (i < N - 1) {
-            tl.to(
-              seg,
-              {
-                opacity: 0,
-                yPercent: rich ? -6 : 0,
-                filter: heavy ? "blur(8px)" : "blur(0px)",
-                duration: 0.55,
-                ease: "power2.in",
-              },
-              t + 0.4,
-            );
-            gsap.set(seg, { yPercent: 0 }); // reset baseline (gsap restores on revert)
+            lines.forEach((ln) => {
+              tl.to(
+                ln,
+                {
+                  opacity: 0,
+                  filter: heavy ? "blur(6px)" : "blur(0px)",
+                  duration: 0.22,
+                  ease: "power2.in",
+                },
+                t + 0.42,
+              );
+            });
           }
 
-          // giant stair-words drift past like environmental signage
+          // giant stair-word: fades in with the caption, drifts past, clears with it
           if (heavy) {
             const sw = seg.querySelector<HTMLElement>(".stair-word");
             if (sw) {
               tl.fromTo(
                 sw,
-                { xPercent: 9, scale: 1.16, opacity: 1 },
-                { xPercent: -9, scale: 1.04, duration: 1.8, ease: "none" },
-                t - 0.9,
+                { opacity: 0 },
+                { opacity: 1, duration: 0.4, ease: "power1.out" },
+                t - 0.5,
               );
+              tl.fromTo(
+                sw,
+                { xPercent: 8, scale: 1.14 },
+                { xPercent: -8, scale: 1.04, duration: 1.05, ease: "none" },
+                t - 0.5,
+              );
+              if (i < N - 1) tl.to(sw, { opacity: 0, duration: 0.25, ease: "power1.in" }, t + 0.42);
             }
           }
         });
@@ -262,18 +279,18 @@ export function LandingPage({
       const mm = gsap.matchMedia(root);
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        buildClimb("reduced", 8);
+        buildClimb("reduced", 1.4);
       });
 
       mm.add("(min-width: 760px) and (prefers-reduced-motion: no-preference)", () => {
-        buildClimb("full", 16);
+        buildClimb("full", 1.7);
 
         // Lenis smooth scroll, driven by the GSAP ticker (single rAF source).
         const lenis = new Lenis({
           duration: 1.4,
           smoothWheel: true,
           wheelMultiplier: 0.9,
-          lerp: 0.075,
+          lerp: 0.08,
         });
         lenisRef.current = lenis;
         lenis.on("scroll", ScrollTrigger.update);
@@ -336,16 +353,16 @@ export function LandingPage({
       });
 
       mm.add("(max-width: 759px) and (prefers-reduced-motion: no-preference)", () => {
-        buildClimb("lite", 9);
+        buildClimb("lite", 1.2);
       });
 
       // ── Lower sections: gentle background parallax via scrubbed ScrollTriggers. ──
       gsap.utils.toArray<HTMLElement>(q(".parallax-slow")).forEach((el) => {
         gsap.fromTo(
           el,
-          { yPercent: -8 },
+          { yPercent: -4 },
           {
-            yPercent: 8,
+            yPercent: 4,
             ease: "none",
             scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
           },
@@ -1140,7 +1157,7 @@ export function LandingPage({
         <div className="parallax-slow" style={sectionGhost}>
           08
         </div>
-        <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative" }}>
+        <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Reveal variant="fade-down" style={eyebrowStyle}>
             08 — SİSTEM
           </Reveal>
@@ -1273,7 +1290,7 @@ export function LandingPage({
         <div className="parallax-slow" style={sectionGhost}>
           09
         </div>
-        <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative" }}>
+        <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Reveal variant="fade-down" style={eyebrowStyle}>
             09 — ELEME
           </Reveal>
@@ -1682,14 +1699,15 @@ const fieldStyle: React.CSSProperties = {
 /** Oversized faint section index that drifts slower than content (parallax depth). */
 const sectionGhost: React.CSSProperties = {
   position: "absolute",
-  top: "8%",
-  right: "4%",
+  bottom: "-8%",
+  right: "1%",
   fontFamily: "'Anton',sans-serif",
-  fontSize: "clamp(160px,28vw,420px)",
+  fontSize: "clamp(120px,20vw,300px)",
   lineHeight: 0.8,
-  color: "rgba(230,235,238,0.022)",
+  color: "rgba(230,235,238,0.016)",
   pointerEvents: "none",
   userSelect: "none",
+  zIndex: 0,
   willChange: "transform",
 };
 
