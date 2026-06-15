@@ -525,7 +525,8 @@ export function LandingPage({
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    objectPosition: "center",
+                    // 5.jpeg (seg 4) is framed low — pull it up so the man's head shows
+                    objectPosition: n === 5 ? "center 22%" : "center",
                   }}
                 />
               </div>
