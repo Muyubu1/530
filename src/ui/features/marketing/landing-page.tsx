@@ -418,7 +418,7 @@ export function LandingPage({
     const result = await onWaitlistSubmit({ name, contact, why });
     setSending(false);
     if (result === "duplicate") return void toast.error("Bu iletişim zaten kayıtlı.");
-    if (result === "error") return void toast.error("Bir şeyler ters gitti. Lütfen tekrar dene.");
+    if (result === "error") return void toast.error("Bir şeyler ters gitti. Tekrar dene.");
     setSubmitted(true);
   }
 
@@ -848,7 +848,7 @@ export function LandingPage({
                   Bir yerde tıkandın.
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
-                  Önün uçurum, ardın boşluk.
+                  Çıkış yukarıda.
                 </div>
               </div>
             </div>
@@ -883,10 +883,10 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 880, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  İlk adım en ağırıdır.
+                  İlk adım en ağırı.
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
-                  Çünkü onu tek başına atarsın.
+                  Ve yalnız atılır.
                 </div>
               </div>
             </div>
@@ -927,7 +927,7 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 880, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Sonra bir gün, “yeter” dersin.
+                  Bir gün “yeter” dersin.
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
                   Ve doğrulursun.
@@ -971,10 +971,10 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 900, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Her basamak seni değiştirir.
+                  Çıkan adam,
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
-                  Çıkan adam, başlayan adam değildir.
+                  başlayan adam değil.
                 </div>
               </div>
             </div>
@@ -995,10 +995,10 @@ export function LandingPage({
             >
               <div style={{ maxWidth: 880, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Ve bir gün, zirveye varırsın.
+                  Zirveye varırsın.
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
-                  Artık o adam değilsin.
+                  Artık o değilsin.
                 </div>
               </div>
             </div>
@@ -1019,10 +1019,10 @@ export function LandingPage({
             >
               <div style={{ maxWidth: 940, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Ama orada yalnız değilsin.
+                  Ama yalnız değilsin.
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
-                  Senin gibi uyanan, sözünü tutan kardeşlerin var.
+                  Onlar da tırmandı.
                 </div>
               </div>
             </div>
@@ -1063,7 +1063,7 @@ export function LandingPage({
                     willChange: "transform,opacity,filter",
                   }}
                 >
-                  Bu, bir adamın hikâyesiydi.
+                  Bu bir adamın hikâyesiydi.
                 </div>
                 <div
                   className="ln"
@@ -1214,8 +1214,8 @@ export function LandingPage({
             }}
           >
             {[
-              { n: "01", t: "DİSİPLİN", d: "Sözünü tut, erken kalk." },
-              { n: "02", t: "İNANÇ", d: "Kendinden büyük bir şeye bağlan." },
+              { n: "01", t: "DİSİPLİN", d: "Sözünü tut. Erken kalk." },
+              { n: "02", t: "İNANÇ", d: "Kendinden büyüğüne bağlan." },
               { n: "03", t: "KARDEŞLİK", d: "Yalnız yürüme." },
             ].map((p, i) => (
               <Reveal
@@ -1262,12 +1262,7 @@ export function LandingPage({
                 gap: 14,
               }}
             >
-              {[
-                "5.30 protokolü",
-                "Kardeşlik topluluğu",
-                "Hesap verme sistemi",
-                "Eğitim & görev takibi",
-              ].map((t) => (
+              {["5.30 protokolü", "Kardeşlik", "Hesap verme", "Eğitim & görev takibi"].map((t) => (
                 <div
                   key={t}
                   style={{
@@ -1344,30 +1339,28 @@ export function LandingPage({
                 İÇİN
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
-                {[
-                  "Sorumluluk alanlar.",
-                  "Söz verip tutanlar.",
-                  "Dibe vurmuş ama bırakmamış olanlar.",
-                ].map((t, idx, arr) => (
-                  <div
-                    key={t}
-                    style={{
-                      display: "flex",
-                      gap: 16,
-                      alignItems: "baseline",
-                      padding: "20px 0",
-                      borderBottom:
-                        idx < arr.length - 1 ? "1px solid rgba(230,235,238,0.08)" : "none",
-                    }}
-                  >
-                    <span style={{ fontFamily: "'Space Mono',monospace", color: "#B9C6CF" }}>
-                      +
-                    </span>
-                    <span style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "#E6EBEE" }}>
-                      {t}
-                    </span>
-                  </div>
-                ))}
+                {["Sorumluluk alanlar.", "Söz verip tutanlar.", "Dibe vurup bırakmayanlar."].map(
+                  (t, idx, arr) => (
+                    <div
+                      key={t}
+                      style={{
+                        display: "flex",
+                        gap: 16,
+                        alignItems: "baseline",
+                        padding: "20px 0",
+                        borderBottom:
+                          idx < arr.length - 1 ? "1px solid rgba(230,235,238,0.08)" : "none",
+                      }}
+                    >
+                      <span style={{ fontFamily: "'Space Mono',monospace", color: "#B9C6CF" }}>
+                        +
+                      </span>
+                      <span style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "#E6EBEE" }}>
+                        {t}
+                      </span>
+                    </div>
+                  ),
+                )}
               </div>
             </Reveal>
             <Reveal variant="slide-left" delay={120}>
@@ -1385,30 +1378,28 @@ export function LandingPage({
                 İÇİN DEĞİL
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
-                {[
-                  "Bahane arayanlar.",
-                  "İlk zorlukta kaçanlar.",
-                  "Kalabalıkta kaybolmak isteyenler.",
-                ].map((t, idx, arr) => (
-                  <div
-                    key={t}
-                    style={{
-                      display: "flex",
-                      gap: 16,
-                      alignItems: "baseline",
-                      padding: "20px 0",
-                      borderBottom:
-                        idx < arr.length - 1 ? "1px solid rgba(230,235,238,0.05)" : "none",
-                    }}
-                  >
-                    <span style={{ fontFamily: "'Space Mono',monospace", color: "#5b6772" }}>
-                      —
-                    </span>
-                    <span style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "#5b6772" }}>
-                      {t}
-                    </span>
-                  </div>
-                ))}
+                {["Bahane arayanlar.", "İlk zorlukta kaçanlar.", "Kalabalıkta kaybolanlar."].map(
+                  (t, idx, arr) => (
+                    <div
+                      key={t}
+                      style={{
+                        display: "flex",
+                        gap: 16,
+                        alignItems: "baseline",
+                        padding: "20px 0",
+                        borderBottom:
+                          idx < arr.length - 1 ? "1px solid rgba(230,235,238,0.05)" : "none",
+                      }}
+                    >
+                      <span style={{ fontFamily: "'Space Mono',monospace", color: "#5b6772" }}>
+                        —
+                      </span>
+                      <span style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "#5b6772" }}>
+                        {t}
+                      </span>
+                    </div>
+                  ),
+                )}
               </div>
             </Reveal>
           </div>
@@ -1481,7 +1472,7 @@ export function LandingPage({
                 color: "#B9C6CF",
               }}
             >
-              Kalabalığa değil — kendine hesap veren bir hayata.
+              Kalabalığa değil. Kendine.
             </p>
             <button
               type="button"
@@ -1670,7 +1661,7 @@ export function LandingPage({
               >
                 Başvurun alındı.
                 <br />
-                Kardeşliğe bir adım daha yakınsın.
+                Bir adım daha yakınsın.
               </p>
             </div>
           )}
