@@ -33,48 +33,42 @@ Konum: hero'dan sonra, her görselle gelen 2 satırlık altyazılar. `STAIR` = a
 ### Kare 1 — (görsel 2)
 
 - [S1_HUD] HUD kelimesi → DİPTE
-- [S1_L1] 1. satır → Bir yerde tıkandın.
-- [S1_L2] 2. satır → Çıkış yukarıda.
+- [S1_L1] 1. satır → Yalnız değilsin.
 
 ### Kare 2 — (görsel 3)
 
 - [S2_HUD] HUD kelimesi → SABIR
 - [S2_STAIR] Arka dev kelime → SABIR
-- [S2_L1] 1. satır → İlk adım en ağırı.
-- [S2_L2] 2. satır → Ve yalnız atılır.
+- [S2_L1] 1. satır → Başlamak en zoru.
 
 ### Kare 3 — (görsel 4)
 
 - [S3_HUD] HUD kelimesi → AZİM
 - [S3_STAIR1] Arka dev kelime (üst) → DİSİPLİN
 - [S3_STAIR2] Arka dev kelime (alt) → AZİM
-- [S3_L1] 1. satır → Bir gün "yeter" dersin.
-- [S3_L2] 2. satır → Ve doğrulursun.
+- [S3_L1] 1. satır → Bugün başlamasın.
 
 ### Kare 4 — (görsel 5)
 
 - [S4_HUD] HUD kelimesi → İNANÇ
 - [S4_STAIR1] Arka dev kelime (üst) → DÜRÜSTLÜK
 - [S4_STAIR2] Arka dev kelime (alt) → İNANÇ
-- [S4_L1] 1. satır → Çıkan adam,
-- [S4_L2] 2. satır → başlayan adam değil.
+- [S4_L1] 1. satır → İlerleyen adam,
+- [S4_L2] 2. satır → başlayan adam değildir.
 
 ### Kare 5 — (görsel 6)
 
 - [S5_HUD] HUD kelimesi → VARIŞ
-- [S5_L1] 1. satır → Zirveye varırsın.
-- [S5_L2] 2. satır → Artık o değilsin.
+- [S5_L1] 1. satır → Kendi zirvene ilerlersin.
 
 ### Kare 6 — (görsel 7)
 
 - [S6_HUD] HUD kelimesi → KARDEŞLİK
 - [S6_L1] 1. satır → Ama yalnız değilsin.
-- [S6_L2] 2. satır → Onlar da tırmandı.
 
 ### Kare 7 — Final (görsel 8)
 
 - [S7_HUD] HUD kelimesi → SIRA SENDE
-- [S7_L1] Üst küçük satır → Bu bir adamın hikâyesiydi.
 - [S7_L2] Dev kapanış → Sıradaki sensin.
 
 ---

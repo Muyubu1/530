@@ -845,10 +845,7 @@ export function LandingPage({
             >
               <div style={{ maxWidth: 880, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Bir yerde tıkandın.
-                </div>
-                <div className="ln" data-li={1} style={lnStyle}>
-                  Çıkış yukarıda.
+                  Yalnız değilsin.
                 </div>
               </div>
             </div>
@@ -883,10 +880,7 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 880, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  İlk adım en ağırı.
-                </div>
-                <div className="ln" data-li={1} style={lnStyle}>
-                  Ve yalnız atılır.
+                  Başlamak en zoru.
                 </div>
               </div>
             </div>
@@ -927,10 +921,7 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 880, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Bir gün “yeter” dersin.
-                </div>
-                <div className="ln" data-li={1} style={lnStyle}>
-                  Ve doğrulursun.
+                  Bugün başlamasın.
                 </div>
               </div>
             </div>
@@ -971,10 +962,10 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 900, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Çıkan adam,
+                  İlerleyen adam,
                 </div>
                 <div className="ln" data-li={1} style={lnStyle}>
-                  başlayan adam değil.
+                  başlayan adam değildir.
                 </div>
               </div>
             </div>
@@ -995,10 +986,7 @@ export function LandingPage({
             >
               <div style={{ maxWidth: 880, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Zirveye varırsın.
-                </div>
-                <div className="ln" data-li={1} style={lnStyle}>
-                  Artık o değilsin.
+                  Kendi zirvene ilerlersin.
                 </div>
               </div>
             </div>
@@ -1020,9 +1008,6 @@ export function LandingPage({
               <div style={{ maxWidth: 940, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
                   Ama yalnız değilsin.
-                </div>
-                <div className="ln" data-li={1} style={lnStyle}>
-                  Onlar da tırmandı.
                 </div>
               </div>
             </div>
@@ -1054,20 +1039,6 @@ export function LandingPage({
                 <div
                   className="ln"
                   data-li={0}
-                  style={{
-                    fontFamily: "'Space Mono',monospace",
-                    fontSize: "clamp(12px,1.5vw,16px)",
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    color: "#B9C6CF",
-                    willChange: "transform,opacity,filter",
-                  }}
-                >
-                  Bu bir adamın hikâyesiydi.
-                </div>
-                <div
-                  className="ln"
-                  data-li={1}
                   style={{
                     marginTop: 22,
                     fontFamily: "'Anton',sans-serif",
