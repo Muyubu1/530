@@ -518,8 +518,9 @@ export function LandingPage({
               >
                 <img
                   className="cine-img"
-                  src={`/landing/${n}.jpeg`}
+                  src={`/landing/${n}.webp`}
                   decoding="async"
+                  fetchPriority={i === 0 ? "high" : "auto"}
                   alt=""
                   style={{
                     width: "100%",

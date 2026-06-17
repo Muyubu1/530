@@ -65,7 +65,7 @@ export function InkReveal({
   rStart = 16,
   rVary = 0.45,
   stampStep = 12,
-  maxStamps = 340,
+  maxStamps = 200,
   segments = 36,
   wobble = [0.14, 0.08, 0.05],
   gradientInnerRadius = 0.2,
@@ -124,7 +124,9 @@ export function InkReveal({
     const parent = canvas.parentElement;
     if (!parent) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // 1.5 cap: the canvas already has blur(1px) + soft gradients, so 1.5 is visually
+    // indistinguishable from 2 while clearing/filling/compositing ~44% fewer pixels per frame.
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const rect = parent.getBoundingClientRect();
     const w = rect.width;
     const h = rect.height;
@@ -243,6 +245,11 @@ export function InkReveal({
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
   }, [resize]);
+
+  // Touch / no-hover devices: the discovery veil is meaningless without a roaming pointer,
+  // so render nothing at all (no veil, zero overhead). Desktop (hover) is unaffected.
+  // `coarse` starts false on SSR + first paint and flips after mount, so hydration stays safe.
+  if (coarse) return null;
 
   const relPos = (clientX: number, clientY: number, el: HTMLCanvasElement) => {
     const rect = el.getBoundingClientRect();
