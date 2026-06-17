@@ -140,14 +140,7 @@ export function InkReveal({
   }, [fillVeil]);
 
   const carveInk = useCallback(
-    (
-      ctx: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      r: number,
-      seed: number,
-      a: number,
-    ) => {
+    (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, seed: number, a: number) => {
       const g = ctx.createRadialGradient(x, y, r * gradientInnerRadius, x, y, r);
       g.addColorStop(0, `rgba(0,0,0,${gradientStops[0] * a})`);
       g.addColorStop(0.5, `rgba(0,0,0,${gradientStops[1] * a})`);

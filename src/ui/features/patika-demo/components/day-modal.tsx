@@ -26,8 +26,8 @@ export function DayModal({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
         <div>
-          <Eyebrow size="sm">patika · {day}. gün</Eyebrow>
-          <DialogTitle className="mt-1 text-2xl">{data.theme}</DialogTitle>
+          <Eyebrow size="md">patika · {day}. gün</Eyebrow>
+          <DialogTitle className="mt-1.5 text-3xl">{data.theme}</DialogTitle>
 
           <div className="mt-4 space-y-3">
             {data.tasks.map((t) => (
@@ -48,7 +48,7 @@ export function DayModal({
               </Button>
             )
           ) : (
-            <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-300/80">
+            <p className="mt-5 text-center font-mono text-xs uppercase tracking-[0.25em] text-emerald-300/80">
               bu gün tamamlandı
             </p>
           )}

@@ -27,6 +27,8 @@ import { Route as MentorlukIndexRouteImport } from './routes/mentorluk/index'
 import { Route as KisiselProgramIndexRouteImport } from './routes/kisisel-program/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UyeToplulukRouteImport } from './routes/uye/topluluk'
+import { Route as UyePatikaRouteImport } from './routes/uye/patika'
+import { Route as UyePanelRouteImport } from './routes/uye/panel'
 import { Route as UyeKutuphaneRouteImport } from './routes/uye/kutuphane'
 import { Route as UyeGuncellemelerRouteImport } from './routes/uye/guncellemeler'
 import { Route as UyeEtkinliklerRouteImport } from './routes/uye/etkinlikler'
@@ -136,6 +138,16 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const UyeToplulukRoute = UyeToplulukRouteImport.update({
   id: '/topluluk',
   path: '/topluluk',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyePatikaRoute = UyePatikaRouteImport.update({
+  id: '/patika',
+  path: '/patika',
+  getParentRoute: () => UyeRoute,
+} as any)
+const UyePanelRoute = UyePanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
   getParentRoute: () => UyeRoute,
 } as any)
 const UyeKutuphaneRoute = UyeKutuphaneRouteImport.update({
@@ -263,6 +275,8 @@ export interface FileRoutesByFullPath {
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
   '/uye/kutuphane': typeof UyeKutuphaneRoute
+  '/uye/panel': typeof UyePanelRoute
+  '/uye/patika': typeof UyePatikaRoute
   '/uye/topluluk': typeof UyeToplulukRoute
   '/admin/': typeof AdminIndexRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
@@ -301,6 +315,8 @@ export interface FileRoutesByTo {
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
   '/uye/kutuphane': typeof UyeKutuphaneRoute
+  '/uye/panel': typeof UyePanelRoute
+  '/uye/patika': typeof UyePatikaRoute
   '/uye/topluluk': typeof UyeToplulukRoute
   '/admin': typeof AdminIndexRoute
   '/kisisel-program': typeof KisiselProgramIndexRoute
@@ -342,6 +358,8 @@ export interface FileRoutesById {
   '/uye/etkinlikler': typeof UyeEtkinliklerRoute
   '/uye/guncellemeler': typeof UyeGuncellemelerRoute
   '/uye/kutuphane': typeof UyeKutuphaneRoute
+  '/uye/panel': typeof UyePanelRoute
+  '/uye/patika': typeof UyePatikaRoute
   '/uye/topluluk': typeof UyeToplulukRoute
   '/admin/': typeof AdminIndexRoute
   '/kisisel-program/': typeof KisiselProgramIndexRoute
@@ -384,6 +402,8 @@ export interface FileRouteTypes {
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
     | '/uye/kutuphane'
+    | '/uye/panel'
+    | '/uye/patika'
     | '/uye/topluluk'
     | '/admin/'
     | '/kisisel-program/'
@@ -422,6 +442,8 @@ export interface FileRouteTypes {
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
     | '/uye/kutuphane'
+    | '/uye/panel'
+    | '/uye/patika'
     | '/uye/topluluk'
     | '/admin'
     | '/kisisel-program'
@@ -462,6 +484,8 @@ export interface FileRouteTypes {
     | '/uye/etkinlikler'
     | '/uye/guncellemeler'
     | '/uye/kutuphane'
+    | '/uye/panel'
+    | '/uye/patika'
     | '/uye/topluluk'
     | '/admin/'
     | '/kisisel-program/'
@@ -627,6 +651,20 @@ declare module '@tanstack/react-router' {
       path: '/topluluk'
       fullPath: '/uye/topluluk'
       preLoaderRoute: typeof UyeToplulukRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/patika': {
+      id: '/uye/patika'
+      path: '/patika'
+      fullPath: '/uye/patika'
+      preLoaderRoute: typeof UyePatikaRouteImport
+      parentRoute: typeof UyeRoute
+    }
+    '/uye/panel': {
+      id: '/uye/panel'
+      path: '/panel'
+      fullPath: '/uye/panel'
+      preLoaderRoute: typeof UyePanelRouteImport
       parentRoute: typeof UyeRoute
     }
     '/uye/kutuphane': {
@@ -798,6 +836,8 @@ interface UyeRouteChildren {
   UyeEtkinliklerRoute: typeof UyeEtkinliklerRoute
   UyeGuncellemelerRoute: typeof UyeGuncellemelerRoute
   UyeKutuphaneRoute: typeof UyeKutuphaneRoute
+  UyePanelRoute: typeof UyePanelRoute
+  UyePatikaRoute: typeof UyePatikaRoute
   UyeToplulukRoute: typeof UyeToplulukRoute
   UyeIndexRoute: typeof UyeIndexRoute
   UyeDerslerCourseIdRoute: typeof UyeDerslerCourseIdRoute
@@ -813,6 +853,8 @@ const UyeRouteChildren: UyeRouteChildren = {
   UyeEtkinliklerRoute: UyeEtkinliklerRoute,
   UyeGuncellemelerRoute: UyeGuncellemelerRoute,
   UyeKutuphaneRoute: UyeKutuphaneRoute,
+  UyePanelRoute: UyePanelRoute,
+  UyePatikaRoute: UyePatikaRoute,
   UyeToplulukRoute: UyeToplulukRoute,
   UyeIndexRoute: UyeIndexRoute,
   UyeDerslerCourseIdRoute: UyeDerslerCourseIdRoute,

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useRouter, useLocation } from "@tanstack/react-router";
+import { Outlet, useRouter, useLocation } from "@tanstack/react-router";
 import {
-  Home,
+  Menu,
+  Footprints,
+  LayoutDashboard,
+  Dumbbell,
   MessageCircle,
   User as UserIcon,
-  Dumbbell,
   LogOut,
-  LayoutDashboard,
+  ShieldCheck,
+  type LucideIcon,
 } from "lucide-react";
 import {
   Wordmark,
@@ -18,6 +21,7 @@ import {
   DropdownMenuSeparator,
 } from "@/ui/design-system";
 import type { AuthUser } from "@/domain/auth";
+import { cn } from "@/lib/utils";
 import { useAuth } from "./auth/auth-context";
 
 const AMBIENCE = [
@@ -26,21 +30,18 @@ const AMBIENCE = [
   "radial-gradient(ellipse 70% 45% at 10% 75%, rgba(180, 190, 210, 0.10), transparent 65%)",
 ];
 
-type NavItem = {
-  to: "/uye" | "/uye/dersler" | "/uye/topluluk" | "/uye/profil";
-  label: string;
-  Icon: typeof Home;
-  exact?: boolean;
-};
+type MemberRoute = "/uye/patika" | "/uye/panel" | "/uye/dersler" | "/uye/topluluk" | "/uye/profil";
 
-const NAV: NavItem[] = [
-  { to: "/uye", label: "ana sayfa", Icon: Home, exact: true },
-  { to: "/uye/dersler", label: "programlarım", Icon: Dumbbell },
-  { to: "/uye/topluluk", label: "topluluk", Icon: MessageCircle },
-  { to: "/uye/profil", label: "benim odam", Icon: UserIcon },
+/** Single source of truth for member navigation — the hamburger menu maps over this. */
+const MEMBER_NAV: { to: MemberRoute; label: string; Icon: LucideIcon }[] = [
+  { to: "/uye/patika", label: "Patika", Icon: Footprints },
+  { to: "/uye/panel", label: "Panel", Icon: LayoutDashboard },
+  { to: "/uye/dersler", label: "Eğitimler", Icon: Dumbbell },
+  { to: "/uye/topluluk", label: "Topluluk", Icon: MessageCircle },
+  { to: "/uye/profil", label: "Benim Odam", Icon: UserIcon },
 ];
 
-/** Authenticated member shell: ambient background, top + mobile nav, account menu. */
+/** Authenticated member shell: ambient background + a single top-left hamburger menu. */
 export function MemberLayout({ user }: { user: AuthUser }) {
   const router = useRouter();
   const location = useLocation();
@@ -52,15 +53,14 @@ export function MemberLayout({ user }: { user: AuthUser }) {
       .then(setIsAdmin)
       .catch(() => {});
   }, [auth]);
+
   // The chat is an immersive full-height surface: hide the shell chrome there.
   const isChat = location.pathname.startsWith("/uye/topluluk");
-  const initials =
-    user.displayName
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((s) => s[0]?.toUpperCase())
-      .join("") || "?";
+
+  async function handleLogout() {
+    await auth.signOut();
+    router.navigate({ to: "/" });
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
@@ -84,64 +84,62 @@ export function MemberLayout({ user }: { user: AuthUser }) {
         }}
       />
 
-      <header className={isChat ? "hidden" : "relative z-10"}>
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5 md:px-10">
-          <Link to="/uye" aria-label="5.30 üye ana sayfa">
-            <Wordmark tone="cream" />
-          </Link>
-          <nav className="hidden items-center gap-8 md:flex">
-            {NAV.map(({ to, label, Icon, exact }) => (
-              <Link
-                key={to}
-                to={to}
-                activeOptions={{ exact: !!exact }}
-                className="group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 transition-colors hover:text-cream data-[status=active]:text-cream"
-              >
-                <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
-                {label}
-              </Link>
-            ))}
-          </nav>
-
+      <header className={isChat ? "hidden" : "relative z-20"}>
+        <div className="flex items-center gap-4 px-5 py-5 md:px-8">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                aria-label="hesap menüsü"
-                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-cream/30 bg-transparent font-mono text-[10px] uppercase tracking-[0.15em] text-cream/80 transition-colors hover:border-cream hover:text-cream focus:outline-none"
+                aria-label="menü"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-cream/25 bg-background/40 text-cream/90 backdrop-blur transition-colors hover:border-cream hover:text-cream focus:outline-none"
               >
-                {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  initials
-                )}
+                <Menu className="h-5 w-5" strokeWidth={1.75} />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" sideOffset={10} className="w-56">
+            <DropdownMenuContent align="start" sideOffset={12} className="w-64">
               <DropdownMenuLabel>
-                <p className="truncate font-display text-sm text-cream">{user.displayName}</p>
-                <p className="mt-0.5 truncate font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/60">
-                  üye
+                <p className="truncate font-display text-base text-cream">{user.displayName}</p>
+                <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/60">
+                  {isAdmin ? "yönetici" : "üye"}
                 </p>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {MEMBER_NAV.map(({ to, label, Icon }) => {
+                const active = location.pathname.startsWith(to);
+                return (
+                  <DropdownMenuItem
+                    key={to}
+                    onSelect={() => router.navigate({ to })}
+                    className={cn(
+                      "gap-3 text-sm tracking-wide text-muted-foreground/85 focus:text-cream",
+                      active && "text-cream",
+                    )}
+                  >
+                    <Icon className="h-4 w-4" strokeWidth={1.75} />
+                    {label}
+                  </DropdownMenuItem>
+                );
+              })}
               <DropdownMenuSeparator />
               {isAdmin && (
                 <DropdownMenuItem
                   onSelect={() => router.navigate({ to: "/admin" })}
-                  className="gap-2.5 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/80 focus:text-cream"
+                  className="gap-3 text-sm tracking-wide text-muted-foreground/85 focus:text-cream"
                 >
-                  <LayoutDashboard className="h-3.5 w-3.5" />
-                  yönetim paneli
+                  <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
+                  Yönetim Paneli
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
-                onSelect={() => router.navigate({ to: "/" })}
-                className="gap-2.5 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/80 focus:text-cream"
+                onSelect={handleLogout}
+                className="gap-3 text-sm tracking-wide text-muted-foreground/85 focus:text-cream"
               >
-                <LogOut className="h-3.5 w-3.5" />
-                çıkış
+                <LogOut className="h-4 w-4" strokeWidth={1.75} />
+                Çıkış
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Wordmark tone="cream" />
         </div>
       </header>
 
@@ -149,33 +147,11 @@ export function MemberLayout({ user }: { user: AuthUser }) {
         className={
           isChat
             ? "relative z-10"
-            : "relative z-10 mx-auto max-w-5xl px-6 pb-32 pt-12 md:px-10 md:py-20"
+            : "relative z-10 mx-auto max-w-5xl px-6 pb-24 pt-6 md:px-10 md:pb-28 md:pt-10"
         }
       >
         <Outlet />
       </main>
-
-      {!isChat && (
-        <nav
-          aria-label="alt navigasyon"
-          className="fixed inset-x-0 bottom-0 z-30 border-t border-border/40 bg-background md:hidden"
-          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-        >
-          <div className="mx-auto flex max-w-md items-stretch justify-around px-2 py-2">
-            {NAV.map(({ to, label, Icon, exact }) => (
-              <Link
-                key={to}
-                to={to}
-                activeOptions={{ exact: !!exact }}
-                className="group flex flex-1 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-muted-foreground/60 transition-colors data-[status=active]:text-cream"
-              >
-                <Icon className="h-5 w-5" strokeWidth={1.5} />
-                <span className="font-mono text-[8.5px] uppercase tracking-[0.2em]">{label}</span>
-              </Link>
-            ))}
-          </div>
-        </nav>
-      )}
     </div>
   );
 }

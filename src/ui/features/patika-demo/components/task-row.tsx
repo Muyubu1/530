@@ -59,10 +59,10 @@ export function TaskRow({
           <Icon className="h-5 w-5" strokeWidth={1.75} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className={cn("text-sm text-cream", done && "text-cream/50 line-through")}>
+          <p className={cn("text-base text-cream", done && "text-cream/50 line-through")}>
             {task.title}
           </p>
-          <p className="text-xs text-muted-foreground/60">{task.detail}</p>
+          <p className="text-sm text-muted-foreground/65">{task.detail}</p>
         </div>
         <span
           aria-hidden
@@ -86,7 +86,7 @@ export function TaskRow({
             onChange={(e) => setNote(e.target.value)}
             rows={2}
             placeholder="kısa not (isteğe bağlı)…"
-            className="mt-3 w-full resize-none rounded-md border border-border/50 bg-background/40 px-2 py-1.5 text-xs text-cream placeholder:text-muted-foreground/40 focus:border-cream/40 focus:outline-none"
+            className="mt-3 w-full resize-none rounded-md border border-border/50 bg-background/40 px-3 py-2 text-sm text-cream placeholder:text-muted-foreground/40 focus:border-cream/40 focus:outline-none"
           />
         ) : (
           <button
@@ -95,7 +95,7 @@ export function TaskRow({
               e.stopPropagation();
               setNoteOpen(true);
             }}
-            className="mt-2 pl-12 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 transition-colors hover:text-cream/60"
+            className="mt-2 pl-12 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground/45 transition-colors hover:text-cream/60"
           >
             + not ekle
           </button>

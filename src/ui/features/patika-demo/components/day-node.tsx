@@ -26,13 +26,13 @@ export function DayNode({
         disabled={state === "locked"}
         aria-label={`Gün ${day}`}
         className={cn(
-          "relative flex h-12 w-12 items-center justify-center rounded-full border-2 font-mono text-sm font-semibold transition-transform",
+          "relative flex h-14 w-14 items-center justify-center rounded-full border-2 font-mono text-base font-semibold transition-transform",
           state === "done" && "border-cream bg-cream text-background",
           state === "today" && "border-cream bg-cream/10 text-cream hover:scale-110",
           state === "locked" && "border-border/60 text-muted-foreground/55",
         )}
       >
-        {state === "done" ? <Check className="h-5 w-5" strokeWidth={3} /> : day}
+        {state === "done" ? <Check className="h-6 w-6" strokeWidth={3} /> : day}
       </button>
     </div>
   );

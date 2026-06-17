@@ -1,11 +1,11 @@
 import { DAYS } from "../lib/mock-journey";
 import { DayNode, type NodeState } from "./day-node";
 
-const W = 300;
-const AMP = 80;
-const R = 24;
-const GAP = 72;
-const CX = 150;
+const W = 340;
+const AMP = 96;
+const R = 28;
+const GAP = 84;
+const CX = 170;
 
 export function JourneyMap({
   currentDay,

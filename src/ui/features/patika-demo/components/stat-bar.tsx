@@ -16,14 +16,14 @@ function Stat({
 }) {
   return (
     <div
-      className="flex flex-1 flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/30 py-4 [animation:node-pop_0.5s_ease-out_both]"
+      className="flex flex-1 flex-col items-center gap-2.5 rounded-2xl border border-border/40 bg-card/30 py-5 [animation:node-pop_0.5s_ease-out_both]"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 bg-cream/5">
-        <Icon className={cn("h-5 w-5 text-cream", iconClass)} strokeWidth={1.75} />
+      <span className="flex h-12 w-12 items-center justify-center rounded-full border border-cream/20 bg-cream/5">
+        <Icon className={cn("h-6 w-6 text-cream", iconClass)} strokeWidth={1.75} />
       </span>
-      <span className="font-display text-xl text-cream">{value}</span>
-      <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-muted-foreground/50">
+      <span className="font-display text-3xl text-cream">{value}</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/55">
         {label}
       </span>
     </div>
