@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Video, AudioLines, FileText, ExternalLink, Play, type LucideIcon } from "lucide-react";
+import { Video, AudioLines, FileText, ChevronRight, Play, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/ui/design-system";
 import { cn } from "@/lib/utils";
 import type { DemoResource, ResourceKind } from "../lib/mock-journey";
+import { ResourceViewer } from "./resource-viewer";
 
 const TABS: { kind: ResourceKind; label: string; Icon: LucideIcon }[] = [
   { kind: "video", label: "Video", Icon: Video },
@@ -19,7 +20,8 @@ const ITEM_ICON: Record<ResourceKind, LucideIcon> = {
 /**
  * The day's supporting material. A mobile-nav-style segmented control (Video / Ses /
  * Kaynak); each segment is active only when that kind exists. Switching segments swaps
- * the content; selecting an item opens it. Renders nothing when the day has no material.
+ * the content; selecting an item opens it embedded in an in-app pop-up (no new tab).
+ * Renders nothing when the day has no material.
  */
 export function ResourcePanel({ resources }: { resources: DemoResource[] }) {
   const counts: Record<ResourceKind, number> = { video: 0, audio: 0, doc: 0 };
@@ -27,6 +29,7 @@ export function ResourcePanel({ resources }: { resources: DemoResource[] }) {
 
   const firstAvailable = TABS.find((t) => counts[t.kind] > 0)?.kind ?? "video";
   const [active, setActive] = useState<ResourceKind>(firstAvailable);
+  const [viewing, setViewing] = useState<DemoResource | null>(null);
 
   if (resources.length === 0) return null;
 
@@ -74,12 +77,11 @@ export function ResourcePanel({ resources }: { resources: DemoResource[] }) {
           items.map((r, i) => {
             const Icon = ITEM_ICON[r.kind];
             return (
-              <a
+              <button
                 key={`${r.kind}-${i}`}
-                href={r.url}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-border/40 bg-card/30 p-3.5 transition-colors hover:border-cream/30"
+                type="button"
+                onClick={() => setViewing(r)}
+                className="flex w-full items-center gap-3 rounded-xl border border-border/40 bg-card/30 p-3.5 text-left transition-colors hover:border-cream/30"
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-cream/20 bg-cream/5 text-cream">
                   <Icon className="h-5 w-5" strokeWidth={1.75} />
@@ -90,15 +92,17 @@ export function ResourcePanel({ resources }: { resources: DemoResource[] }) {
                     {r.meta}
                   </p>
                 </div>
-                <ExternalLink
+                <ChevronRight
                   className="h-4 w-4 shrink-0 text-muted-foreground/50"
                   strokeWidth={1.75}
                 />
-              </a>
+              </button>
             );
           })
         )}
       </div>
+
+      <ResourceViewer resource={viewing} onClose={() => setViewing(null)} />
     </div>
   );
 }
