@@ -107,7 +107,11 @@ export function InkReveal({
   const vc = veilColor;
   const fillVeil = useCallback(
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+      // Clear first: a translucent fill is composited OVER prior pixels, so without
+      // clearing it would accumulate frame-by-frame to near-opaque black (the veil
+      // darkening the moment the loop starts). Clearing keeps every frame at exactly `alpha`.
       ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = `rgba(${vc[0]},${vc[1]},${vc[2]},${alpha})`;
       ctx.fillRect(0, 0, w, h);
     },
