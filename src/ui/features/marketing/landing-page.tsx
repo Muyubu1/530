@@ -397,6 +397,30 @@ export function LandingPage({
         );
       });
 
+      // Hand-drawn invite frame: set up HERE (same context as the pin) so its position is
+      // measured against the pin-spacer correctly. A sibling-owned ScrollTrigger mis-fires
+      // (draws early) under the pinned climb above. Triggers on the section (a stable block,
+      // not the absolute SVG); scrubbed so it draws as you arrive and un-draws on scroll back.
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      gsap.utils.toArray<SVGPathElement>(q(".frame-path")).forEach((path) => {
+        if (reducedMotion) {
+          gsap.set(path, { strokeDashoffset: 0 });
+          return;
+        }
+        gsap.set(path, { strokeDashoffset: 1 });
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: path.closest("section"),
+            start: "top 60%",
+            end: "center 52%",
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+          },
+        });
+      });
+
       // Recompute pin-spacing / start-end once layout (fonts, images) has settled.
       ScrollTrigger.refresh();
     },
@@ -1364,12 +1388,9 @@ export function LandingPage({
           overflow: "hidden",
         }}
       >
-        {/* Hand-drawn circle framing the invite — draws AS you scroll in (scrub), late start */}
+        {/* Hand-drawn circle framing the invite — drawn by the main useGSAP (see .frame-path) */}
         <HandDrawnFrame
           shape="circle"
-          scrub
-          start="top 45%"
-          end="center 48%"
           style={{
             position: "absolute",
             top: "50%",
