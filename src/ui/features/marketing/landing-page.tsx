@@ -9,6 +9,7 @@ import {
   Reveal,
   InkReveal,
   HandDrawnFrame,
+  CinematicVideoFrame,
   Dialog,
   DialogTrigger,
   DialogContent,
@@ -1182,11 +1183,11 @@ export function LandingPage({
         }}
       >
         <div className="parallax-slow" style={sectionGhost}>
-          08
+          09
         </div>
         <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Reveal variant="fade-down" style={eyebrowStyle}>
-            08 — SİSTEM
+            09 — SİSTEM
           </Reveal>
           <div className="hairline" style={hairlineStyle} />
           <Reveal
@@ -1272,7 +1273,7 @@ export function LandingPage({
         </div>
       </section>
 
-      {/* ============ BÖLÜM 9 — ELEME ============ */}
+      {/* ============ BÖLÜM 10 — PROGRAM (video) ============ */}
       <section
         className="reveal-sec"
         style={{
@@ -1284,11 +1285,11 @@ export function LandingPage({
         }}
       >
         <div className="parallax-slow" style={sectionGhost}>
-          09
+          10
         </div>
         <div style={{ maxWidth: 1120, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Reveal variant="fade-down" style={eyebrowStyle}>
-            09 — ELEME
+            10 — PROGRAM
           </Reveal>
           <div className="hairline" style={hairlineStyle} />
           <Reveal
@@ -1305,100 +1306,19 @@ export function LandingPage({
               color: "#E6EBEE",
             }}
           >
-            Bu herkes için değil.
+            28 günlük yolculuk.
           </Reveal>
-
-          <div
-            style={{
-              marginTop: "clamp(50px,7vh,84px)",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
-              gap: 48,
-            }}
-          >
-            <Reveal variant="slide-right">
-              <div
-                style={{
-                  fontFamily: "'Space Mono',monospace",
-                  fontSize: 12,
-                  letterSpacing: "0.3em",
-                  textTransform: "uppercase",
-                  color: "#B9C6CF",
-                  paddingBottom: 18,
-                  borderBottom: "1px solid rgba(230,235,238,0.16)",
-                }}
-              >
-                İÇİN
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {["Sorumluluk alanlar.", "Söz verip tutanlar.", "Dibe vurup bırakmayanlar."].map(
-                  (t, idx, arr) => (
-                    <div
-                      key={t}
-                      style={{
-                        display: "flex",
-                        gap: 16,
-                        alignItems: "baseline",
-                        padding: "20px 0",
-                        borderBottom:
-                          idx < arr.length - 1 ? "1px solid rgba(230,235,238,0.08)" : "none",
-                      }}
-                    >
-                      <span style={{ fontFamily: "'Space Mono',monospace", color: "#B9C6CF" }}>
-                        +
-                      </span>
-                      <span style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "#E6EBEE" }}>
-                        {t}
-                      </span>
-                    </div>
-                  ),
-                )}
-              </div>
-            </Reveal>
-            <Reveal variant="slide-left" delay={120}>
-              <div
-                style={{
-                  fontFamily: "'Space Mono',monospace",
-                  fontSize: 12,
-                  letterSpacing: "0.3em",
-                  textTransform: "uppercase",
-                  color: "#5b6772",
-                  paddingBottom: 18,
-                  borderBottom: "1px solid rgba(230,235,238,0.10)",
-                }}
-              >
-                İÇİN DEĞİL
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {["Bahane arayanlar.", "İlk zorlukta kaçanlar.", "Kalabalıkta kaybolanlar."].map(
-                  (t, idx, arr) => (
-                    <div
-                      key={t}
-                      style={{
-                        display: "flex",
-                        gap: 16,
-                        alignItems: "baseline",
-                        padding: "20px 0",
-                        borderBottom:
-                          idx < arr.length - 1 ? "1px solid rgba(230,235,238,0.05)" : "none",
-                      }}
-                    >
-                      <span style={{ fontFamily: "'Space Mono',monospace", color: "#5b6772" }}>
-                        —
-                      </span>
-                      <span style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "#5b6772" }}>
-                        {t}
-                      </span>
-                    </div>
-                  ),
-                )}
-              </div>
-            </Reveal>
-          </div>
+          <Reveal variant="fade-up" delay={120} style={{ marginTop: "clamp(44px,7vh,80px)" }}>
+            <CinematicVideoFrame
+              src="/media/p28-1a7ab4.mp4"
+              poster="/landing/8.webp"
+              caption="28 günlük program · önizleme"
+            />
+          </Reveal>
         </div>
       </section>
 
-      {/* ============ BÖLÜM 10 — KİM İÇİN ============ */}
+      {/* ============ BÖLÜM 11 — KİM İÇİN ============ */}
       <section
         className="reveal-sec"
         style={{
@@ -1410,11 +1330,11 @@ export function LandingPage({
         }}
       >
         <div className="parallax-slow" style={sectionGhost}>
-          10
+          11
         </div>
         <div style={{ maxWidth: 980, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <Reveal variant="fade-down" style={eyebrowStyle}>
-            10 — KİM İÇİN
+            11 — KİM İÇİN
           </Reveal>
           <div className="hairline" style={hairlineStyle} />
 
@@ -1482,7 +1402,7 @@ export function LandingPage({
         </div>
       </section>
 
-      {/* ============ BÖLÜM 11 — DAVET ============ */}
+      {/* ============ BÖLÜM 12 — DAVET ============ */}
       <section
         className="reveal-sec"
         style={{
@@ -1520,7 +1440,7 @@ export function LandingPage({
                 color: "#8593A0",
               }}
             >
-              11 — DAVET
+              12 — DAVET
             </div>
             <h2
               style={{

@@ -10,3 +10,6 @@ dist
 .env.*
 !.env.example
 .DS_Store
+
+# Heavy media (videos) — served from public/ locally, uploaded separately on deploy
+public/media/
