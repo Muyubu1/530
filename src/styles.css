@@ -158,6 +158,21 @@
   box-shadow: 0 0 0 1000px var(--background) inset;
 }
 
+/* ── Device split: pinned cinematic climb is for real desktops (pointer:fine); touch
+   devices (phones/tablets, incl. landscape) get the calm <MobileStory> instead. Driven by
+   capability media queries (not width) so it can't misclassify a landscape phone. ───── */
+.cine-climb-mobile {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  .cine-landing .cine-climb-desktop {
+    display: none !important;
+  }
+  .cine-climb-mobile {
+    display: block !important;
+  }
+}
+
 /* ── Mobile-only landing tuning (≤759px). Desktop/web is untouched. These override the
    inline styles (hence !important); no overflow-x guard on the scroll root so ScrollTrigger
    pinning stays intact. ─────────────────────────────────────────────────────────────── */

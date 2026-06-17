@@ -296,14 +296,16 @@ export function LandingPage({
         return tl;
       };
 
-      // ── Responsive / accessible fidelity tiers ──────────────────────────────
+      // ── Fidelity tiers. The pinned cinematic climb runs ONLY on real desktop
+      //    (pointer: fine). Touch devices get the calm <MobileStory> instead — no
+      //    GSAP/Lenis/pin here at all (it's hidden via CSS on touch). ──────────────
       const mm = gsap.matchMedia(root);
 
-      mm.add("(prefers-reduced-motion: reduce)", () => {
+      mm.add("(pointer: fine) and (prefers-reduced-motion: reduce)", () => {
         buildClimb("reduced", 1.2);
       });
 
-      mm.add("(min-width: 760px) and (prefers-reduced-motion: no-preference)", () => {
+      mm.add("(pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
         buildClimb("full", 1.3);
 
         // Lenis smooth scroll, driven by the GSAP ticker (single rAF source).
@@ -371,10 +373,6 @@ export function LandingPage({
           if (card && cardMove) card.removeEventListener("pointermove", cardMove);
           if (card && cardLeave) card.removeEventListener("pointerleave", cardLeave);
         };
-      });
-
-      mm.add("(max-width: 759px) and (prefers-reduced-motion: no-preference)", () => {
-        buildClimb("lite", 1.15);
       });
 
       // ── Lower sections: gentle background parallax via scrubbed ScrollTriggers. ──
@@ -562,9 +560,9 @@ export function LandingPage({
       </a>
       */}
 
-      {/* ============ CINEMATIC PINNED CLIMB ============ */}
+      {/* ============ CINEMATIC PINNED CLIMB (desktop / pointer:fine only) ============ */}
       <section
-        className="cine-section"
+        className="cine-section cine-climb-desktop"
         style={{ position: "relative", height: "100vh", background: "#0B0F14" }}
       >
         <div
@@ -1207,6 +1205,9 @@ export function LandingPage({
         </div>
       </section>
 
+      {/* Calm, scroll-native story for touch devices (shown via CSS; no GSAP/pin/Lenis). */}
+      <MobileStory />
+
       {/* ============ BÖLÜM 8 — 5.30 NEDİR ============ */}
       <section
         className="reveal-sec"
@@ -1667,6 +1668,177 @@ export function LandingPage({
       >
         5.30 — DİSİPLİN · İNANÇ · BİRLİK
       </footer>
+    </div>
+  );
+}
+
+/** Touch-only story scenes (one image + one line each), mirroring the desktop climb copy. */
+const MOBILE_STORY: { img: string; word?: string; line: string; big?: boolean }[] = [
+  { img: "/landing/2.webp", line: "Aynada gördüğünüz kişiye" },
+  { img: "/landing/3.webp", word: "SABIR", line: "aşık olmaya hazır mısınız?" },
+  { img: "/landing/4.webp", word: "AZİM", line: "Sadece 28 günde," },
+  { img: "/landing/5.webp", word: "İNANÇ", line: "aynada gördüğünüz adama" },
+  { img: "/landing/6.webp", line: "aşık olacaksınız." },
+  { img: "/landing/8.webp", line: "Sıra sende.", big: true },
+];
+
+const MOBILE_SCRIM =
+  "linear-gradient(to top, rgba(7,10,14,0.92) 0%, rgba(7,10,14,0.45) 40%, rgba(7,10,14,0.22) 100%)";
+
+/**
+ * Touch-only landing story: a calm vertical sequence (one image + one line per scene) with a
+ * light fade-in. No pin, scrub, Lenis, blur or ambient layers — so no jank, darkening or
+ * address-bar jump on phones. Hidden on pointer:fine via CSS (.cine-climb-mobile).
+ */
+function MobileStory() {
+  return (
+    <div className="cine-climb-mobile" style={{ background: "#0B0F14", color: "#E6EBEE" }}>
+      <section
+        style={{
+          position: "relative",
+          minHeight: "88svh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          padding: "0 24px",
+          overflow: "hidden",
+        }}
+      >
+        <img
+          src="/landing/1.webp"
+          alt=""
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: MOBILE_SCRIM }} />
+        <div style={{ position: "relative" }}>
+          <p
+            style={{
+              fontFamily: "'Space Mono',monospace",
+              fontSize: 11,
+              letterSpacing: "0.32em",
+              textTransform: "uppercase",
+              color: "#8593A0",
+              margin: 0,
+            }}
+          >
+            05:30 — OLUŞUM
+          </p>
+          <div
+            style={{
+              fontFamily: "'Anton',sans-serif",
+              fontSize: "clamp(92px,32vw,150px)",
+              lineHeight: 0.86,
+              color: "#F1F5F7",
+              textShadow: "0 12px 50px rgba(0,0,0,0.6)",
+              marginTop: 14,
+            }}
+          >
+            5.30
+          </div>
+          <p
+            style={{
+              marginTop: 18,
+              fontFamily: "'Space Mono',monospace",
+              fontSize: 13,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "#B9C6CF",
+            }}
+          >
+            Sıradan bir adamdan, sıra dışı bir adama.
+          </p>
+        </div>
+        <p
+          style={{
+            position: "absolute",
+            bottom: 24,
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontFamily: "'Space Mono',monospace",
+            fontSize: 10,
+            letterSpacing: "0.4em",
+            textTransform: "uppercase",
+            color: "#8593A0",
+            margin: 0,
+          }}
+        >
+          aşağı kaydır ↓
+        </p>
+      </section>
+
+      {MOBILE_STORY.map((s, i) => (
+        <section
+          key={i}
+          style={{
+            position: "relative",
+            minHeight: "74svh",
+            display: "flex",
+            alignItems: "flex-end",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src={s.img}
+            alt=""
+            loading="lazy"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: s.img.endsWith("5.webp") ? "center 22%" : "center",
+            }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: MOBILE_SCRIM }} />
+          <Reveal
+            variant="fade-up"
+            duration={900}
+            style={{
+              position: "relative",
+              width: "100%",
+              padding: "0 24px 12vh",
+              textAlign: "center",
+            }}
+          >
+            {s.word && (
+              <p
+                style={{
+                  fontFamily: "'Space Mono',monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.34em",
+                  textTransform: "uppercase",
+                  color: "#8593A0",
+                  margin: "0 0 14px",
+                }}
+              >
+                {s.word}
+              </p>
+            )}
+            <p
+              style={{
+                fontFamily: s.big ? "'Anton',sans-serif" : "'Archivo',sans-serif",
+                fontWeight: s.big ? 400 : 600,
+                fontSize: s.big ? "clamp(52px,16vw,84px)" : "clamp(26px,6.5vw,38px)",
+                lineHeight: s.big ? 0.92 : 1.18,
+                color: "#EAEEF1",
+                margin: 0,
+                textWrap: "balance",
+              }}
+            >
+              {s.line}
+            </p>
+          </Reveal>
+        </section>
+      ))}
     </div>
   );
 }
