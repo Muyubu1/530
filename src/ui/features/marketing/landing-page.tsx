@@ -730,7 +730,7 @@ export function LandingPage({
               <div
                 style={{
                   position: "absolute",
-                  top: 30,
+                  top: 64,
                   right: 34,
                   ...eyebrowStyle,
                   fontSize: 11,
