@@ -5,7 +5,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Reveal } from "@/ui/design-system";
+import { Reveal, InkReveal } from "@/ui/design-system";
 import type { WaitlistData, WaitlistResult } from "@/ui/shared/waitlist-form";
 
 const N = 8;
@@ -1055,6 +1055,9 @@ export function LandingPage({
               </div>
             </div>
           </div>
+
+          {/* INK REVEAL — dark discovery veil over the whole climb; the hand carves it open */}
+          <InkReveal style={{ zIndex: 30 }} />
 
           {/* HUD */}
           <div
