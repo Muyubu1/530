@@ -1398,7 +1398,91 @@ export function LandingPage({
         </div>
       </section>
 
-      {/* ============ BÖLÜM 10 — DAVET ============ */}
+      {/* ============ BÖLÜM 10 — KİM İÇİN ============ */}
+      <section
+        className="reveal-sec"
+        style={{
+          position: "relative",
+          background: "#0B0F14",
+          padding: "clamp(110px,16vh,200px) 24px",
+          borderTop: "1px solid rgba(230,235,238,0.10)",
+          overflow: "hidden",
+        }}
+      >
+        <div className="parallax-slow" style={sectionGhost}>
+          10
+        </div>
+        <div style={{ maxWidth: 980, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <Reveal variant="fade-down" style={eyebrowStyle}>
+            10 — KİM İÇİN
+          </Reveal>
+          <div className="hairline" style={hairlineStyle} />
+
+          <div
+            style={{
+              marginTop: "clamp(44px,7vh,84px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "clamp(22px,3.4vh,40px)",
+            }}
+          >
+            {[
+              "Aynada gördüğüm kişiye aşık olmak istiyorum diyenler…",
+              "Kendime verdiğim sözleri tutmak istiyorum diyenler…",
+              "Hayatımı yoluna koymak istiyorum diyenler…",
+              "Değişim yolunda, daha önceden yürümüş birine ihtiyacım var diyenler…",
+            ].map((line, i) => (
+              <Reveal
+                key={line}
+                variant="fade-up"
+                delay={i * 110}
+                style={{ display: "flex", gap: 18, alignItems: "baseline" }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'Space Mono',monospace",
+                    fontSize: "clamp(13px,1.6vw,18px)",
+                    color: "#8593A0",
+                    flexShrink: 0,
+                  }}
+                >
+                  —
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Playfair Display',serif",
+                    fontStyle: "italic",
+                    fontSize: "clamp(21px,3.1vw,38px)",
+                    lineHeight: 1.3,
+                    color: "#E6EBEE",
+                    textWrap: "balance",
+                  }}
+                >
+                  {line}
+                </span>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal
+            variant="letter-rise"
+            delay={120}
+            as="p"
+            style={{
+              margin: "clamp(48px,7vh,84px) 0 0",
+              fontFamily: "'Anton',sans-serif",
+              fontSize: "clamp(30px,5vw,60px)",
+              lineHeight: 1.02,
+              letterSpacing: "0.01em",
+              color: "#E6EBEE",
+            }}
+          >
+            Bu program size göredir.
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ============ BÖLÜM 11 — DAVET ============ */}
       <section
         className="reveal-sec"
         style={{
@@ -1436,7 +1520,7 @@ export function LandingPage({
                 color: "#8593A0",
               }}
             >
-              10 — DAVET
+              11 — DAVET
             </div>
             <h2
               style={{
