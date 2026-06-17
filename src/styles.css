@@ -157,3 +157,29 @@
   -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
   box-shadow: 0 0 0 1000px var(--background) inset;
 }
+
+/* ── Mobile-only landing tuning (≤759px). Desktop/web is untouched. These override the
+   inline styles (hence !important); no overflow-x guard on the scroll root so ScrollTrigger
+   pinning stays intact. ─────────────────────────────────────────────────────────────── */
+@media (max-width: 759px) {
+  /* The vertical HUD progress rail is cramped on phones — hide it. */
+  .cine-landing .cine-hud {
+    display: none !important;
+  }
+  /* Declutter the hero corners: keep the top-left tagline, drop the other two. */
+  .cine-landing .cine-corner-tr,
+  .cine-landing .cine-corner-bl {
+    display: none !important;
+  }
+  .cine-landing .cine-corner-tl {
+    top: max(env(safe-area-inset-top), 16px) !important;
+    left: max(env(safe-area-inset-left), 16px) !important;
+  }
+  /* Bigger, notch-safe, tappable member-access link. */
+  .cine-landing .cine-login {
+    top: max(env(safe-area-inset-top), 14px) !important;
+    right: max(env(safe-area-inset-right), 14px) !important;
+    padding: 11px 18px !important;
+    font-size: 11px !important;
+  }
+}

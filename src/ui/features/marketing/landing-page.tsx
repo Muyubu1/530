@@ -257,8 +257,9 @@ export function LandingPage({
             });
           }
 
-          // giant stair-word: fades in with the caption, drifts past, clears with it
-          if (heavy) {
+          // giant stair-word: fades in with the caption, drifts past, clears with it.
+          // Shown on mobile too (rich) — only the reduced-motion tier skips it.
+          if (rich) {
             const sw = seg.querySelector<HTMLElement>(".stair-word");
             if (sw) {
               tl.fromTo(
@@ -373,7 +374,7 @@ export function LandingPage({
       });
 
       mm.add("(max-width: 759px) and (prefers-reduced-motion: no-preference)", () => {
-        buildClimb("lite", 1.0);
+        buildClimb("lite", 1.15);
       });
 
       // ── Lower sections: gentle background parallax via scrubbed ScrollTriggers. ──
@@ -505,6 +506,7 @@ export function LandingPage({
       {/* Discreet member access — the immersive page has no site header */}
       <Link
         to="/login"
+        className="cine-login"
         style={{
           position: "fixed",
           top: 64,
@@ -800,6 +802,7 @@ export function LandingPage({
               style={{ position: "absolute", inset: 0, opacity: 1, willChange: "opacity" }}
             >
               <div
+                className="cine-corner cine-corner-tl"
                 style={{
                   position: "absolute",
                   top: 30,
@@ -813,6 +816,7 @@ export function LandingPage({
                 DİSİPLİN · İNANÇ · BİRLİK
               </div>
               <div
+                className="cine-corner cine-corner-tr"
                 style={{
                   position: "absolute",
                   top: 30,
@@ -826,6 +830,7 @@ export function LandingPage({
                 BECOME THE MAN
               </div>
               <div
+                className="cine-corner cine-corner-bl"
                 style={{
                   position: "absolute",
                   bottom: 30,
@@ -1506,7 +1511,7 @@ export function LandingPage({
                   type="button"
                   className="cine-btn"
                   style={{
-                    marginTop: 40,
+                    marginTop: "clamp(24px,5vh,40px)",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
