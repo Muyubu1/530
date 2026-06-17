@@ -75,8 +75,15 @@ function resourcesFor(day: number): DemoResource[] {
   if (day % 3 === 0)
     out.push({ kind: "doc", title: `Gün ${day} · Çalışma notu`, meta: "PDF", url: SAMPLE.pdf });
   // First days carry a concrete written resource (easy to try): a PDF and a slide image.
-  if (day === 1)
+  if (day === 1) {
+    out.push({
+      kind: "doc",
+      title: "Düşün ve Zengin Ol — Napoleon Hill",
+      meta: "PDF · Kitap",
+      url: "/resources/think-and-grow-rich.pdf",
+    });
     out.push({ kind: "doc", title: "Başlangıç kılavuzu", meta: "PDF · 2 sayfa", url: SAMPLE.pdf });
+  }
   if (day === 2)
     out.push({ kind: "doc", title: "Sabah rutini (slayt)", meta: "Görsel", url: SAMPLE.slide });
   return out;
