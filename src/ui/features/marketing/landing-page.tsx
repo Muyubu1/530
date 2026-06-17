@@ -458,7 +458,7 @@ export function LandingPage({
         to="/login"
         style={{
           position: "fixed",
-          top: 22,
+          top: 64,
           right: 26,
           zIndex: 50,
           fontFamily: "'Space Mono',monospace",
@@ -730,7 +730,7 @@ export function LandingPage({
               <div
                 style={{
                   position: "absolute",
-                  top: 64,
+                  top: 30,
                   right: 34,
                   ...eyebrowStyle,
                   fontSize: 11,
