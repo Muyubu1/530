@@ -152,6 +152,8 @@
 .cine-field:-webkit-autofill:active {
   -webkit-text-fill-color: #e6ebee;
   caret-color: #e6ebee;
-  /* Defer the autofill background paint indefinitely so the field stays transparent. */
-  transition: background-color 9999s ease-in-out 0s;
+  /* Force a dark fill over the autofill light background (matches the dialog bg) so the
+     light text stays readable. The box-shadow inset is the reliable Chromium override. */
+  -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
+  box-shadow: 0 0 0 1000px var(--background) inset;
 }
