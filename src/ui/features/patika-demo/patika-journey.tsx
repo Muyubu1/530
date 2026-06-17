@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
 import { Eyebrow } from "@/ui/design-system";
 import { useDemoJourney } from "./use-demo-journey";
 import { JourneyHero } from "./components/journey-hero";
@@ -52,17 +51,6 @@ export function PatikaJourney() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-12 md:space-y-16">
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={j.reset}
-          aria-label="patikayı sıfırla"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 text-muted-foreground/60 transition-colors hover:border-cream hover:text-cream"
-        >
-          <RotateCcw className="h-4 w-4" />
-        </button>
-      </div>
-
       <JourneyHero
         currentDay={j.currentDay}
         total={j.total}
