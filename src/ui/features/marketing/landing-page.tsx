@@ -1086,8 +1086,7 @@ export function LandingPage({
                 justifyContent: "center",
                 padding: "0 24px 14vh",
               }}
-            >
-            </div>
+            ></div>
 
             {/* SEG 7 : Sira sende */}
             <div
