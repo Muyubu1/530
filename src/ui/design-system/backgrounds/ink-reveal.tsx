@@ -58,7 +58,7 @@ interface Stamp {
 
 export function InkReveal({
   veilColor = [7, 10, 14],
-  veilAlpha = 0.78,
+  veilAlpha = 0.66,
   veilAlphaTouch = 0.22,
   brushSize = 220,
   lifetime = 1100,
