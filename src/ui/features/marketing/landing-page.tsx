@@ -1709,6 +1709,7 @@ function MobileStory() {
         <img
           src="/landing/1.webp"
           alt=""
+          className="cine-mobile-img cine-kb-a"
           style={{
             position: "absolute",
             inset: 0,
@@ -1789,6 +1790,7 @@ function MobileStory() {
             src={s.img}
             alt=""
             loading="lazy"
+            className={"cine-mobile-img " + (i % 2 ? "cine-kb-b" : "cine-kb-a")}
             style={{
               position: "absolute",
               inset: 0,

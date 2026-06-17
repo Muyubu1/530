@@ -164,6 +164,38 @@
 .cine-climb-mobile {
   display: none;
 }
+/* Slow Ken Burns on mobile story images — keeps the stills "alive" without pin/scrub.
+   Min scale 1.06 keeps cover overscan so the ±2% pan never reveals an edge. */
+@keyframes cineKbA {
+  0% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.16) translate3d(-2%, -2%, 0);
+  }
+}
+@keyframes cineKbB {
+  0% {
+    transform: scale(1.16) translate3d(2%, 1%, 0);
+  }
+  100% {
+    transform: scale(1.06) translate3d(0, -1%, 0);
+  }
+}
+.cine-climb-mobile .cine-mobile-img {
+  will-change: transform;
+}
+.cine-climb-mobile .cine-kb-a {
+  animation: cineKbA 22s ease-in-out infinite alternate;
+}
+.cine-climb-mobile .cine-kb-b {
+  animation: cineKbB 24s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cine-climb-mobile .cine-mobile-img {
+    animation: none !important;
+  }
+}
 @media (hover: none) and (pointer: coarse) {
   .cine-landing .cine-climb-desktop {
     display: none !important;
