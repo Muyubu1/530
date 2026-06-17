@@ -82,7 +82,12 @@ export function HandDrawnFrame({
         gsap.to(path, {
           strokeDashoffset: 0,
           ease: "none",
-          scrollTrigger: { trigger: rootRef.current, start, end, scrub: scrub === true ? 0.6 : scrub },
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start,
+            end,
+            scrub: scrub === true ? 0.6 : scrub,
+          },
         });
       } else {
         // Time-based: plays once when the section enters view.
