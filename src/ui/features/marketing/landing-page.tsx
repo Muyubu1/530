@@ -1311,7 +1311,7 @@ export function LandingPage({
           <Reveal variant="fade-up" delay={120} style={{ marginTop: "clamp(44px,7vh,80px)" }}>
             <CinematicVideoFrame
               src="/media/p28-1a7ab4.mp4"
-              poster="/landing/8.webp"
+              poster="/media/p28-poster.jpg"
               caption="28 günlük program · önizleme"
             />
           </Reveal>
