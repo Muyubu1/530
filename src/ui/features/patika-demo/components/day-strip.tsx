@@ -4,10 +4,14 @@ import { DAYS } from "../lib/mock-journey";
 import { cn } from "@/lib/utils";
 
 type State = "done" | "today" | "locked";
+type Item = { kind: "day"; day: number; last: boolean } | { kind: "gap"; lit: boolean };
+
+const TOTAL = DAYS.length;
 
 /**
- * Horizontal, scrollable 28-day timeline (mobile-first). The reached portion of
- * the track glows; today is a pulsing orb; day 28 is the reward. Today auto-centers.
+ * Condensed, glowing 28-day timeline (mobile-first). Shows the first steps, a
+ * window around today, and the finale (28) — the hidden stretches collapse to "···".
+ * Always ends on day 28 (the reward). Today auto-centers; the reached track glows.
  */
 export function DayStrip({
   currentDay,
@@ -21,28 +25,64 @@ export function DayStrip({
     todayRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
   }, [currentDay]);
 
-  const theme = DAYS[Math.min(currentDay, DAYS.length) - 1]?.theme;
+  // Visible anchors: opening steps + the window around today + the finale.
+  const set = new Set<number>([1, 2, 3, TOTAL]);
+  for (const d of [currentDay - 1, currentDay, currentDay + 1]) {
+    if (d >= 1 && d <= TOTAL) set.add(d);
+  }
+  const days = [...set].sort((a, b) => a - b);
+
+  const items: Item[] = [];
+  days.forEach((day, i) => {
+    items.push({ kind: "day", day, last: day === TOTAL });
+    const next = days[i + 1];
+    if (next !== undefined && next - day > 1) items.push({ kind: "gap", lit: next <= currentDay });
+  });
+
+  const theme = DAYS[Math.min(currentDay, TOTAL) - 1]?.theme;
 
   return (
     <div>
       <div
-        className="flex overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex items-start gap-1 overflow-x-auto pb-2 [scrollbar-width:none] sm:gap-2 [&::-webkit-scrollbar]:hidden"
         role="list"
       >
-        {DAYS.map((d, i) => {
+        {items.map((it, i) => {
+          if (it.kind === "gap") {
+            return (
+              <div key={`gap-${i}`} className="flex w-9 shrink-0 flex-col items-center sm:w-12">
+                <span aria-hidden className="mb-3 text-[11px] opacity-0">
+                  ·
+                </span>
+                <div className="relative flex h-12 w-full items-center justify-center">
+                  <span
+                    className={cn(
+                      "absolute left-0 right-0 top-1/2 h-px -translate-y-1/2",
+                      it.lit ? "bg-cream/80" : "bg-cream/12",
+                    )}
+                  />
+                  <span className="relative z-10 bg-background px-1.5 font-mono text-base leading-none text-muted-foreground/40">
+                    ···
+                  </span>
+                </div>
+              </div>
+            );
+          }
+
           const state: State =
-            d.day < currentDay ? "done" : d.day === currentDay ? "today" : "locked";
-          const isLast = i === DAYS.length - 1;
-          const reachable = d.day <= currentDay;
-          const leftLit = i > 0 && d.day <= currentDay;
-          const rightLit = !isLast && d.day < currentDay;
+            it.day < currentDay ? "done" : it.day === currentDay ? "today" : "locked";
+          const reachable = it.day <= currentDay;
+          const first = i === 0;
+          const last = i === items.length - 1;
+          const leftLit = !first && it.day <= currentDay;
+          const rightLit = !last && it.day < currentDay;
 
           return (
             <div
-              key={d.day}
+              key={it.day}
               ref={state === "today" ? todayRef : undefined}
               role="listitem"
-              className="flex w-[58px] shrink-0 flex-col items-center sm:w-16"
+              className="flex flex-1 shrink-0 basis-12 flex-col items-center"
             >
               <span
                 className={cn(
@@ -50,10 +90,9 @@ export function DayStrip({
                   state === "today" ? "text-cream" : "text-muted-foreground/45",
                 )}
               >
-                {String(d.day).padStart(2, "0")}
+                {String(it.day).padStart(2, "0")}
               </span>
               <div className="relative flex h-12 w-full items-center justify-center">
-                {/* track halves (under the node) */}
                 <span
                   className={cn(
                     "absolute left-0 top-1/2 h-px w-1/2 -translate-y-1/2",
@@ -68,12 +107,11 @@ export function DayStrip({
                   )}
                   style={rightLit ? { boxShadow: "0 0 6px rgba(234,242,246,0.5)" } : undefined}
                 />
-
                 <DayNodeMark
-                  day={d.day}
+                  day={it.day}
                   state={state}
-                  isReward={isLast}
-                  onClick={reachable ? () => onPickDay(d.day) : undefined}
+                  isReward={it.last}
+                  onClick={reachable ? () => onPickDay(it.day) : undefined}
                 />
               </div>
             </div>
@@ -83,7 +121,7 @@ export function DayStrip({
 
       {theme && (
         <p className="mt-5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/55">
-          {currentDay > DAYS.length ? "patika tamamlandı" : `bugün · ${theme}`}
+          {currentDay > TOTAL ? "patika tamamlandı" : `bugün · ${theme}`}
         </p>
       )}
     </div>
@@ -141,7 +179,6 @@ function DayNodeMark({
     );
   }
 
-  // locked
   return (
     <button
       type="button"

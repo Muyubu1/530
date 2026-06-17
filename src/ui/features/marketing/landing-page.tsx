@@ -5,7 +5,17 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Reveal, InkReveal, HandDrawnStar } from "@/ui/design-system";
+import {
+  Reveal,
+  InkReveal,
+  HandDrawnFrame,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/ui/design-system";
 import type { WaitlistData, WaitlistResult } from "@/ui/shared/waitlist-form";
 
 const N = 8;
@@ -37,7 +47,6 @@ export function LandingPage({
   const rootRef = useRef<HTMLDivElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [accepted, setAccepted] = useState(false);
   const [sending, setSending] = useState(false);
 
   useGSAP(
@@ -393,17 +402,6 @@ export function LandingPage({
     },
     { scope: rootRef },
   );
-
-  function acceptInvite() {
-    if (accepted) return;
-    setAccepted(true);
-    const target = rootRef.current?.querySelector<HTMLElement>("#basvur");
-    setTimeout(() => {
-      if (!target) return;
-      if (lenisRef.current) lenisRef.current.scrollTo(target, { offset: 0, duration: 1.6 });
-      else target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 480);
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -1366,42 +1364,24 @@ export function LandingPage({
           overflow: "hidden",
         }}
       >
-        {/* Hand-drawn star framing the invite — points radiate out from behind the card */}
-        <HandDrawnStar
+        {/* Hand-drawn circle framing the invite */}
+        <HandDrawnFrame
+          shape="circle"
           style={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%,-50%)",
-            width: "min(96vw, 1080px)",
+            width: "min(94vw, 980px)",
             zIndex: 0,
           }}
         />
 
         <Reveal
           variant="scale-in"
-          style={{ position: "relative", zIndex: 1, maxWidth: 680, margin: "0 auto" }}
+          style={{ position: "relative", zIndex: 1, maxWidth: 560, margin: "0 auto" }}
         >
-          <div
-            className="cine-invite-card"
-            style={{
-              position: "relative",
-              background: "linear-gradient(180deg,#12171E,#0E1318)",
-              border: "1px solid rgba(230,235,238,0.14)",
-              padding: "clamp(44px,7vw,80px) clamp(28px,6vw,72px)",
-              textAlign: "center",
-              boxShadow: "0 40px 120px rgba(0,0,0,0.5)",
-              transformStyle: "preserve-3d",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 10,
-                border: "1px solid rgba(230,235,238,0.06)",
-                pointerEvents: "none",
-              }}
-            />
+          <div style={{ textAlign: "center", padding: "clamp(20px,5vh,56px) 0" }}>
             <div
               style={{
                 fontFamily: "'Space Mono',monospace",
@@ -1438,213 +1418,161 @@ export function LandingPage({
             >
               Kalabalığa değil. Kendine.
             </p>
-            <button
-              type="button"
-              className="cine-btn"
-              onClick={acceptInvite}
-              disabled={accepted}
-              style={{
-                marginTop: 40,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 12,
-                padding: "20px 40px",
-                border: "none",
-                cursor: accepted ? "default" : "pointer",
-                background: "#E6EBEE",
-                color: "#0B0F14",
-                fontFamily: "'Space Mono',monospace",
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-              }}
-            >
-              {accepted ? "DAVET KABUL EDİLDİ ✓" : "DAVETİ KABUL ET"}
-            </button>
-          </div>
-        </Reveal>
-      </section>
 
-      {/* ============ BÖLÜM 11 — BAŞVUR ============ */}
-      <section
-        id="basvur"
-        style={{
-          position: "relative",
-          background: "#0B0F14",
-          padding: "clamp(110px,16vh,210px) 24px clamp(70px,10vh,120px)",
-          borderTop: "1px solid rgba(230,235,238,0.10)",
-        }}
-      >
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <Reveal variant="fade-down" style={{ ...eyebrowStyle, textAlign: "center" }}>
-            11 — BAŞVUR
-          </Reveal>
-
-          {!submitted ? (
-            <>
-              <Reveal
-                variant="letter-rise"
-                delay={100}
-                as="h2"
-                style={{
-                  margin: "18px 0 0",
-                  fontFamily: "'Archivo',sans-serif",
-                  fontWeight: 800,
-                  fontSize: "clamp(30px,4.6vw,52px)",
-                  lineHeight: 1.05,
-                  letterSpacing: "-0.02em",
-                  color: "#E6EBEE",
-                  textAlign: "center",
-                }}
-              >
-                Kardeşliğe başvur.
-              </Reveal>
-              <form
-                onSubmit={handleSubmit}
-                style={{
-                  marginTop: "clamp(44px,6vh,72px)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 36,
-                }}
-              >
-                <Reveal
-                  variant="fade-up"
-                  as="label"
-                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Space Mono',monospace",
-                      fontSize: 11,
-                      letterSpacing: "0.26em",
-                      textTransform: "uppercase",
-                      color: "#8593A0",
-                    }}
-                  >
-                    Ad Soyad
-                  </span>
-                  <input name="name" required autoComplete="name" style={fieldStyle} />
-                </Reveal>
-                <Reveal
-                  variant="fade-up"
-                  delay={80}
-                  as="label"
-                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Space Mono',monospace",
-                      fontSize: 11,
-                      letterSpacing: "0.26em",
-                      textTransform: "uppercase",
-                      color: "#8593A0",
-                    }}
-                  >
-                    İletişim — e-posta veya Instagram
-                  </span>
-                  <input name="contact" required style={fieldStyle} />
-                </Reveal>
-                <Reveal
-                  variant="fade-up"
-                  delay={160}
-                  as="label"
-                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Space Mono',monospace",
-                      fontSize: 11,
-                      letterSpacing: "0.26em",
-                      textTransform: "uppercase",
-                      color: "#8593A0",
-                    }}
-                  >
-                    Neden buradasın?
-                  </span>
-                  <textarea
-                    name="why"
-                    rows={3}
-                    style={{ ...fieldStyle, resize: "none", lineHeight: 1.5 }}
-                  />
-                </Reveal>
+            {/* "Daveti kabul et" → başvuru popup'ı */}
+            <Dialog>
+              <DialogTrigger asChild>
                 <button
-                  type="submit"
+                  type="button"
                   className="cine-btn"
-                  disabled={sending}
                   style={{
-                    marginTop: 8,
-                    alignSelf: "flex-start",
-                    padding: "20px 46px",
+                    marginTop: 40,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 12,
+                    padding: "20px 40px",
                     border: "none",
-                    cursor: sending ? "default" : "pointer",
+                    cursor: "pointer",
                     background: "#E6EBEE",
                     color: "#0B0F14",
                     fontFamily: "'Space Mono',monospace",
                     fontSize: 13,
                     fontWeight: 700,
-                    letterSpacing: "0.24em",
+                    letterSpacing: "0.22em",
                     textTransform: "uppercase",
                   }}
                 >
-                  {sending ? "GÖNDERİLİYOR…" : "BAŞVUR"}
+                  DAVETİ KABUL ET
                 </button>
-              </form>
-            </>
-          ) : (
-            <div
-              style={{
-                marginTop: 48,
-                textAlign: "center",
-                padding: "60px 24px",
-                border: "1px solid rgba(230,235,238,0.14)",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'Anton',sans-serif",
-                  fontSize: "clamp(40px,7vw,72px)",
-                  color: "#E6EBEE",
-                }}
-              >
-                5.30
-              </div>
-              <p
-                style={{
-                  margin: "28px auto 0",
-                  maxWidth: "26ch",
-                  fontFamily: "'Archivo',sans-serif",
-                  fontWeight: 600,
-                  fontSize: "clamp(20px,2.6vw,28px)",
-                  lineHeight: 1.4,
-                  color: "#E6EBEE",
-                  textWrap: "balance",
-                }}
-              >
-                Başvurun alındı.
-                <br />
-                Bir adım daha yakınsın.
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div
-          style={{
-            marginTop: "clamp(70px,12vh,130px)",
-            textAlign: "center",
-            fontFamily: "'Space Mono',monospace",
-            fontSize: 11,
-            letterSpacing: "0.34em",
-            textTransform: "uppercase",
-            color: "#5b6772",
-          }}
-        >
-          5.30 — DİSİPLİN · İNANÇ · KARDEŞLİK
-        </div>
+              </DialogTrigger>
+              <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="max-w-md">
+                {!submitted ? (
+                  <>
+                    <DialogHeader>
+                      <DialogTitle
+                        style={{
+                          fontFamily: "'Archivo',sans-serif",
+                          fontWeight: 800,
+                          fontSize: "clamp(24px,3vw,32px)",
+                          letterSpacing: "-0.02em",
+                          color: "#E6EBEE",
+                        }}
+                      >
+                        Kardeşliğe başvur.
+                      </DialogTitle>
+                      <DialogDescription
+                        style={{
+                          fontFamily: "'Space Mono',monospace",
+                          fontSize: 11,
+                          letterSpacing: "0.2em",
+                          textTransform: "uppercase",
+                          color: "#8593A0",
+                        }}
+                      >
+                        Birkaç soru. Sonra konuşuruz.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form
+                      onSubmit={handleSubmit}
+                      style={{
+                        marginTop: 18,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 22,
+                        textAlign: "left",
+                      }}
+                    >
+                      <label style={dialogFieldWrap}>
+                        <span style={dialogFieldLabel}>Ad Soyad</span>
+                        <input name="name" required autoComplete="name" style={fieldStyle} />
+                      </label>
+                      <label style={dialogFieldWrap}>
+                        <span style={dialogFieldLabel}>İletişim — e-posta veya Instagram</span>
+                        <input name="contact" required style={fieldStyle} />
+                      </label>
+                      <label style={dialogFieldWrap}>
+                        <span style={dialogFieldLabel}>Neden buradasın?</span>
+                        <textarea
+                          name="why"
+                          rows={3}
+                          style={{ ...fieldStyle, resize: "none", lineHeight: 1.5 }}
+                        />
+                      </label>
+                      <button
+                        type="submit"
+                        className="cine-btn"
+                        disabled={sending}
+                        style={{
+                          marginTop: 4,
+                          alignSelf: "flex-start",
+                          padding: "16px 40px",
+                          border: "none",
+                          cursor: sending ? "default" : "pointer",
+                          background: "#E6EBEE",
+                          color: "#0B0F14",
+                          fontFamily: "'Space Mono',monospace",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          letterSpacing: "0.24em",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {sending ? "GÖNDERİLİYOR…" : "BAŞVUR"}
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <div style={{ textAlign: "center", padding: "20px 8px 8px" }}>
+                    <DialogTitle
+                      style={{
+                        fontFamily: "'Anton',sans-serif",
+                        fontSize: "clamp(40px,7vw,64px)",
+                        color: "#E6EBEE",
+                      }}
+                    >
+                      5.30
+                    </DialogTitle>
+                    <p
+                      style={{
+                        margin: "20px auto 0",
+                        maxWidth: "26ch",
+                        fontFamily: "'Archivo',sans-serif",
+                        fontWeight: 600,
+                        fontSize: "clamp(18px,2.4vw,24px)",
+                        lineHeight: 1.4,
+                        color: "#E6EBEE",
+                        textWrap: "balance",
+                      }}
+                    >
+                      Başvurun alındı.
+                      <br />
+                      Bir adım daha yakınsın.
+                    </p>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
+          </div>
+        </Reveal>
       </section>
+
+      {/* ============ FOOTER ============ */}
+      <footer
+        style={{
+          background: "#0B0F14",
+          borderTop: "1px solid rgba(230,235,238,0.10)",
+          padding: "clamp(48px,8vh,90px) 24px",
+          textAlign: "center",
+          fontFamily: "'Space Mono',monospace",
+          fontSize: 11,
+          letterSpacing: "0.34em",
+          textTransform: "uppercase",
+          color: "#5b6772",
+        }}
+      >
+        5.30 — DİSİPLİN · İNANÇ · KARDEŞLİK
+      </footer>
     </div>
   );
 }
@@ -1658,6 +1586,20 @@ const fieldStyle: React.CSSProperties = {
   fontSize: 20,
   color: "#E6EBEE",
   transition: "border-color .3s ease",
+};
+
+const dialogFieldWrap: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+};
+
+const dialogFieldLabel: React.CSSProperties = {
+  fontFamily: "'Space Mono',monospace",
+  fontSize: 11,
+  letterSpacing: "0.26em",
+  textTransform: "uppercase",
+  color: "#8593A0",
 };
 
 /** Oversized faint section index that drifts slower than content (parallax depth). */

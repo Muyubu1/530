@@ -5,16 +5,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 /**
- * HandDrawnStar — a single-stroke five-point star (pentagram) that draws itself on
- * with a hand-sketched feel as it scrolls into view. Built on GSAP (the project's
- * animation runtime) via stroke-dashoffset, mirroring the existing `.hairline`
- * draw — no extra animation dependency.
+ * HandDrawnFrame — a single-stroke decorative outline (a hand-sketched circle or a
+ * five-point star) that draws itself on as it scrolls into view. Built on GSAP (the
+ * project's animation runtime) via stroke-dashoffset, mirroring the existing
+ * `.hairline` draw — no extra animation dependency.
  *
- * Drop it inside a `position: relative` container (e.g. behind the invite card):
- * the card occludes the star's middle so only the points radiate out, framing it
- * like a premium badge. Decorative + pointer-events:none by default.
+ * Drop it inside a `position: relative` container, behind the content it frames.
+ * Decorative + pointer-events:none by default.
  */
-interface HandDrawnStarProps {
+type FrameShape = "circle" | "star";
+
+interface HandDrawnFrameProps {
+  /** Which outline to draw */
+  shape?: FrameShape;
   /** Stroke color */
   color?: string;
   /** Stroke width (in viewBox units) */
@@ -27,27 +30,38 @@ interface HandDrawnStarProps {
   style?: React.CSSProperties;
 }
 
-// Classic pentagram: top → bottom-right → upper-left → upper-right → bottom-left → close.
-// One continuous closed stroke, so pathLength draws as a single sketched gesture.
-const STAR_PATH = "M500 32 L688 609 L196 251 L804 251 L312 609 Z";
+const SHAPES: Record<FrameShape, { viewBox: string; d: string }> = {
+  // Wobbly hand-drawn ellipse (wide), good for framing a headline.
+  circle: {
+    viewBox: "0 0 1200 600",
+    d: "M 950 90 C 1250 300, 1050 480, 600 520 C 250 520, 150 480, 150 300 C 150 120, 350 80, 600 80 C 850 80, 950 180, 950 180",
+  },
+  // Classic pentagram: top → bottom-right → upper-left → upper-right → bottom-left → close.
+  star: {
+    viewBox: "0 0 1000 660",
+    d: "M500 32 L688 609 L196 251 L804 251 L312 609 Z",
+  },
+};
 
-export function HandDrawnStar({
+export function HandDrawnFrame({
+  shape = "star",
   color = "rgba(233,238,241,0.6)",
   strokeWidth = 2.5,
   duration = 2.4,
   start = "top 78%",
   className,
   style,
-}: HandDrawnStarProps) {
+}: HandDrawnFrameProps) {
   const rootRef = useRef<SVGSVGElement>(null);
+  const { viewBox, d } = SHAPES[shape];
 
   useGSAP(
     () => {
-      const path = rootRef.current?.querySelector<SVGPathElement>(".star-path");
+      const path = rootRef.current?.querySelector<SVGPathElement>(".frame-path");
       if (!path) return;
       gsap.registerPlugin(ScrollTrigger);
 
-      // Respect reduced-motion: show the star fully drawn, skip the animation.
+      // Respect reduced-motion: show the outline fully drawn, skip the animation.
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         gsap.set(path, { strokeDasharray: "none", strokeDashoffset: 0, opacity: 1 });
         return;
@@ -62,14 +76,14 @@ export function HandDrawnStar({
         scrollTrigger: { trigger: rootRef.current, start },
       });
     },
-    { scope: rootRef },
+    { scope: rootRef, dependencies: [shape] },
   );
 
   return (
     <svg
       ref={rootRef}
       className={className}
-      viewBox="0 0 1000 660"
+      viewBox={viewBox}
       fill="none"
       aria-hidden="true"
       style={{
@@ -80,8 +94,8 @@ export function HandDrawnStar({
       }}
     >
       <path
-        className="star-path"
-        d={STAR_PATH}
+        className="frame-path"
+        d={d}
         stroke={color}
         strokeWidth={strokeWidth}
         strokeLinecap="round"
@@ -91,4 +105,4 @@ export function HandDrawnStar({
   );
 }
 
-export default HandDrawnStar;
+export default HandDrawnFrame;

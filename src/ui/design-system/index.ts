@@ -50,7 +50,7 @@ export {
 export { HeroParticles } from "./backgrounds/hero-particles";
 export { ScrollGlow } from "./backgrounds/scroll-glow";
 export { InkReveal } from "./backgrounds/ink-reveal";
-export { HandDrawnStar } from "./backgrounds/hand-drawn-star";
+export { HandDrawnFrame } from "./backgrounds/hand-drawn-frame";
 
 // Patterns (composed from primitives)
 export { CinematicVideoFrame } from "./patterns/cinematic-video-frame";
