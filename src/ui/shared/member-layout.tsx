@@ -3,10 +3,9 @@ import { Outlet, useRouter, useLocation } from "@tanstack/react-router";
 import {
   Menu,
   Footprints,
-  LayoutDashboard,
-  Dumbbell,
-  MessageCircle,
-  User as UserIcon,
+  NotebookPen,
+  Settings,
+  CreditCard,
   LogOut,
   ShieldCheck,
   type LucideIcon,
@@ -30,15 +29,18 @@ const AMBIENCE = [
   "radial-gradient(ellipse 70% 45% at 10% 75%, rgba(180, 190, 210, 0.10), transparent 65%)",
 ];
 
-type MemberRoute = "/uye/patika" | "/uye/panel" | "/uye/dersler" | "/uye/topluluk" | "/uye/profil";
+type MemberRoute =
+  | "/uye/patika"
+  | "/uye/profil/notlar"
+  | "/uye/profil/ayarlar"
+  | "/uye/profil/abonelik";
 
 /** Single source of truth for member navigation — the hamburger menu maps over this. */
 const MEMBER_NAV: { to: MemberRoute; label: string; Icon: LucideIcon }[] = [
   { to: "/uye/patika", label: "Patika", Icon: Footprints },
-  { to: "/uye/panel", label: "Panel", Icon: LayoutDashboard },
-  { to: "/uye/dersler", label: "Eğitimler", Icon: Dumbbell },
-  { to: "/uye/topluluk", label: "Topluluk", Icon: MessageCircle },
-  { to: "/uye/profil", label: "Benim Odam", Icon: UserIcon },
+  { to: "/uye/profil/notlar", label: "Notlarım", Icon: NotebookPen },
+  { to: "/uye/profil/ayarlar", label: "Ayarlar", Icon: Settings },
+  { to: "/uye/profil/abonelik", label: "Aboneliğim", Icon: CreditCard },
 ];
 
 /** Authenticated member shell: ambient background + a single top-left hamburger menu. */
