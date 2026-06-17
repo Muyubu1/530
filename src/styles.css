@@ -140,3 +140,18 @@
     transform: translate3d(0, 0, 0);
   }
 }
+
+/* Application form fields (also inside the portaled dialog) — keep text readable on the
+   dark form, including browser autofill (which otherwise paints a light bg + dark text). */
+.cine-field::placeholder {
+  color: rgba(133, 147, 160, 0.55);
+}
+.cine-field:-webkit-autofill,
+.cine-field:-webkit-autofill:hover,
+.cine-field:-webkit-autofill:focus,
+.cine-field:-webkit-autofill:active {
+  -webkit-text-fill-color: #e6ebee;
+  caret-color: #e6ebee;
+  /* Defer the autofill background paint indefinitely so the field stays transparent. */
+  transition: background-color 9999s ease-in-out 0s;
+}
