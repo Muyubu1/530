@@ -52,7 +52,8 @@ const T: Record<string, DemoTask> = {
 const SAMPLE = {
   video: "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
   audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-  doc: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+  pdf: "https://www.africau.edu/images/default/sample.pdf",
+  slide: "https://picsum.photos/seed/530/1280/800.jpg",
 };
 
 function resourcesFor(day: number): DemoResource[] {
@@ -72,7 +73,12 @@ function resourcesFor(day: number): DemoResource[] {
       url: SAMPLE.audio,
     });
   if (day % 3 === 0)
-    out.push({ kind: "doc", title: `Gün ${day} · Çalışma notu`, meta: "PDF", url: SAMPLE.doc });
+    out.push({ kind: "doc", title: `Gün ${day} · Çalışma notu`, meta: "PDF", url: SAMPLE.pdf });
+  // First days carry a concrete written resource (easy to try): a PDF and a slide image.
+  if (day === 1)
+    out.push({ kind: "doc", title: "Başlangıç kılavuzu", meta: "PDF · 2 sayfa", url: SAMPLE.pdf });
+  if (day === 2)
+    out.push({ kind: "doc", title: "Sabah rutini (slayt)", meta: "Görsel", url: SAMPLE.slide });
   return out;
 }
 

@@ -39,23 +39,30 @@ export function ResourceViewer({
                 </div>
               )}
 
-              {resource.kind === "doc" && (
-                <>
-                  <iframe
-                    title={resource.title}
+              {resource.kind === "doc" &&
+                (/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(resource.url) ? (
+                  <img
                     src={resource.url}
-                    className="h-[60vh] w-full rounded-xl border border-border/40 bg-white md:h-[70vh]"
+                    alt={resource.title}
+                    className="max-h-[70vh] w-full rounded-xl bg-card/30 object-contain"
                   />
-                  <a
-                    href={resource.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-block font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground/60 transition-colors hover:text-cream"
-                  >
-                    yeni sekmede aç →
-                  </a>
-                </>
-              )}
+                ) : (
+                  <>
+                    <iframe
+                      title={resource.title}
+                      src={resource.url}
+                      className="h-[60vh] w-full rounded-xl border border-border/40 bg-white md:h-[70vh]"
+                    />
+                    <a
+                      href={resource.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-block font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground/60 transition-colors hover:text-cream"
+                    >
+                      yeni sekmede aç →
+                    </a>
+                  </>
+                ))}
             </div>
           </div>
         )}
