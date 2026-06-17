@@ -1,20 +1,22 @@
 import { useCallback, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
-import { Eyebrow, Heading } from "@/ui/design-system";
+import { Eyebrow } from "@/ui/design-system";
 import { useDemoJourney } from "./use-demo-journey";
-import { StatBar } from "./components/stat-bar";
-import { JourneyMap } from "./components/journey-map";
+import { JourneyHero } from "./components/journey-hero";
+import { DayStrip } from "./components/day-strip";
+import { RewardCard } from "./components/reward-card";
 import { BadgeShelf } from "./components/badge-shelf";
 import { RewardModal } from "./components/reward-modal";
 import { DayComplete } from "./components/day-complete";
 import { DayModal } from "./components/day-modal";
-import type { DemoBadge } from "./lib/mock-journey";
+import { BADGES, type DemoBadge } from "./lib/mock-journey";
 
 /**
  * The 28-day journey experience — shell-less and self-contained (owns its state
- * via {@link useDemoJourney}). Rendered both inside the member area (`/uye/patika`,
+ * via {@link useDemoJourney}). Rendered inside the member area (`/uye/patika`,
  * wrapped by MemberLayout) and the standalone demo (`/patika-demo`). Persistence is
  * localStorage for now; a per-user Supabase backend swaps in behind the same hook later.
+ * Mobile-first throughout.
  */
 export function PatikaJourney() {
   const j = useDemoJourney();
@@ -26,6 +28,9 @@ export function PatikaJourney() {
   } | null>(null);
   const pendingReward = useRef<DemoBadge | null>(null);
   const [openDay, setOpenDay] = useState<number | null>(null);
+
+  const completedDays = Math.min(Math.max(j.currentDay - 1, 0), j.total);
+  const pct = Math.round((completedDays / j.total) * 100);
 
   function handleCompleteDay() {
     const day = j.currentDay;
@@ -46,8 +51,8 @@ export function PatikaJourney() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-4 flex justify-end">
+    <div className="mx-auto max-w-3xl space-y-12 md:space-y-16">
+      <div className="flex justify-end">
         <button
           type="button"
           onClick={j.reset}
@@ -58,38 +63,35 @@ export function PatikaJourney() {
         </button>
       </div>
 
-      <Eyebrow rule="top" tone="cream" size="lg" className="justify-center">
-        28 günlük patika
-      </Eyebrow>
-      <Heading as="h1" size="xl" className="mt-5 text-center">
-        Dönüşüm Yolculuğu
-      </Heading>
+      <JourneyHero
+        currentDay={j.currentDay}
+        total={j.total}
+        completedDays={completedDays}
+        pct={pct}
+        streak={j.streak}
+        finished={j.finished}
+        onFocusToday={() => !j.finished && setOpenDay(j.currentDay)}
+      />
 
-      <div className="mt-10">
-        <StatBar currentDay={j.currentDay} total={j.total} streak={j.streak} points={j.points} />
-      </div>
-
-      <div className="mt-12">
-        <JourneyMap currentDay={j.currentDay} onPickDay={(day) => setOpenDay(day)} />
-      </div>
-
-      {j.finished && (
-        <div className="mt-12 rounded-2xl border border-cream/15 bg-card/30 p-8 text-center">
-          <Eyebrow size="md" tone="cream" className="justify-center">
-            patika · tamamlandı
-          </Eyebrow>
-          <Heading as="h2" size="lg" className="mt-4">
-            28 gün. Bitti.
-          </Heading>
-          <p className="mt-3 text-base text-muted-foreground/70">
-            Dönüşüm tamamlandı. Yeni bir döngü seni bekliyor.
-          </p>
+      <div>
+        <Eyebrow size="md" tone="cream" className="px-1">
+          yolculuk
+        </Eyebrow>
+        <div className="mt-5">
+          <DayStrip currentDay={j.currentDay} onPickDay={(day) => setOpenDay(day)} />
         </div>
-      )}
-
-      <div className="mt-16">
-        <BadgeShelf earned={j.earnedBadges} />
       </div>
+
+      <RewardCard
+        unlocked={j.finished}
+        onOpen={() => setReward(BADGES[BADGES.length - 1] ?? null)}
+      />
+
+      <BadgeShelf earned={j.earnedBadges} />
+
+      <p className="border-t border-cream/10 pt-10 text-center font-mono text-[11px] uppercase leading-relaxed tracking-[0.3em] text-muted-foreground/45">
+        “Disiplin, her gün küçük zaferlerle inşa edilir.”
+      </p>
 
       {celebrate && (
         <DayComplete

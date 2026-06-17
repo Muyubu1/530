@@ -5,7 +5,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Reveal, InkReveal } from "@/ui/design-system";
+import { Reveal, InkReveal, HandDrawnStar } from "@/ui/design-system";
 import type { WaitlistData, WaitlistResult } from "@/ui/shared/waitlist-form";
 
 const N = 8;
@@ -1191,7 +1191,7 @@ export function LandingPage({
             {[
               { n: "01", t: "DİSİPLİN", d: "Sözünü tut. Erken kalk." },
               { n: "02", t: "İNANÇ", d: "Kendinden büyüğüne bağlan." },
-              { n: "03", t: "KARDEŞLİK", d: "Yalnız yürüme." },
+              { n: "03", t: "BİRLİK", d: "Yalnız yürüme." },
             ].map((p, i) => (
               <Reveal
                 key={p.n}
@@ -1226,32 +1226,6 @@ export function LandingPage({
               </Reveal>
             ))}
           </div>
-
-          <Reveal variant="fade-up" delay={60} style={{ marginTop: "clamp(56px,8vh,90px)" }}>
-            <div style={eyebrowStyle}>NE ALIYORSUN</div>
-            <div
-              style={{
-                marginTop: 26,
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-                gap: 14,
-              }}
-            >
-              {["5.30 protokolü", "Kardeşlik", "Hesap verme", "Eğitim & görev takibi"].map((t) => (
-                <div
-                  key={t}
-                  style={{
-                    border: "1px solid rgba(230,235,238,0.12)",
-                    padding: "22px 22px",
-                    fontSize: 17,
-                    color: "#E6EBEE",
-                  }}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
-          </Reveal>
         </div>
       </section>
 
@@ -1392,7 +1366,22 @@ export function LandingPage({
           overflow: "hidden",
         }}
       >
-        <Reveal variant="scale-in" style={{ maxWidth: 680, margin: "0 auto" }}>
+        {/* Hand-drawn star framing the invite — points radiate out from behind the card */}
+        <HandDrawnStar
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            width: "min(94vw, 880px)",
+            zIndex: 0,
+          }}
+        />
+
+        <Reveal
+          variant="scale-in"
+          style={{ position: "relative", zIndex: 1, maxWidth: 680, margin: "0 auto" }}
+        >
           <div
             className="cine-invite-card"
             style={{
