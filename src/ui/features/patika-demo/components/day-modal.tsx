@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Eyebrow, Button } from "@/ui/design-system";
 import { DAYS } from "../lib/mock-journey";
 import { TaskRow } from "./task-row";
+import { ResourcePanel } from "./resource-panel";
 
 export function DayModal({
   day,
@@ -25,7 +26,7 @@ export function DayModal({
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
-        <div>
+        <div className="max-h-[80vh] overflow-y-auto pr-1">
           <Eyebrow size="md">patika · {day}. gün</Eyebrow>
           <DialogTitle className="mt-1.5 text-3xl">{data.theme}</DialogTitle>
 
@@ -40,6 +41,8 @@ export function DayModal({
               />
             ))}
           </div>
+
+          <ResourcePanel resources={data.resources} />
 
           {editable ? (
             allDone && (

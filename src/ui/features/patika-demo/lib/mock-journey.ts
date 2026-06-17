@@ -7,10 +7,23 @@ export interface DemoTask {
   icon: TaskIcon;
 }
 
+export type ResourceKind = "video" | "audio" | "doc";
+
+export interface DemoResource {
+  kind: ResourceKind;
+  title: string;
+  /** Short meta shown under the title (duration, "PDF", etc.). */
+  meta: string;
+  /** Destination opened when the resource is selected. */
+  url: string;
+}
+
 export interface DemoDay {
   day: number;
   theme: string;
   tasks: DemoTask[];
+  /** Optional supporting material for the day (videos / audio / documents). */
+  resources: DemoResource[];
 }
 
 export interface DemoBadge {
@@ -34,11 +47,40 @@ const T: Record<string, DemoTask> = {
   reflect: { id: "reflect", title: "Günü yansıt", detail: "Bir cümle not bırak.", icon: "reflect" },
 };
 
+// Sample supporting material. Deterministic per day so the panel demonstrates
+// "active when present / disabled when absent" — real content swaps in later.
+const SAMPLE = {
+  video: "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
+  audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  doc: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+};
+
+function resourcesFor(day: number): DemoResource[] {
+  const out: DemoResource[] = [];
+  if (day % 4 !== 0)
+    out.push({
+      kind: "video",
+      title: `Gün ${day} · Rehber video`,
+      meta: "Video · 04:12",
+      url: SAMPLE.video,
+    });
+  if (day % 2 === 1)
+    out.push({
+      kind: "audio",
+      title: `Gün ${day} · Sesli anlatım`,
+      meta: "Ses · 08:30",
+      url: SAMPLE.audio,
+    });
+  if (day % 3 === 0)
+    out.push({ kind: "doc", title: `Gün ${day} · Çalışma notu`, meta: "PDF", url: SAMPLE.doc });
+  return out;
+}
+
 export const DAYS: DemoDay[] = Array.from({ length: 28 }, (_, i) => {
   const day = i + 1;
   const theme = THEMES[i % 7];
   const middle = i % 2 === 0 ? T.move : T.read;
-  return { day, theme, tasks: [T.wake, middle, T.reflect] };
+  return { day, theme, tasks: [T.wake, middle, T.reflect], resources: resourcesFor(day) };
 });
 
 export const BADGES: DemoBadge[] = [
