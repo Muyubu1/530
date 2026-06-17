@@ -19,7 +19,7 @@ import {
 import type { WaitlistData, WaitlistResult } from "@/ui/shared/waitlist-form";
 
 const N = 8;
-const WORDS = ["", "DİPTE", "SABIR", "AZİM", "İNANÇ", "VARIŞ", "KARDEŞLİK", "SIRA SENDE"];
+const WORDS = ["", "DİPTE", "SABIR", "AZİM", "İNANÇ", "VARIŞ", "BİRLİK", "SIRA SENDE"];
 // Pacing: a lead hold on the hero, one "beat" of scroll-time per image, trailing hold for the
 // finale. BEAT spaces the story beats so each caption gets a clean, non-overlapping window.
 const BEAT = 1.25;
@@ -724,7 +724,7 @@ export function LandingPage({
                   animation: "cineHeroIn 1.4s 0.2s both cubic-bezier(0.22,0.61,0.36,1)",
                 }}
               >
-                DİSİPLİN · İNANÇ · KARDEŞLİK
+                DİSİPLİN · İNANÇ · BİRLİK
               </div>
               <div
                 style={{
@@ -1364,12 +1364,12 @@ export function LandingPage({
           overflow: "hidden",
         }}
       >
-        {/* Hand-drawn circle framing the invite — draws AS you scroll in (scrub) */}
+        {/* Hand-drawn circle framing the invite — draws AS you scroll in (scrub), late start */}
         <HandDrawnFrame
           shape="circle"
           scrub
-          start="top 80%"
-          end="center 56%"
+          start="top 45%"
+          end="center 48%"
           style={{
             position: "absolute",
             top: "50%",
@@ -1462,7 +1462,7 @@ export function LandingPage({
                           color: "#E6EBEE",
                         }}
                       >
-                        Kardeşliğe başvur.
+                        Birliğe başvur.
                       </DialogTitle>
                       <DialogDescription
                         style={{
@@ -1574,7 +1574,7 @@ export function LandingPage({
           color: "#5b6772",
         }}
       >
-        5.30 — DİSİPLİN · İNANÇ · KARDEŞLİK
+        5.30 — DİSİPLİN · İNANÇ · BİRLİK
       </footer>
     </div>
   );

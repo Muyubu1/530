@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "5.30 bir motivasyon değil, bir sistemdir. Disiplin · İnanç · Kardeşlik. Sözünü tutan adamların kardeşliğine başvur.",
+          "5.30 bir motivasyon değil, bir sistemdir. Disiplin · İnanç · Birlik. Sözünü tutan adamların birliğine başvur.",
       },
     ],
   }),
