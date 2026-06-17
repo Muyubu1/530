@@ -1373,7 +1373,7 @@ export function LandingPage({
             top: "50%",
             left: "50%",
             transform: "translate(-50%,-50%)",
-            width: "min(94vw, 880px)",
+            width: "min(96vw, 1080px)",
             zIndex: 0,
           }}
         />
