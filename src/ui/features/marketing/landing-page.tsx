@@ -1364,10 +1364,12 @@ export function LandingPage({
           overflow: "hidden",
         }}
       >
-        {/* Hand-drawn circle framing the invite — draws once you've scrolled to it */}
+        {/* Hand-drawn circle framing the invite — draws AS you scroll in (scrub) */}
         <HandDrawnFrame
           shape="circle"
-          start="center 72%"
+          scrub
+          start="top 80%"
+          end="center 56%"
           style={{
             position: "absolute",
             top: "50%",

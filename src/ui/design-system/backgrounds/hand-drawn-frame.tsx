@@ -22,10 +22,14 @@ interface HandDrawnFrameProps {
   color?: string;
   /** Stroke width (in viewBox units) */
   strokeWidth?: number;
-  /** Draw duration (s) */
+  /** Draw duration (s) — used only in time-based mode (scrub off) */
   duration?: number;
-  /** ScrollTrigger start (when the draw fires) */
+  /** ScrollTrigger start (when the draw begins) */
   start?: string;
+  /** ScrollTrigger end (when the draw completes) — used in scrub mode */
+  end?: string;
+  /** Link the draw to scroll progress so it completes only as you arrive (and un-draws on scroll back) */
+  scrub?: boolean | number;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -49,6 +53,8 @@ export function HandDrawnFrame({
   strokeWidth = 2.5,
   duration = 2.4,
   start = "top 78%",
+  end = "center 55%",
+  scrub = false,
   className,
   style,
 }: HandDrawnFrameProps) {
@@ -69,14 +75,26 @@ export function HandDrawnFrame({
 
       const len = path.getTotalLength();
       gsap.set(path, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 });
-      gsap.to(path, {
-        strokeDashoffset: 0,
-        duration,
-        ease: "power1.inOut",
-        scrollTrigger: { trigger: rootRef.current, start },
-      });
+
+      if (scrub !== false) {
+        // Scroll-linked: the outline draws as you scroll into the section and is only
+        // complete when you've arrived (un-draws on scroll back).
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          ease: "none",
+          scrollTrigger: { trigger: rootRef.current, start, end, scrub: scrub === true ? 0.6 : scrub },
+        });
+      } else {
+        // Time-based: plays once when the section enters view.
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          duration,
+          ease: "power1.inOut",
+          scrollTrigger: { trigger: rootRef.current, start },
+        });
+      }
     },
-    { scope: rootRef, dependencies: [shape] },
+    { scope: rootRef, dependencies: [shape, scrub] },
   );
 
   return (
