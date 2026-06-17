@@ -930,7 +930,7 @@ export function LandingPage({
             >
               <div style={{ maxWidth: 880, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Yalnız değilsin.
+                  Aynada gördüğünüz kişiye
                 </div>
               </div>
             </div>
@@ -965,7 +965,7 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 880, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Başlamak en zoru.
+                  aşık olmaya hazır mısınız?
                 </div>
               </div>
             </div>
@@ -1006,7 +1006,7 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 880, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Bugün başlamasın.
+                  Sadece 28 günde,
                 </div>
               </div>
             </div>
@@ -1047,10 +1047,7 @@ export function LandingPage({
               </div>
               <div style={{ maxWidth: 900, textAlign: "center", position: "relative" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  İlerleyen adam,
-                </div>
-                <div className="ln" data-li={1} style={lnStyle}>
-                  başlayan adam değildir.
+                  aynada gördüğünüz adama
                 </div>
               </div>
             </div>
@@ -1071,7 +1068,7 @@ export function LandingPage({
             >
               <div style={{ maxWidth: 880, textAlign: "center" }}>
                 <div className="ln" data-li={0} style={lnStyle}>
-                  Kendi zirvene ilerlersin.
+                  aşık olacaksınız.
                 </div>
               </div>
             </div>
@@ -1090,11 +1087,6 @@ export function LandingPage({
                 padding: "0 24px 14vh",
               }}
             >
-              <div style={{ maxWidth: 940, textAlign: "center" }}>
-                <div className="ln" data-li={0} style={lnStyle}>
-                  Ama yalnız değilsin.
-                </div>
-              </div>
             </div>
 
             {/* SEG 7 : Sira sende */}
@@ -1135,7 +1127,7 @@ export function LandingPage({
                     willChange: "transform,opacity,filter",
                   }}
                 >
-                  Sıradaki sensin.
+                  Sıra sende.
                 </div>
               </div>
             </div>
