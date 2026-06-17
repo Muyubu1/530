@@ -20,6 +20,8 @@ interface HandDrawnFrameProps {
   color?: string;
   /** Stroke width (in viewBox units) */
   strokeWidth?: number;
+  /** Colour of the travelling light that rides the drawing tip */
+  glowColor?: string;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -41,6 +43,7 @@ export function HandDrawnFrame({
   shape = "star",
   color = "rgba(233,238,241,0.6)",
   strokeWidth = 2.5,
+  glowColor = "rgba(255,247,228,0.95)",
   className,
   style,
 }: HandDrawnFrameProps) {
@@ -69,6 +72,25 @@ export function HandDrawnFrame({
         strokeLinejoin="round"
         // Hidden by default; the consumer's GSAP draw reveals it (strokeDashoffset 1→0).
         style={{ strokeDasharray: 1, strokeDashoffset: 1 }}
+      />
+      {/* Travelling light: a short bright dash that rides the drawing tip, with a bloom.
+          The consumer's GSAP slides its dashoffset in sync with the draw and fades it. */}
+      <path
+        className="frame-glow"
+        d={d}
+        pathLength={1}
+        fill="none"
+        stroke={glowColor}
+        strokeWidth={strokeWidth + 1.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{
+          strokeDasharray: "0.06 0.94",
+          strokeDashoffset: 0.06,
+          opacity: 0,
+          filter:
+            "drop-shadow(0 0 4px rgba(255,244,214,0.95)) drop-shadow(0 0 12px rgba(255,232,180,0.55))",
+        }}
       />
     </svg>
   );

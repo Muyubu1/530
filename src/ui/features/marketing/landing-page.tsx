@@ -402,24 +402,45 @@ export function LandingPage({
       // (draws early) under the pinned climb above. Triggers on the section (a stable block,
       // not the absolute SVG); scrubbed so it draws as you arrive and un-draws on scroll back.
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      gsap.utils.toArray<SVGPathElement>(q(".frame-path")).forEach((path) => {
+      const framePath = gsap.utils.toArray<SVGPathElement>(q(".frame-path"))[0];
+      const frameGlow = gsap.utils.toArray<SVGPathElement>(q(".frame-glow"))[0];
+      const frameSection = framePath?.closest("section");
+      if (framePath && frameSection) {
         if (reducedMotion) {
-          gsap.set(path, { strokeDashoffset: 0 });
-          return;
+          gsap.set(framePath, { strokeDashoffset: 0 });
+          if (frameGlow) gsap.set(frameGlow, { opacity: 0 });
+        } else {
+          gsap.set(framePath, { strokeDashoffset: 1 });
+          // Wide scroll window → slow, deliberate draw. A bright dash (frameGlow) rides the
+          // tip with a bloom, fading in at the start and out as the line completes.
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: frameSection,
+              start: "top 62%",
+              end: "center 36%",
+              scrub: 0.8,
+              invalidateOnRefresh: true,
+            },
+          });
+          tl.fromTo(
+            framePath,
+            { strokeDashoffset: 1 },
+            { strokeDashoffset: 0, ease: "none", duration: 1 },
+            0,
+          );
+          if (frameGlow) {
+            // dashoffset 0.06 → -0.94 keeps the bright 6% segment sitting on the drawn tip.
+            tl.fromTo(
+              frameGlow,
+              { strokeDashoffset: 0.06 },
+              { strokeDashoffset: -0.94, ease: "none", duration: 1 },
+              0,
+            );
+            tl.fromTo(frameGlow, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.08 }, 0);
+            tl.to(frameGlow, { opacity: 0, ease: "none", duration: 0.12 }, 0.88);
+          }
         }
-        gsap.set(path, { strokeDashoffset: 1 });
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: path.closest("section"),
-            start: "top 60%",
-            end: "center 52%",
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-          },
-        });
-      });
+      }
 
       // Recompute pin-spacing / start-end once layout (fonts, images) has settled.
       ScrollTrigger.refresh();
